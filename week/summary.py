@@ -11,6 +11,7 @@ import argparse
 import requests
 import json
 import os
+import base64
 from dateutil.parser import isoparse
 from dateutil.tz import UTC
 from tqdm import tqdm
@@ -33,12 +34,34 @@ def fetch_events(user, headers, since):
     return events
 
 
+def fetch_repo_details(repos, headers):
+    """Fetch repository details including description, topics and README."""
+    details = {}
+    for repo in tqdm(set(repos), desc="Get repos"):
+        try:
+            info = requests.get(f"https://api.github.com/repos/{repo}", headers=headers).json()
+            readme_resp = requests.get(
+                f"https://api.github.com/repos/{repo}/readme", headers=headers
+            ).json()
+            details[repo] = {
+                "description": info.get("description", ""),
+                "topics": info.get("topics", []),
+                "readme": base64.b64decode(readme_resp.get("content", "")).decode(
+                    "utf-8", "ignore"
+                ),
+            }
+        except Exception as e:
+            tqdm.write(f"Error fetching {repo}: {e}")
+    return details
+
+
 def fetch_github_commits(user, since, until, headers):
     """Fetch and process GitHub commits for a user within a date range."""
     evs = fetch_events(user, headers, since)
     commits = []
+    repos = set()
 
-    for ev in tqdm(evs):
+    for ev in tqdm(evs, desc="Get commits"):
         if ev["type"] != "PushEvent":
             continue
         ts = isoparse(ev["created_at"])
@@ -46,6 +69,7 @@ def fetch_github_commits(user, since, until, headers):
             continue
 
         repo = ev["repo"]["name"]
+        repos.add(repo)
         for c in ev["payload"]["commits"]:
             try:
                 url = f"https://api.github.com/repos/{repo}/commits/{c['sha']}"
@@ -74,15 +98,19 @@ def fetch_github_commits(user, since, until, headers):
                 }
             )
 
-    return commits
+    return commits, list(repos)
 
 
-def get_commit_summary(system_prompt, commits_json):
+def get_commit_summary(system_prompt, commits_json, repo_context):
+    context_json = json.dumps(repo_context, indent=2)
     payload = {
         "model": "gpt-4.1-mini",
         "input": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": commits_json},
+            {
+                "role": "user",
+                "content": f"Repository Context:\n{context_json}\n\nCommits:\n{commits_json}",
+            },
         ],
     }
 
@@ -93,7 +121,8 @@ def get_commit_summary(system_prompt, commits_json):
 
     response = requests.post("https://api.openai.com/v1/responses", headers=headers, json=payload)
     response.raise_for_status()
-    return response.json()["output"][0]["content"][0]["text"]
+    result = response.json()
+    return result['usage'], result["output"][0]["content"][0]["text"]
 
 
 def main():
@@ -107,8 +136,8 @@ def main():
 
     p = argparse.ArgumentParser()
     p.add_argument("-u", "--user", required=True)
-    p.add_argument("-s", "--start", help="Start date (default: end date - 7 days)")
     p.add_argument("-e", "--end", default=end, help="End date, excluded (default: latest Sunday)")
+    p.add_argument("-s", "--start", help="Start date (default: end date - 7 days)")
     p.add_argument("-t", "--token", default=token, help="GitHub token (default: $GITHUB_TOKEN)")
     args = p.parse_args()
 
@@ -133,10 +162,12 @@ def main():
     summary_filename = script_dir / f"{args.end}.md"
     if not os.path.exists(summary_filename):
         headers = {"Authorization": f"Bearer {args.token}"} if args.token else {}
-        commits = fetch_github_commits(args.user, since, until, headers)
-        summary = get_commit_summary(system_prompt, json.dumps(commits, indent=2))
+        commits, repos = fetch_github_commits(args.user, since, until, headers)
+        context = fetch_repo_details(repos, headers)
+        usage, summary = get_commit_summary(system_prompt, json.dumps(commits, indent=2), context)
         with open(summary_filename, "w") as f:
             f.write(summary)
+        print("Usage", json.dumps(usage, indent=2))
 
 
 if __name__ == "__main__":
