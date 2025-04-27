@@ -128,11 +128,11 @@ def get_commit_summary(system_prompt, commits_json, repo_context):
 def main():
     token = os.environ.get("GITHUB_TOKEN")
 
-    # Default start date is latest Sunday BEFORE today.
+    # Default end date is latest Sunday ON OR BEFORE today, UTC.
     # Commits are taken from the previous Sunday to the next Saturday, UTC.
     today = datetime.now(UTC)
     end = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    end = (end - timedelta(days=end.weekday() + 1)).date().isoformat()
+    end = (end - timedelta(days=(end.weekday() + 1) % 7)).date().isoformat()
 
     p = argparse.ArgumentParser()
     p.add_argument("-u", "--user", required=True)
