@@ -1,3 +1,6 @@
+# Usage: uv run summary.py -u <user>
+# Summarizes Github commits for a user from last Sunday till most recent Saturday
+
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.12"
@@ -8,10 +11,11 @@
 # ]
 # ///
 import argparse
-import requests
+import base64
 import json
 import os
-import base64
+import requests
+import tomllib
 from dateutil.parser import isoparse
 from dateutil.tz import UTC
 from tqdm import tqdm
@@ -122,7 +126,55 @@ def get_commit_summary(system_prompt, commits_json, repo_context):
     response = requests.post("https://api.openai.com/v1/responses", headers=headers, json=payload)
     response.raise_for_status()
     result = response.json()
-    return result['usage'], result["output"][0]["content"][0]["text"]
+    cost = result["usage"]["input_tokens"] * 0.4 + result["usage"]["output_tokens"] * 1.6
+    return cost, result["output"][0]["content"][0]["text"]
+
+
+def get_podcast(script, target, config):
+    """Generate speech files for each line in the podcast script."""
+    speakers = {k: v for k, v in config.items() if isinstance(v, dict) and "voice" in v}
+    headers = {
+        "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
+        "Content-Type": "application/json",
+    }
+
+    lines = [ln.strip() for ln in script.splitlines() if ln.strip()]
+    filenames = []
+    for line in tqdm(lines, desc="Get speech"):
+        # Skip lines without valid speaker
+        speaker = next((s for s in speakers if line.startswith(f"{s}:")), None)
+        if speaker is None:
+            continue
+        podcast_filename = target / f"{len(filenames) + 1:03d}.opus"
+        filenames.append(podcast_filename)
+        if podcast_filename.exists():
+            continue
+        text = line[len(speaker) + 1 :].strip()
+        body = {
+            "model": "gpt-4o-mini-tts",
+            "input": text,
+            "voice": speakers[speaker]["voice"],
+            "instructions": speakers[speaker]["instructions"],
+            "response_format": "opus",
+        }
+        r = requests.post("https://api.openai.com/v1/audio/speech", headers=headers, json=body)
+        r.raise_for_status()
+        with open(podcast_filename, "wb") as f:
+            f.write(r.content)
+
+    # Concatenate all audio files
+    list_file = target / "list.txt"
+    list_file.write_text("\n".join(f"file '{f.name}'" for f in filenames))
+    # -safe 0 allows for absolute paths
+    # -c:a libmp3lame uses the LAME MP3 encoder
+    # -qscale:a 5 is about 96 kbps. Lower values have higher quality and size
+    # -ar 44100 sets sample rate to 44.1 kHz (standard for podcasts)
+    # -ac 1 downmix to mono to halve file size at no loss
+    # -id3v2_version 3 sets ID3v2.3 tags for compatibility with most players
+    os.system(f'ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {target/"podcast.mp3"}')
+    # Upload to https://s-anand.net/files/codecast-yyyy-mm-dd.mp3
+    os.system(f'rsync -avzP {target/"podcast.mp3"} sanand@s-anand.net:~/www/files/codecast-{target.name}.mp3')
+    list_file.unlink()
 
 
 def main():
@@ -156,18 +208,31 @@ def main():
             since = since.replace(tzinfo=UTC)
 
     script_dir = Path(__file__).parent
-    with open(script_dir / "prompt.md") as f:
-        system_prompt = f.read().strip()
+    with open(script_dir / "config.toml", "rb") as f:
+        config = tomllib.load(f)
 
-    summary_filename = script_dir / f"{args.end}.md"
-    if not os.path.exists(summary_filename):
+    week_dir = script_dir / args.end
+    week_dir.mkdir(exist_ok=True)
+    summary_filename = week_dir / "README.md"
+    podcast_filename = week_dir / "podcast.md"
+    podcast_output = week_dir / "podcast.mp3"
+    if not summary_filename.exists() or not podcast_filename.exists():
         headers = {"Authorization": f"Bearer {args.token}"} if args.token else {}
         commits, repos = fetch_github_commits(args.user, since, until, headers)
         context = fetch_repo_details(repos, headers)
-        usage, summary = get_commit_summary(system_prompt, json.dumps(commits, indent=2), context)
-        with open(summary_filename, "w") as f:
-            f.write(summary)
-        print("Usage", json.dumps(usage, indent=2))
+        input = json.dumps(commits, indent=2)
+        if not summary_filename.exists():
+            cost, summary = get_commit_summary(config["summary"], input, context)
+            print(f"Summary: {cost / 1E4:,.1f}c")
+            with open(summary_filename, "w") as f:
+                f.write(summary)
+        if not podcast_filename.exists():
+            cost, podcast = get_commit_summary(config["podcast"], input, context)
+            print(f"Podcast: {cost / 1E4:,.1f}c")
+            with open(podcast_filename, "w") as f:
+                f.write(podcast)
+    if not podcast_output.exists():
+        get_podcast(podcast_filename.read_text(), week_dir, config)
 
 
 if __name__ == "__main__":
