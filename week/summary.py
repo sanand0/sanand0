@@ -59,7 +59,7 @@ def fetch_repo_details(repos, headers):
     return details
 
 
-def fetch_github_commits(user, since, until, headers):
+def fetch_github_commits(user, since, until, headers, skip_repos):
     """Fetch and process GitHub commits for a user within a date range."""
     evs = fetch_events(user, headers, since)
     commits = []
@@ -73,6 +73,8 @@ def fetch_github_commits(user, since, until, headers):
             continue
 
         repo = ev["repo"]["name"]
+        if repo in skip_repos:
+            continue
         repos.add(repo)
         for c in ev["payload"]["commits"]:
             try:
@@ -171,9 +173,11 @@ def get_podcast(script, target, config):
     # -ar 44100 sets sample rate to 44.1 kHz (standard for podcasts)
     # -ac 1 downmix to mono to halve file size at no loss
     # -id3v2_version 3 sets ID3v2.3 tags for compatibility with most players
-    os.system(f'ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {target/"podcast.mp3"}')
+    concat = f"ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {target / 'podcast.mp3'}"
+    os.system(concat)
     # Upload to https://s-anand.net/files/codecast-yyyy-mm-dd.mp3
-    os.system(f'rsync -avzP {target/"podcast.mp3"} sanand@s-anand.net:~/www/files/codecast-{target.name}.mp3')
+    upload = f"rsync -avzP {target / 'podcast.mp3'} sanand@s-anand.net:~/www/files/codecast-{target.name}.mp3"
+    os.system(upload)
     list_file.unlink()
 
 
@@ -214,21 +218,31 @@ def main():
     week_dir = script_dir / args.end
     week_dir.mkdir(exist_ok=True)
     summary_filename = week_dir / "README.md"
+    context_filename = week_dir / "context.json"
     podcast_filename = week_dir / "podcast.md"
     podcast_output = week_dir / "podcast.mp3"
     if not summary_filename.exists() or not podcast_filename.exists():
         headers = {"Authorization": f"Bearer {args.token}"} if args.token else {}
-        commits, repos = fetch_github_commits(args.user, since, until, headers)
-        context = fetch_repo_details(repos, headers)
+        if not context_filename.exists():
+            commits, repos = fetch_github_commits(
+                args.user, since, until, headers, skip_repos=config["skip-repos"]
+            )
+            context = fetch_repo_details(repos, headers)
+            with open(context_filename, "w") as f:
+                json.dump([commits, repos, context], f)
+        else:
+            with open(context_filename, "r") as f:
+                (commits, repos, context) = json.load(f)
         input = json.dumps(commits, indent=2)
         if not summary_filename.exists():
             cost, summary = get_commit_summary(config["summary"], input, context)
-            print(f"Summary: {cost / 1E4:,.1f}c")
+            print(f"Summary: {cost / 1e4:,.1f}c")
             with open(summary_filename, "w") as f:
                 f.write(summary)
         if not podcast_filename.exists():
-            cost, podcast = get_commit_summary(config["podcast"], input, context)
-            print(f"Podcast: {cost / 1E4:,.1f}c")
+            prompt = config["podcast"].replace("$WEEK", until.strftime("%d %b %Y"))
+            cost, podcast = get_commit_summary(prompt, input, context)
+            print(f"Podcast: {cost / 1e4:,.1f}c")
             with open(podcast_filename, "w") as f:
                 f.write(podcast)
     if not podcast_output.exists():

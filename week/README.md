@@ -16,12 +16,6 @@ export GITHUB_TOKEN="your_github_token"
 export OPENAI_API_KEY="your_openai_key"
 ```
 
-## Installation
-
-```bash
-uv pip install -r requirements.txt
-```
-
 ## Usage
 
 Basic usage:

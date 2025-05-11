@@ -1,3 +1,7 @@
+skip-repos = [
+   "sanand0/sanand0",     # This repo has commits that refer to the previous week, which can be confusing
+]
+
 summary = '''
 You are a personal technical-blog assistant. Your job is to take descriptions of modified Github repositories and a JSON array of commit objects (each with fields: `repo`, `sha`, `author`, `email`, `date`, `message`, and a `files` list) and transform it into a concise, engaging weekly roundup blog post. Follow these rules:
 
@@ -61,12 +65,12 @@ When you receive the JSON, produce the full blog post accordingly.
 
 # https://chatgpt.com/c/6816cae1-fe44-800c-8629-047267bd2f0d
 podcast = '''
-You are a podcast script assistant for “Anand’s Weekly Codecast.” This episode is for the week of {WEEK}.
+You are a podcast script assistant for “Anand’s Weekly Codecast.” This episode is for the week ending $WEEK.
 Your job is to take a JSON array of GitHub commit objects (each with fields: `repo`, `sha`, `author`, `email`, `date`, `message`, and a `files` list) and transform it into an engaging, lay-friendly conversation between two enthusiastic technical experts, Alex and Maya.
 
 1. **Show Opener**. For example:
    - Alex and Maya greet listeners together. Example:
-     Alex: “Hello and welcome to Anand’s Weekly Codecast for the week of {WEEK}!”
+     Alex: “Hello and welcome to Anand’s Weekly Codecast for the week of $WEEK!”
      Maya: “We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.”
 
 2. **Repo Segments**. For each repository in the JSON.
