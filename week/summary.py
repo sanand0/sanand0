@@ -173,10 +173,50 @@ def get_podcast(script, target, config):
     # -ar 44100 sets sample rate to 44.1 kHz (standard for podcasts)
     # -ac 1 downmix to mono to halve file size at no loss
     # -id3v2_version 3 sets ID3v2.3 tags for compatibility with most players
-    codecast = target / f"podcast-{target.name}.mp3"
-    concat = f"ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {codecast}"
+    podcast = target / f"podcast-{target.name}.mp3"
+    concat = f"ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {podcast}"
     os.system(concat)
     list_file.unlink()
+
+
+def generate_podcast(weeks, script_dir):
+    output_path = script_dir / "podcast.xml"
+    base_url = "https://github.com/sanand0/sanand0/releases/download/main"
+    title = "Anand's Weekly Codecast"
+    link = "https://github.com/sanand0/sanand0"
+    description = "Weekly audio summaries of Anand's commits to GitHub."
+    now = datetime.now(UTC).strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+    # build each <item>
+    items_xml = []
+    for week in sorted(weeks, reverse=True):
+        url = f"{base_url}/podcast-{week}.mp3"
+        # RFC-822 pubDate at midnight UTC on the week start
+        pub = datetime.strptime(week, "%Y-%m-%d").strftime("%a, %d %b %Y 00:00:00 GMT")
+        # Load script
+        md_path = script_dir / week / f"podcast-{week}.md"
+        description_cdata = f"<![CDATA[\n{md_path.read_text(encoding='utf-8')}\n]]>"
+
+        items_xml.append(f"""  <item>
+    <title>Week of {week}</title>
+    <enclosure url="{url}" length="0" type="audio/mpeg"/>
+    <guid>{url}</guid>
+    <pubDate>{pub}</pubDate>
+    <description>{description_cdata}</description>
+  </item>""")
+
+    rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>{title}</title>
+  <link>{link}</link>
+  <description>{description}</description>
+  <lastBuildDate>{now}</lastBuildDate>
+{chr(10).join(items_xml)}
+</channel>
+</rss>"""
+
+    output_path.write_text(rss, encoding="utf-8")
 
 
 def main():
@@ -217,8 +257,8 @@ def main():
     week_dir.mkdir(exist_ok=True)
     summary_filename = week_dir / "README.md"
     context_filename = week_dir / "context.json"
-    podcast_filename = week_dir / "podcast.md"
-    podcast_output = week_dir / "podcast.mp3"
+    podcast_filename = week_dir / f"podcast-{args.end}.md"
+    podcast_output = week_dir / f"podcast-{args.end}.mp3"
     if not summary_filename.exists() or not podcast_filename.exists():
         headers = {"Authorization": f"Bearer {args.token}"} if args.token else {}
         if not context_filename.exists():
@@ -245,6 +285,14 @@ def main():
                 f.write(podcast)
     if not podcast_output.exists():
         get_podcast(podcast_filename.read_text(), week_dir, config)
+
+    # Get all directories beginning with "20" only if it contains podcast script
+    weeks = [
+        d.name
+        for d in script_dir.iterdir()
+        if d.is_dir() and d.name.startswith("20") and (d / f"podcast-{d.name}.md").exists()
+    ]
+    generate_podcast(weeks, script_dir)
 
 
 if __name__ == "__main__":

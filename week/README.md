@@ -2,6 +2,8 @@
 
 This script generates AI summaries of your GitHub activity by analyzing commits between two dates (defaulting to the most recent Sunday-to-Saturday period). It creates both a written summary and an AI-generated podcast.
 
+[Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
+
 ## Setup Requirements
 
 1. [uv](https://github.com/astral-sh/uv) for Python package management: `curl -LsSf https://astral.sh/uv/install.sh | sh`
@@ -64,6 +66,7 @@ To upload all, run:
 ```bash
 npx prettier@3.5 --write '**/*.md'
 gh release upload main --clobber */codecast-*
+gh release upload main --clobber podcast.xml
 ```
 
 Or to upload a single release:
@@ -71,6 +74,7 @@ Or to upload a single release:
 ```bash
 npx prettier@3.5 --write '**/*.md'
 gh release upload main --clobber */codecast-$WEEK.mp3
+gh release upload main --clobber podcast.xml
 ```
 
 The [core README.md](../README.md) **is updated manually** for now.
