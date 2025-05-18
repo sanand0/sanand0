@@ -173,11 +173,9 @@ def get_podcast(script, target, config):
     # -ar 44100 sets sample rate to 44.1 kHz (standard for podcasts)
     # -ac 1 downmix to mono to halve file size at no loss
     # -id3v2_version 3 sets ID3v2.3 tags for compatibility with most players
-    concat = f"ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {target / 'podcast.mp3'}"
+    codecast = target / f"podcast-{target.name}.mp3"
+    concat = f"ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {codecast}"
     os.system(concat)
-    # Upload to https://s-anand.net/files/codecast-yyyy-mm-dd.mp3
-    upload = f"rsync -avzP {target / 'podcast.mp3'} sanand@s-anand.net:~/www/files/codecast-{target.name}.mp3"
-    os.system(upload)
     list_file.unlink()
 
 

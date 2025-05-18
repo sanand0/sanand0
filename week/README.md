@@ -53,4 +53,24 @@ For each run, the script creates a directory named after the end date (e.g., `20
 When re-running, only missing files are re-generated.
 This allows for incremental updates and prevents unnecessary API calls when files already exist.
 
+The files are released on GitHub releases at <https://github.com/sanand0/sanand0/releases/tag/main> created via:
+
+```bash
+gh release create main --title "Codecast" --notes "Auto-generated podcast"
+```
+
+To upload all, run:
+
+```bash
+npx prettier@3.5 --write '**/*.md'
+gh release upload main --clobber */codecast-*
+```
+
+Or to upload a single release:
+
+```bash
+npx prettier@3.5 --write '**/*.md'
+gh release upload main --clobber */codecast-$WEEK.mp3
+```
+
 The [core README.md](../README.md) **is updated manually** for now.
