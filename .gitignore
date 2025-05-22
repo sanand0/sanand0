@@ -1,3 +1,5 @@
+.vscode/
+
 podcast.xml
 context.json
 *.opus

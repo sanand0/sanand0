@@ -23,12 +23,13 @@ export OPENAI_API_KEY="your_openai_key"
 Basic usage:
 
 ```bash
-uv run summary.py -u <github-username>
+uv run summary.py -u <github-username> -n <name>
 ```
 
 Options:
 
 - `-u, --user`: GitHub username (required)
+- `-n, --name`: Name to address by (required)
 - `-e, --end`: End date in YYYY-MM-DD format (default: most recent Sunday)
 - `-s, --start`: Start date in YYYY-MM-DD format (default: end date - 7 days)
 - `-t, --token`: GitHub token (default: $GITHUB_TOKEN)
@@ -37,10 +38,10 @@ Examples:
 
 ```bash
 # Get last week's summary. Generates from previous Sunday till latest Saturday EOD, UTC
-uv run summary.py -u sanand0
+uv run summary.py -u sanand0 -n "Anand" -e 2025-05-22
 
 # Get specific date range, UTC
-uv run summary.py -u sanand0 -s 2024-01-01 -e 2024-01-07
+uv run summary.py -u sanand0 -n "Anand" -s 2024-01-01 -e 2024-01-07
 ```
 
 ## Generated Files
@@ -50,7 +51,7 @@ For each run, the script creates a directory named after the end date (e.g., `20
 - `${week}/README.md`: Written summary of GitHub activity
 - `${week}/podcast.md`: Script for the podcast
 - `${week}/*.opus`: Individual audio files for each line in the podcast. Not committed
-- `${week}/podcast.mp3`: Final concatenated podcast. Not committed, uploaded to `s-anand.net/files/${week}-podcast.mp3`
+- `${week}/podcast.mp3`: Final concatenated podcast. Not committed, uploaded to GitHub releases
 
 When re-running, only missing files are re-generated.
 This allows for incremental updates and prevents unnecessary API calls when files already exist.

@@ -1,10 +1,11 @@
 # Usage: uv run summary.py -u <user>
-# Summarizes Github commits for a user from last Sunday till most recent Saturday
+# Summarizes Github activity for a user from last Sunday till most recent Saturday
 
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
+#     "jmespath",
 #     "python-dateutil",
 #     "requests",
 #     "tqdm",
@@ -12,6 +13,7 @@
 # ///
 import argparse
 import base64
+import jmespath
 import json
 import os
 import requests
@@ -59,15 +61,13 @@ def fetch_repo_details(repos, headers):
     return details
 
 
-def fetch_github_commits(user, since, until, headers, skip_repos):
-    """Fetch and process GitHub commits for a user within a date range."""
+def fetch_github_activity(user, since, until, headers, skip_repos, fields):
+    """Fetch and process GitHub events for a user within a date range."""
     evs = fetch_events(user, headers, since)
-    commits = []
+    activity = []
     repos = set()
 
-    for ev in tqdm(evs, desc="Get commits"):
-        if ev["type"] != "PushEvent":
-            continue
+    for ev in tqdm(evs, desc="Get events"):
         ts = isoparse(ev["created_at"])
         if not (since <= ts < until):
             continue
@@ -76,6 +76,17 @@ def fetch_github_commits(user, since, until, headers, skip_repos):
         if repo in skip_repos:
             continue
         repos.add(repo)
+
+        if ev["type"] in fields:
+            info = {}
+            for path in fields[ev["type"]]:
+                val = jmespath.search(path, ev)
+                info[path] = ", ".join(val) if isinstance(val, list) else val
+            activity.append(info)
+
+        if ev["type"] != "PushEvent":
+            continue
+
         for c in ev["payload"]["commits"]:
             try:
                 url = f"https://api.github.com/repos/{repo}/commits/{c['sha']}"
@@ -85,11 +96,12 @@ def fetch_github_commits(user, since, until, headers, skip_repos):
             except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
                 tqdm.write(str(e))
                 continue
-            commits.append(
+            activity.append(
                 {
-                    "repo": repo,
+                    "type": "commit",
+                    "repo.name": repo,
+                    "created_at": cj["commit"]["author"]["date"],
                     "sha": c["sha"],
-                    "date": cj["commit"]["author"]["date"],
                     "message": cj["commit"]["message"],
                     "files": [
                         {
@@ -104,10 +116,10 @@ def fetch_github_commits(user, since, until, headers, skip_repos):
                 }
             )
 
-    return commits, list(repos)
+    return activity, list(repos)
 
 
-def get_commit_summary(system_prompt, commits_json, repo_context):
+def get_activity_summary(system_prompt, activity, repo_context):
     context_json = json.dumps(repo_context, indent=2)
     payload = {
         "model": "gpt-4.1-mini",
@@ -115,7 +127,7 @@ def get_commit_summary(system_prompt, commits_json, repo_context):
             {"role": "system", "content": system_prompt},
             {
                 "role": "user",
-                "content": f"Repository Context:\n{context_json}\n\nCommits:\n{commits_json}",
+                "content": f"Repository Context:\n{context_json}\n\nCommits:\n{activity}",
             },
         ],
     }
@@ -219,6 +231,14 @@ def generate_podcast(weeks, script_dir):
     output_path.write_text(rss, encoding="utf-8")
 
 
+def update_prompt(prompt, until, args):
+    return (
+        prompt.replace("$USER", args.user)
+        .replace("$NAME", args.name)
+        .replace("$WEEK", until.strftime("%d %b %Y"))
+    )
+
+
 def main():
     token = os.environ.get("GITHUB_TOKEN")
 
@@ -230,6 +250,7 @@ def main():
 
     p = argparse.ArgumentParser()
     p.add_argument("-u", "--user", required=True)
+    p.add_argument("-n", "--name", required=True)
     p.add_argument("-e", "--end", default=end, help="End date, excluded (default: latest Sunday)")
     p.add_argument("-s", "--start", help="Start date (default: end date - 7 days)")
     p.add_argument("-t", "--token", default=token, help="GitHub token (default: $GITHUB_TOKEN)")
@@ -253,7 +274,7 @@ def main():
     with open(script_dir / "config.toml", "rb") as f:
         config = tomllib.load(f)
 
-    week_dir = script_dir / args.end
+    week_dir = script_dir / (args.end if args.user == "sanand0" else f"{args.user}-{args.end}")
     week_dir.mkdir(exist_ok=True)
     summary_filename = week_dir / "README.md"
     context_filename = week_dir / "context.json"
@@ -262,24 +283,30 @@ def main():
     if not summary_filename.exists() or not podcast_filename.exists():
         headers = {"Authorization": f"Bearer {args.token}"} if args.token else {}
         if not context_filename.exists():
-            commits, repos = fetch_github_commits(
-                args.user, since, until, headers, skip_repos=config["skip-repos"]
+            activity, repos = fetch_github_activity(
+                args.user,
+                since,
+                until,
+                headers,
+                skip_repos=config["skip-repos"],
+                fields=config["github_fields"],
             )
             context = fetch_repo_details(repos, headers)
             with open(context_filename, "w") as f:
-                json.dump([commits, repos, context], f)
+                json.dump([activity, repos, context], f)
         else:
             with open(context_filename, "r") as f:
-                (commits, repos, context) = json.load(f)
-        input = json.dumps(commits, indent=2)
+                (activity, repos, context) = json.load(f)
+        input = json.dumps(activity, indent=2)
         if not summary_filename.exists():
-            cost, summary = get_commit_summary(config["summary"], input, context)
+            prompt = update_prompt(config["summary"], until, args)
+            cost, summary = get_activity_summary(prompt, input, context)
             print(f"Summary: {cost / 1e4:,.1f}c")
             with open(summary_filename, "w") as f:
                 f.write(summary)
         if not podcast_filename.exists():
-            prompt = config["podcast"].replace("$WEEK", until.strftime("%d %b %Y"))
-            cost, podcast = get_commit_summary(prompt, input, context)
+            prompt = update_prompt(config["podcast"], until, args)
+            cost, podcast = get_activity_summary(prompt, input, context)
             print(f"Podcast: {cost / 1e4:,.1f}c")
             with open(podcast_filename, "w") as f:
                 f.write(podcast)
