@@ -65,8 +65,8 @@ gh release create main --title "Codecast" --notes "Auto-generated podcast"
 To upload all, run:
 
 ```bash
-npx prettier@3.5 --write '**/*.md'
-gh release upload main --clobber */codecast-*
+npx -y pretty-quick
+gh release upload main --clobber */podcast-*.mp3
 gh release upload main --clobber podcast.xml
 ```
 
@@ -78,4 +78,4 @@ gh release upload main --clobber */podcast-$WEEK.mp3
 gh release upload main --clobber podcast.xml
 ```
 
-The [core README.md](../README.md) **is updated manually** for now.
+Update [../README.md](../README.md) **manually** for now.

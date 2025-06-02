@@ -5,6 +5,8 @@
 [Apple](podcast://github.com/sanand0/sanand0/releases/download/main/podcast.xml) |
 [Others](feed://github.com/sWanand0/sanand0/releases/download/main/podcast.xml)
 
+- [01 June 2025](week/2025-06-01/): New AI Tools, Cloud Diagrams, and Better Dark Theme Controls [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-01.mp3)
+- [25 May 2025](week/2025-05-25/): A Week of Smarter Summaries, Cooler Podcasts, and Sharper AI Insights [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-05-25.mp3)
 - [18 May 2025](week/2025-05-18/): Upgraded LLM Math Displays, Data Science Tools, and WhatsApp Thread Views [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-04-13.mp3)
 - [11 May 2025](week/2025-05-11/): LLM Safety Nets & Practical Data Workflows [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-05-11.mp3)
 - [04 May 2025](week/2025-05-04/): Big Launches in AI Controls, Shell Tweaks, and Data Science Tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-05-04.mp3)
