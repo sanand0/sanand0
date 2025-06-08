@@ -23,6 +23,7 @@ from dateutil.tz import UTC
 from tqdm import tqdm
 from datetime import datetime, timedelta
 from pathlib import Path
+from fnmatch import fnmatch
 
 
 def fetch_events(user, headers, since):
@@ -61,7 +62,11 @@ def fetch_repo_details(repos, headers):
     return details
 
 
-def fetch_github_activity(user, since, until, headers, skip_repos, fields):
+def truncated(text, if_over=6000, to=4000):
+    return text[:to] + " ..." if len(text) > if_over else text
+
+
+def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, fields):
     """Fetch and process GitHub events for a user within a date range."""
     evs = fetch_events(user, headers, since)
     activity = []
@@ -109,7 +114,9 @@ def fetch_github_activity(user, since, until, headers, skip_repos, fields):
                             "additions": f["additions"],
                             "deletions": f["deletions"],
                             "changes": f["changes"],
-                            "patch": f.get("patch", ""),
+                            "patch": "..."
+                            if any(fnmatch(f["filename"], pattern) for pattern in skip_files)
+                            else truncated(f.get("patch", "")),
                         }
                         for f in cj.get("files", [])
                     ],
@@ -289,6 +296,7 @@ def main():
                 until,
                 headers,
                 skip_repos=config["skip-repos"],
+                skip_files=config["skip-files"],
                 fields=config["github_fields"],
             )
             context = fetch_repo_details(repos, headers)
