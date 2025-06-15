@@ -1,10 +1,12 @@
+[Website](https://s-anand.net/) 🔸
+[LinkedIn](https://www.linkedin.com/in/sanand0/) 🔸
+[GitHub Repos](https://sanand0.github.io/)
+
 ### Recent activity
 
-🎙️ Podcast
-[RSS](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml) |
-[Apple](podcast://github.com/sanand0/sanand0/releases/download/main/podcast.xml) |
-[Others](feed://github.com/sWanand0/sanand0/releases/download/main/podcast.xml)
+[🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
+- [15 Jun 2025](week/2025-06-15/): Busy June with Data Prep, API Upgrades, and New Tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-15.mp3)
 - [08 June 2025](week/2025-06-08/): AI Pipes, APIs, and New Tools: A Week of Streamlining and Exploration [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-08.mp3)
 - [01 June 2025](week/2025-06-01/): New AI Tools, Cloud Diagrams, and Better Dark Theme Controls [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-01.mp3)
 - [25 May 2025](week/2025-05-25/): A Week of Smarter Summaries, Cooler Podcasts, and Sharper AI Insights [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-05-25.mp3)

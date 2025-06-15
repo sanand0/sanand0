@@ -4,7 +4,75 @@
   <title>Anand's Weekly Codecast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 08 Jun 2025 04:45:21 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 15 Jun 2025 01:30:42 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-06-15</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-15.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-15.mp3</guid>
+    <pubDate>Sun, 15 Jun 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 15 Jun 2025!  
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: First up, let’s talk about the data science course materials Anand maintains.  
+Maya: There was a big update to the official course, including a new tutorial on preparing data with DuckDB.  
+Alex: DuckDB is becoming quite popular for handling large data files locally, right?  
+Maya: Exactly! Anand added examples showing how to create sample datasets, handle messy CSV files, and do exploratory data analysis—all with DuckDB’s SQL CLI.  
+Alex: That’s super practical. Having hands-on guides like this helps learners handle real-world data that’s often messy or huge.  
+Maya: And they included advice on memory-efficient processing, converting data to multiple formats like JSON or Parquet, and working with corrupted CSV files without crashing.  
+Alex: Great for students to grasp not just code, but practical challenges in data work.  
+
+Maya: Alongside that, the course timelines were revised.  
+Alex: Yes, they adjusted dates for projects and graded assignments, keeping everything clear for the students.  
+Maya: Keeping course info up to date helps everyone stay on track, especially with multiple moving parts like online exams and graded assignments.  
+
+Alex: Next, in the data visualization realm, a new employment trends story was added.  
+Maya: It’s a full interactive visualization with detailed insights.  
+Alex: These data stories make complex data more engaging and understandable.  
+Maya: It’s probably a great way for students or data enthusiasts to see real examples of telling stories with data.  
+
+Alex: Turning to tools, several handy utilities saw improvements.  
+Maya: The page-to-markdown tool was enhanced to better handle SVG images and clean up links from ChatGPT pages.  
+Alex: That means users can now copy web content more reliably into Markdown for notes or blogs.  
+Maya: Yes, especially for technical and rich-content pages, better SVG support is a subtle but impactful upgrade.  
+
+Alex: A big new feature is in the API Agent—Anand upgraded it to handle multiple API tokens and support selecting multiple APIs.  
+Maya: That sounds super useful for anyone querying multiple services in one place.  
+Alex: Right, for instance, using both GitHub and StackOverflow tokens at once, and the interface now lets users toggle APIs on and off dynamically.  
+Maya: Plus, they improved OAuth token input management and added robust error handling for live LLM responses.  
+Alex: All these changes make the API Agent smoother and more versatile for complex queries.  
+
+Maya: Another cool new tool is the Google Tasks Exporter.  
+Alex: It lets you sign in, fetch your Google Tasks, export them as CSV, copy to Excel or Markdown, and even delete completed tasks.  
+Maya: Storing the access token locally means you don’t have to sign in repeatedly.  
+Alex: Handy for managing your to-do list data outside Google’s interfaces, especially if you want detailed reports.  
+
+Maya: Also, in the Web Apps collection, a new “Join CSV Tables” tool was added.  
+Alex: You can paste multiple CSVs separated by blank lines, pick your delimiter, and merge them on the first column—like a lightweight local database join.  
+Maya: That’s perfect for quick merges or combining data from separate exports without complex software.  
+Alex: And for Markdown users, a Markdown table to CSV converter was added.  
+Maya: So you can extract a table from Markdown text, clean links and images, and download it as CSV for analysis.  
+Alex: All these tools simplify common data wrangling steps that many struggle with manually.  
+
+Maya: Lastly, there’s an amazing ambition with the LLM Fill-in-the-Blank tool.  
+Alex: You type a sentence, click on a word to blank it, and see how different language models predict the missing word with log-probability scores.  
+Maya: It’s like peeking inside the model’s thought process, which is great for learning and understanding model behavior.  
+Alex: The tool supports various models, with online API keys and live streaming responses.  
+Maya: It also recently got a comparison tab to see two sentences side by side, helping with nuanced evaluation.  
+
+Alex: Wow, that was packed! What do you think makes these changes so meaningful for Anand’s audience?  
+Maya: I love how these updates bridge theory and practice—from teaching with real tools to building practical utilities and exploratory AI apps. They’re thoughtful and impactful.  
+
+Maya: Here’s a quick tip you can try today: When merging tables or exporting data from complex sources, consider using simple web-based tools like the new CSV joiner or Markdown-to-CSV converter. It saves a lot of manual cleanup time.  
+Alex: Great tip! I’d add that for interactive data analysis, DuckDB’s CLI approach with practical tutorials can fast-track your ability to handle messy, large datasets. How would you use these in a project?  
+
+Alex: My key takeaway this week is: small improvements in tooling can dramatically improve productivity and workflow.  
+Maya: And I’d add: clear, up-to-date course materials with real-world context empower learners to build solid foundations.  
+
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
+Alex: See you next time!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-06-08</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-08.mp3" length="0" type="audio/mpeg"/>
@@ -90,6 +158,7 @@ Maya: Don’t forget to check out your tooling options—the right library or pa
 Maya: That’s all for this week on Anand’s Weekly Codecast.
 
 Alex: See you next time!
+
 ]]></description>
   </item>
   <item>
