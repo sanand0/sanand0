@@ -4,7 +4,90 @@
   <title>Anand's Weekly Codecast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 15 Jun 2025 01:30:42 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 22 Jun 2025 11:46:55 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-06-22</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-22.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-22.mp3</guid>
+    <pubDate>Sun, 22 Jun 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 22 Jun 2025!  
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: Let’s kick off with a deep dive into a fascinating data project—Indian High Courts judgment analysis.  
+Maya: Yeah, Anand unpacked a massive dataset: 16 million judgments from 25 Indian High Courts, about 1TB of data. Can you imagine?  
+Alex: That’s huge! What’s the goal here?  
+Maya: To explore court efficiency differences, seasonal justice patterns, and political cases like the UAPA bail delays.  
+Alex: That’s like bringing hard data to courtroom stories—how quickly cases are resolved, how courts seasonally slow down, and where bail is systematically delayed.  
+Maya: Exactly, and the data is meticulously structured in Parquet files on S3, neatly partitioned by year, court, and bench, which is great for running efficient SQL queries directly on the cloud.  
+Alex: Non-technical terms: Anand processes millions of legal decisions to find patterns—like which courts clear cases faster or how justice delivery changes during vacations.  
+Maya: He also investigated constitutional case surges and how bench sizes impact case clearance rates.  
+Alex: Oh! Like if more judges mean faster decisions and lower backlogs?  
+Maya: Right, plus a special deep look into terror case bail hearings, showing repeated delays for accused under anti-terror laws with bail pushbacks stretching for months.  
+Alex: That matters because it reveals justice bottlenecks and possible human rights concerns hidden in dense legal data.  
+Maya: And Anand didn’t stop at analysis—he scripted full DuckDB queries and packages results into CSVs for journalistic insights, making it accessible for data reporters.  
+Alex: I love that—making such huge, complex data transparent and meaningful is no small feat.  
+
+Maya: Next up, let’s talk about the revamped “Hypothesis Forge” — that smart app for hypothesis generation and data testing.  
+Alex: Yes! This week’s update added CSV file upload support right in the browser interface.  
+Maya: So now you can instantly preview your own CSV data in a scrollable table before generating hypotheses. No need to stick with canned datasets!  
+Alex: Plus, users can now write or edit an “Analysis Context” — a short description of their problem or objective — that tailors how hypotheses are generated.  
+Maya: That’s a neat way to move from a black box to interactive, guided analysis. You tell it what you want, and the system tries to find relevant hypotheses and test them.  
+Alex: The UI got tighter too—replaced a bulky grid of demos with a compact dropdown, saving space and making it easier to pick datasets.  
+Maya: I’m curious, Alex: how do you think previewing data prior to analysis changes the user experience?  
+Alex: It builds trust—users know what the data looks like, so they’re less likely to get surprised by strange results. Plus, it confirms data loaded correctly. Data scientists will appreciate that!  
+Maya: It’s like the difference between blindfolded guesswork and informed exploration.  
+
+Alex: Shifting gears, the “LLM Demos” collection got a bunch of fresh interactive AI tools added this week.  
+Maya: Oh yes, including the “AI Pipe” — a serverless LLM workflow builder using any OpenAI-compatible API.  
+Alex: That’s huge because it lets devs craft AI pipelines without managing backend infrastructure.  
+Maya: There’s also “BSToast,” a tiny library for stylish Bootstrap toast notifications replacing old alert popups—modern and sleek!  
+Alex: Got to love neat UI improvements.  
+Maya: Then some powerful AI-enhanced tools for building decision trees emerged: “Decision Tree Builder” and “DTGen.”  
+Alex: Both help visualize and edit decision trees right in the browser, one with advanced AI assistance. This is great for understanding complex data splits without writing tons of code.  
+Maya: Several other updates include LinkedIn automation, sentiment analysis, data quality evaluation via LLM-powered Python, and compliance document analysis with PDF uploads.  
+Alex: This demo list shows how AI is seeping into different niches—from data cleaning to HR to automated job applications.  
+
+Maya: Speaking of dev tooling, there’s a cool new command into the “scripts” setup called `pyrun`.  
+Alex: I heard! It’s amazing — you give it a natural language prompt, it uses an LLM to write a concise Python script, then runs it immediately.  
+Maya: So it’s like telling your computer what to do in plain English and getting Python code executed right away.  
+Alex: I’m thinking how handy this is for quick data transformations or scraping tasks without switching context or manually writing code.  
+Maya: Definitely a productivity booster! And they also added a `record` command — it records mic and system audio to `.opus` with noise reduction. Superb for easy podcast prep or voice notes.  
+Alex: That fits nicely with all the audio-driven tools Anand’s building.  
+
+Maya: On the “Tools” repository, they enhanced the Google Suggest tool with something pretty neat—an editable system prompt for the AI explanations.  
+Alex: So users can now personalize the AI’s tone and style when it interprets Google suggestions?  
+Maya: Exactly! And they added a copy button to quickly copy the AI’s explanation output.  
+Alex: That’s a small detail but makes a big difference in user workflow.  
+Maya: Plus, there’s a split “Explain This” button — one regular and one “No Cache” option. That’s great to force fresh explanations instead of cached ones.  
+Alex: User control and transparency all the way—our favorite kind of update.  
+
+Alex: The “API Agent” project is also polishing up! The API selection UI moved into a sticky side accordion menu.  
+Maya: Right, improving navigation with collapsible sections, highlighting active APIs for better clarity.  
+Alex: Now instead of bulky cards, it’s a clean sidebar with easy expansion and token input.  
+Maya: This aligns with how you’d want to quickly switch between API sets without losing place—pretty practical enhancement.  
+Alex: Also, they added support for GitLab APIs along with detailed usage examples, expanding beyond just GitHub and StackOverflow.  
+Maya: And Dropbox API support was introduced, perfect for managing files remotely through natural language queries.  
+Alex: This suite is genuinely making multi-API querying more accessible and fluid for both devs and analysts.  
+
+Maya: Finally, there was a big update to “Data Stories” with new entries for employment trends and horoscope contradictions.  
+Alex: The horoscope story used deep research to gather and analyze contradictory predictions from multiple Indian media sources — an example of blending LLMs with journalistic curiosity.  
+Maya: The employment trends story shows US sector growth changes since 1980—some sectors doubling, some shrinking.  
+Alex: Plus, on the backend, the story links were refactored to be more flexible, supporting external or relative URLs.  
+Maya: This means the site can easily blend internal and external data stories, improving navigation and content sharing.  
+Alex: A smooth user experience for exploring diverse data narratives is key for these modern data journalism sites.  
+
+Maya: Here’s a quick tip you can try today: If you’re using any LLM-powered tool, customize the system prompt to fit your context or style.  
+Alex: That’s great! Changing the system prompt lets you adjust the AI’s personality and focus, bringing more relevance and clarity.  
+Maya: And since many tools are now letting you edit this directly, it’s never been easier to experiment.  
+Alex: I’ll totally start crafting my own prompt templates for different tasks. Makes the automation even smoother.  
+
+Alex: To wrap up, I’ll say: Remember, small tweaks like enabling file uploads or adding context inputs can unlock huge usability gains.  
+Maya: And I’ll add: Don’t hesitate to personalize your AI interactions with prompt editing and UI improvements—the better the input, the better the insight!  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
+Alex: See you next time!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-06-15</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-15.mp3" length="0" type="audio/mpeg"/>
@@ -20,57 +103,58 @@ Alex: DuckDB is becoming quite popular for handling large data files locally, ri
 Maya: Exactly! Anand added examples showing how to create sample datasets, handle messy CSV files, and do exploratory data analysis—all with DuckDB’s SQL CLI.  
 Alex: That’s super practical. Having hands-on guides like this helps learners handle real-world data that’s often messy or huge.  
 Maya: And they included advice on memory-efficient processing, converting data to multiple formats like JSON or Parquet, and working with corrupted CSV files without crashing.  
-Alex: Great for students to grasp not just code, but practical challenges in data work.  
+Alex: Great for students to grasp not just code, but practical challenges in data work.
 
 Maya: Alongside that, the course timelines were revised.  
 Alex: Yes, they adjusted dates for projects and graded assignments, keeping everything clear for the students.  
-Maya: Keeping course info up to date helps everyone stay on track, especially with multiple moving parts like online exams and graded assignments.  
+Maya: Keeping course info up to date helps everyone stay on track, especially with multiple moving parts like online exams and graded assignments.
 
 Alex: Next, in the data visualization realm, a new employment trends story was added.  
 Maya: It’s a full interactive visualization with detailed insights.  
 Alex: These data stories make complex data more engaging and understandable.  
-Maya: It’s probably a great way for students or data enthusiasts to see real examples of telling stories with data.  
+Maya: It’s probably a great way for students or data enthusiasts to see real examples of telling stories with data.
 
 Alex: Turning to tools, several handy utilities saw improvements.  
 Maya: The page-to-markdown tool was enhanced to better handle SVG images and clean up links from ChatGPT pages.  
 Alex: That means users can now copy web content more reliably into Markdown for notes or blogs.  
-Maya: Yes, especially for technical and rich-content pages, better SVG support is a subtle but impactful upgrade.  
+Maya: Yes, especially for technical and rich-content pages, better SVG support is a subtle but impactful upgrade.
 
 Alex: A big new feature is in the API Agent—Anand upgraded it to handle multiple API tokens and support selecting multiple APIs.  
 Maya: That sounds super useful for anyone querying multiple services in one place.  
 Alex: Right, for instance, using both GitHub and StackOverflow tokens at once, and the interface now lets users toggle APIs on and off dynamically.  
 Maya: Plus, they improved OAuth token input management and added robust error handling for live LLM responses.  
-Alex: All these changes make the API Agent smoother and more versatile for complex queries.  
+Alex: All these changes make the API Agent smoother and more versatile for complex queries.
 
 Maya: Another cool new tool is the Google Tasks Exporter.  
 Alex: It lets you sign in, fetch your Google Tasks, export them as CSV, copy to Excel or Markdown, and even delete completed tasks.  
 Maya: Storing the access token locally means you don’t have to sign in repeatedly.  
-Alex: Handy for managing your to-do list data outside Google’s interfaces, especially if you want detailed reports.  
+Alex: Handy for managing your to-do list data outside Google’s interfaces, especially if you want detailed reports.
 
 Maya: Also, in the Web Apps collection, a new “Join CSV Tables” tool was added.  
 Alex: You can paste multiple CSVs separated by blank lines, pick your delimiter, and merge them on the first column—like a lightweight local database join.  
 Maya: That’s perfect for quick merges or combining data from separate exports without complex software.  
 Alex: And for Markdown users, a Markdown table to CSV converter was added.  
 Maya: So you can extract a table from Markdown text, clean links and images, and download it as CSV for analysis.  
-Alex: All these tools simplify common data wrangling steps that many struggle with manually.  
+Alex: All these tools simplify common data wrangling steps that many struggle with manually.
 
 Maya: Lastly, there’s an amazing ambition with the LLM Fill-in-the-Blank tool.  
 Alex: You type a sentence, click on a word to blank it, and see how different language models predict the missing word with log-probability scores.  
 Maya: It’s like peeking inside the model’s thought process, which is great for learning and understanding model behavior.  
 Alex: The tool supports various models, with online API keys and live streaming responses.  
-Maya: It also recently got a comparison tab to see two sentences side by side, helping with nuanced evaluation.  
+Maya: It also recently got a comparison tab to see two sentences side by side, helping with nuanced evaluation.
 
 Alex: Wow, that was packed! What do you think makes these changes so meaningful for Anand’s audience?  
-Maya: I love how these updates bridge theory and practice—from teaching with real tools to building practical utilities and exploratory AI apps. They’re thoughtful and impactful.  
+Maya: I love how these updates bridge theory and practice—from teaching with real tools to building practical utilities and exploratory AI apps. They’re thoughtful and impactful.
 
 Maya: Here’s a quick tip you can try today: When merging tables or exporting data from complex sources, consider using simple web-based tools like the new CSV joiner or Markdown-to-CSV converter. It saves a lot of manual cleanup time.  
-Alex: Great tip! I’d add that for interactive data analysis, DuckDB’s CLI approach with practical tutorials can fast-track your ability to handle messy, large datasets. How would you use these in a project?  
+Alex: Great tip! I’d add that for interactive data analysis, DuckDB’s CLI approach with practical tutorials can fast-track your ability to handle messy, large datasets. How would you use these in a project?
 
 Alex: My key takeaway this week is: small improvements in tooling can dramatically improve productivity and workflow.  
-Maya: And I’d add: clear, up-to-date course materials with real-world context empower learners to build solid foundations.  
+Maya: And I’d add: clear, up-to-date course materials with real-world context empower learners to build solid foundations.
 
 Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
+
 ]]></description>
   </item>
   <item>
