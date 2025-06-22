@@ -6,6 +6,7 @@
 
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
+- [22 Jun 2025](week/2025-06-22/): A Week of Data Deep Dives, LLM Tools, and UI Refinements [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-22.mp3)
 - [15 Jun 2025](week/2025-06-15/): Busy June with Data Prep, API Upgrades, and New Tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-15.mp3)
 - [08 June 2025](week/2025-06-08/): AI Pipes, APIs, and New Tools: A Week of Streamlining and Exploration [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-08.mp3)
 - [01 June 2025](week/2025-06-01/): New AI Tools, Cloud Diagrams, and Better Dark Theme Controls [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-01.mp3)

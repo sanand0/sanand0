@@ -1,4 +1,4 @@
-## A Month of Data Deep Dives, LLM Tools, and UI Refinements
+## A Week of Data Deep Dives, LLM Tools, and UI Refinements
 
 This week’s work highlights how clear data presentation and smooth user experience empower better insights and decisions. By fusing solid analysis with interactive LLM-powered tools, these projects show that powerful tech can be made accessible and actionable.
 
