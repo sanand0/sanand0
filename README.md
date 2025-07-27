@@ -6,6 +6,7 @@
 
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
+- [27 Jul 2025](week/2025-07-07/): AI Image Magic, Task Tweaks, and Data Storytelling Power-up [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-07-27.mp3)
 - [20 Jul 2025](week/2025-07-20/): Remixing Ideas, Recall, and Reflecting on AI at MBA Graduation [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-07-20.mp3)
 - [13 Jul 2025](week/2025-07-13/): Quiet Week with No Commits [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-07-13.mp3)
 - [06 Jul 2025](week/2025-07-06/): Exploring AI Research Trends and Sharpening LLM Tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-07-06.mp3)
