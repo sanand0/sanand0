@@ -4,7 +4,90 @@
   <title>Anand's Weekly Codecast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 27 Jul 2025 04:27:19 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 03 Aug 2025 09:57:40 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-08-03</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-03.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-03.mp3</guid>
+    <pubDate>Sun, 03 Aug 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 03 Aug 2025!
+
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: First up, we’ve got some exciting updates in the collection of handy single-page web apps — mostly powered by large language models.
+
+Maya: The biggest news here is a major revamp to the GitHub activity summarizer. Now it shows your raw events as a table before generating the AI summary.
+
+Alex: Exactly! Instead of immediately diving into summary generation, you first get a clear, interactive view of your GitHub events — commits, pull requests, comments, and more.
+
+Maya: That’s brilliant! It helps users see the raw data upfront and verify it before asking the AI to do the heavy lifting of crafting a blog-style roundup.
+
+Alex: Yup. They added clickable links next to each event’s description, pointing to the exact pull request, commit, or issue when available, so it’s easy to explore.
+
+Maya: I like that they refined the UI too — better layout, two-buttons side by side for “Get events” and “Generate Summary,” and a responsive table that updates as events load.
+
+Alex: Plus, the summary generation step is now separate, reducing load and avoiding caching stale data from GitHub’s ever-changing event stream.
+
+Maya: That separation makes the app more reactive and reduces surprises. It’s a solid example of improved UX by managing asynchronous steps clearly.
+
+Alex: Another neat thing is the use of lit-html for rendering the events table, allowing clean, efficient updates to the page as more data arrives.
+
+Maya: So behind the scenes, it fetches paged GitHub events, batches them, filters by date, and streams the results live to the user. Very practical for anyone tracking GitHub activity.
+
+Alex: Moving on, the PicBook tool for generating sequences of images from captions received refinements too.
+
+Maya: Right! The UI got a polish — better layout, added print and ZIP download options, and now the progress bar estimates total time based on previous image requests.
+
+Alex: Plus, you can upload a reference image or provide a URL to maintain style consistency across panels. The system uses previous images so the book looks cohesive.
+
+Maya: They improved accessibility too — replacing download buttons that appeared on hover with a cleaner design, and making the spinner nicely centered without filling the whole card.
+
+Alex: On the styling front, they added a bunch of new themes and components to the Smart Art CSS library.
+
+Maya: Yes! The new smartart-column component offers a simple rectangular layout for process flows — excellent for straightforward step lists.
+
+Alex: And they added the smartart-rows component, a horizontal version of columns. Both come with detailed docs, examples, dark and colorful themes, plus compact and large sizes.
+
+Maya: The pyramid component was refined as well. Its trapezoid levels now align perfectly with dynamic widths calculated via CSS variables, making the whole pyramid cleaner visually.
+
+Alex: These pure CSS solutions are elegant — no JavaScript needed — making it perfect for static docs or dashboards that want rich, responsive illustrations.
+
+Maya: What stands out to you about these design-oriented updates, Alex?
+
+Alex: The uniform naming and custom properties standardize how you theme and size these components, easing customization. Plus, adding so many color palettes lets you tailor the art to your brand or mood easily.
+
+Maya: Switching gears, the “Things I Learned” repository saw some juicy content updates.
+
+Alex: That’s right! Anand shared insights about the AI industry maturing rapidly, where early adopters are saturated, and the early majority focus on solving specific real-life problems, not just experimenting.
+
+Maya: There’s also advice for better use of LLMs — paying for premium models, using audio interfaces to stay attentive, keeping lists of current known impossibilities, and letting LLMs write code.
+
+Alex: Plus, he’s curating “common themes” across system prompts for LLM chatbots, which helps developers build robust prompts for a variety of agents.
+
+Maya: And an interesting historical tidbit — Luis Alvarez not only discovered the asteroid link to dinosaur extinction but used fancy techniques like muon tomography in archaeology. Science detective stuff!
+
+Alex: Finally, a heads-up from Anand’s AI Proxy: it has been retired in favor of a new service called AI Pipe.
+
+Maya: Consolidating and evolving these foundational services keeps the AI ecosystem nimble and efficient for users.
+
+Alex: Before we wrap, here’s a quick tip: if you’re managing multiple LLM API configurations in your web tools, adding a little HTML help snippet in the provider configuration modal can guide users on where to get their keys.
+
+Maya: Great tip! Alex, how would you leverage that to improve onboarding in your own projects?
+
+Alex: I’d use it to reduce support questions — a simple info box in the config helps users avoid key confusion, smoothing first-time setup and encouraging adoption.
+
+Maya: And now for our key takeaways.
+
+Alex: Small, well-planned UX changes—like showing GitHub events before summaries—can sharply improve user trust and control.
+
+Maya: And in design, consistent CSS variables and thoughtful componentization pay dividends in flexibility and ease of theming.
+
+Maya: That’s all for this week on Anand’s Weekly Codecast.
+
+Alex: See you next time!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-07-27</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-07-27.mp3" length="0" type="audio/mpeg"/>
@@ -76,6 +159,7 @@ Alex: And I learned that integrating shared configuration and small UI improveme
 Maya: That’s all for this week on Anand’s Weekly Codecast.
 
 Alex: See you next time!
+
 ]]></description>
   </item>
   <item>
