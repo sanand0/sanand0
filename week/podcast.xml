@@ -4,7 +4,72 @@
   <title>Anand's Weekly Codecast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 10 Aug 2025 10:35:38 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 17 Aug 2025 05:43:06 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-08-17</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-17.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-17.mp3</guid>
+    <pubDate>Sun, 17 Aug 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 17 Aug 2025!
+
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: First up, let’s talk about Anand’s personal weekly notes repository, where he shares lessons and reflections on all things AI, coding, and productivity.
+
+Maya: This week’s updates include fascinating insights from recent educational talks and deep dives into how AI is shaping learning.
+
+Alex: One standout note is from the PyConSG Education Summit, where Anand discussed "Social Code Analysis." It’s about examining how students copy, learn, and collaborate on coding projects using AI tools.
+
+Maya: Copying code was not just allowed—it was encouraged! Students even got bonus marks for the diversity of their code, which is a fresh take on learning together.
+
+Alex: That’s interesting because it recognizes learning as a social process. Who you copy from and when you copy can massively affect learning outcomes.
+
+Maya: Exactly! Anand also shared findings from his course where thousands of students submitted automated Python scripts analyzed by LLMs for selective data analysis and storytelling.
+
+Alex: And there were clusters of identical code submissions—proof that peer influence and copying patterns impact learning pathways.
+
+Maya: Beyond education, Anand added a cool feature in his note-taking app: star filters and search-as-you-type in the Ideator tool.
+
+Alex: Oh, I love that. It’s like you can mark favorite notes and instantly filter through them—making ideation much smoother for creative workflows.
+
+Maya: Plus, the Ideator now fetches notes from multiple sources, unifying search and improving error handling. Really neat UX improvements!
+
+Alex: Also, the new LLM Document Editor is exciting. It lets you describe edits in natural language, and the model returns a diff patch you can apply live. No more manual fiddling!
+
+Maya: That’s practical for content creators or developers who want AI to refine text seamlessly without losing context.
+
+Alex: In the AI Pipe project, Anand integrated Google’s Gemini API as a new LLM provider, alongside OpenAI and OpenRouter.
+
+Maya: Right, it’s a big deal because now web apps can use the Gemini models via AI Pipe’s proxy, with usage tracking and cost accounting.
+
+Alex: Tests were added to ensure cost computation and streaming work well for Gemini, confirming this integration’s robustness.
+
+Maya: On the web apps front, the Excel Converter got a major overhaul. It now supports output in JSONL, YAML, XML, and TOML from pasted spreadsheet data.
+
+Alex: That’s such a versatile tool! Perfect for data scientists and developers needing to quickly convert spreadsheet exports into multiple formats.
+
+Maya: And it features a nicely designed UI with dark mode, copy-to-clipboard, and download options, making it easy to use.
+
+Alex: Lastly, Anand’s weekly things learned repository has enriched notes on AI coding strategies, computational thinking, and tooling setups—great to catch up on!
+
+Maya: So many resources to explore! Before we sign off, here’s a quick tip related to note searching in Ideator: try starring your most important notes and use the live search filter.
+
+Alex: That really sharpens your focus. Maya, how would you integrate that into your personal workflows?
+
+Maya: I’d tag meeting notes that need follow-up and quickly filter them when planning next steps, saving time and avoiding clutter.
+
+Alex: Brilliant use case!
+
+Maya: Remember, small tweaks can have big impact.
+
+Alex: Don’t forget to check out your tooling options.
+
+Maya: That’s all for this week on Anand’s Weekly Codecast.
+
+Alex: See you next time!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-08-10</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-10.mp3" length="0" type="audio/mpeg"/>

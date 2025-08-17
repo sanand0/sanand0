@@ -6,6 +6,7 @@
 
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
+- [17 Aug 2025](week/2025-08-17/): Real-Time LLM Feedback, Persona Fusion & Document Patch Editing [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-17.mp3)
 - [10 Aug 2025](week/2025-08-10/): AI Coding, Smart Art Evolution, and IITM Docs Chatbot Progress [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-10.mp3)
 - [03 Aug 2025](week/2025-08-03/): Smarter GitHub Summaries and Richer Smart-Art Themes This Week [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-03.mp3)
 - [27 Jul 2025](week/2025-07-07/): AI Image Magic, Task Tweaks, and Data Storytelling Power-up [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-07-27.mp3)
