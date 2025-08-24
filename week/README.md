@@ -73,7 +73,7 @@ gh release upload main --clobber podcast.xml
 Or to upload a single release:
 
 ```bash
-npx prettier@3.5 --write '**/*.md'
+npx -y prettier@3.5 --write '**/*.md'
 gh release upload main $WEEK/podcast-$WEEK.mp3
 gh release upload main --clobber podcast.xml
 ```

@@ -4,7 +4,77 @@
   <title>Anand's Weekly Codecast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 17 Aug 2025 05:43:06 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 24 Aug 2025 06:42:58 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-08-24</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-24.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-24.mp3</guid>
+    <pubDate>Sun, 24 Aug 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 24 Aug 2025!  
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.  
+
+Alex: First up, let’s talk about the personal productivity scripts Anand updated this week.  
+Maya: Yeah, the focus was mostly on improving AI code agent guidelines in the “ai-code-rules” directory.  
+Alex: What caught your eye there?  
+Maya: A small but neat fix updating paths for GitHub Copilot custom instructions to match actual config locations. This helps keep AI coding setups tidy.  
+Alex: Those small path fixes often save hours of confusion for users setting up their environments.  
+Maya: Exactly! Plus there’s a note about WindSurf—apparently no documented global “rules” markdown for it yet. A subtle hint that some tools still need adoption for AI agent workflows.  
+Alex: It’s interesting how these tiny updates reflect the complex ecosystem of AI-assisted coding setups—not glamorous, but vital.  
+
+Maya: Moving on, Anand’s notes repo got refreshed with some deep insights on knowledge work and AI.  
+Alex: Right! The Things I Learned repo was enriched with new reflections on how LLM “attention” works—like words pulling one another in a “gravity” analogy.  
+Maya: That’s a clever metaphor. It highlights the core of attention mechanisms where embeddings interact asymmetrically, which isn’t obvious to many.  
+Alex: Also, there’s a warning about AI coding making people overconfident since current models only get it right about 20% of the time.  
+Maya: That’s critical— knowing when to trust AI-generated code and when to verify or intervene is key to effective AI-assisted work.  
+Alex: Anand even shared notes on throwback airplane fun—pilots steering steep curves while waiting for landing clearance. I loved that human touch amidst all the tech!  
+
+Alex: Next, a big highlight: the new “ThreadChat” tool added to the web apps collection—a lightweight client-only discussion board inspired by Hacker News.  
+Maya: Oh yes, this is quite exciting! ThreadChat supports fake sign-up and sign-in, lets users submit posts and comments, upvote, and browse profiles—all stored in-memory on the client.  
+Alex: So no backend? Just JavaScript running everything in your browser? Nice for prototyping.  
+Maya: Exactly, it’s great for demos or rapid prototyping without the hassle of server setup. Plus it uses Bootstrap for a polished look.  
+Alex: I saw that the discussion structure supports nested comments with inline replies and thread collapsing. That’s quite a user-friendly UX for a simple app.  
+Maya: And it includes dynamic counts for comments and last-updated timestamps computed on the fly. Very thoughtful details.  
+Alex: What do you think made this demo so useful?  
+Maya: For one, it provides a foundation to build community features easily, helping devs quickly test UIs and understand engagement hooks.  
+Alex: Plus, reusing tried-and-true design patterns like Hacker News keeps user expectations clear.  
+Maya: And removing IndexedDB dependency for stability makes it reliable in browsers without complex storage quirks.  
+
+Maya: Shifting gears, a neat update came to the transcription and exam practice app called "Viva."  
+Alex: That’s the practice viva exam tool where users record answers, get them transcribed with Google’s Gemini API, and receive rubric-based feedback.  
+Maya: Exactly! This week’s updates include a polished UI with mic recording tests and the ability to toggle transcript visibility.  
+Alex: So it’s really bridging spoken answers to automated evaluation via LLMs. How does the transcription flow work?  
+Maya: It records audio, converts to WebM/Opus format, sends base64 inline data to Gemini API, then renders transcription live with playback controls.  
+Alex: That inline base64 approach is clever—skip uploads and streamline the API interaction for speed and simplicity.  
+Maya: Plus, it’s designed with clear user flow: mic check, recording, transcription, and structured evaluation for feedback.  
+Alex: This could really help students rehearse smartly and reduce anxiety by getting instant rubric insights.  
+
+Alex: On the AI demos front, the curated LLM demos collection was updated with some fresh interactive projects from collaborators.  
+Maya: Like the browser-based 3D object generator that uses LLMs to create and modify Three.js scenes in real time.  
+Alex: Combining text prompts and optional reference images to build/export geometry sounds super hands-on.  
+Maya: It’s a great example of integrating generative AI with rich frontend tooling for creative coding.  
+Alex: Such demos help broaden understanding of what is possible beyond text generation.  
+
+Maya: Finally, Anand tweaked the GitHub AI Coders summary tool.  
+Alex: That tool aggregates merged pull requests from AI code tools, showing contributors their PR counts and repo scores based on stars.  
+Maya: It’s an insightful way to quantify AI-assisted coding contributions and understand influence by repo popularity.  
+Alex: It fetched data from GitHub APIs, deduplicated results, and calculates a combined score using stars weighted by PR volume.  
+Maya: I think this adds accountability and visibility for AI-coding impact in teams and open source communities.  
+
+Alex: Before we wrap up, here’s a quick tip inspired by the OCR discussion in Anand’s generative AI group.  
+Maya: When you work with domain-specific text in OCR pipelines, supply your language model with a curated dictionary or superset list of acceptable terms.  
+Alex: That’s smart—this reduces misinterpretations like confusing chemical names or currency symbols, boosting output accuracy.  
+Maya: Plus it’s a lightweight way to augment LLMs without retraining, especially helpful in specialized industries.  
+Alex: I’d integrate this by intercepting OCR outputs, run dictionary-based post-processing, then prompt the LLM with verified terms.  
+Maya: Perfect! That kind of layered approach smooths the AI workflow gracefully.  
+
+Alex: My takeaway this week is that small tooling improvements and smart UI choices can make developer experiences way friendlier.  
+Maya: And I want to highlight that blending quick prototyping tools like ThreadChat with solid feedback loops leads to more engaged and iterative development.  
+
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
+Alex: See you next time!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-08-17</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-17.mp3" length="0" type="audio/mpeg"/>

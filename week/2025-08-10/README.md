@@ -16,7 +16,7 @@ _Smooth animation for your stories: PicBook now auto-generates panel captions an
 
 _Smart-art CSS leveled up with unified APIs, fresh Stack layout, demos, themes, and automated visual regression tests to ensure styles stay sharp._
 
-- **Renamed Rows to Stack:** The formerly Rows layout is now Stack with horizontal item listing and refreshed consistent sm-* prefix API. ([58d7d95](https://github.com/sanand0/smartart/commit/58d7d95ef4a3cf018c546807d8c789f130746714)) Takeaway: Clear syntax fosters design scalability.
+- **Renamed Rows to Stack:** The formerly Rows layout is now Stack with horizontal item listing and refreshed consistent sm-\* prefix API. ([58d7d95](https://github.com/sanand0/smartart/commit/58d7d95ef4a3cf018c546807d8c789f130746714)) Takeaway: Clear syntax fosters design scalability.
 - **Themes Refactor & Playground:** Introduced 10 professional themes (Office, Material, Tableau, Solarized, Neon...), controlled by CSS custom properties. A standalone live playground demo `docs/themes.html` helps pick styles visually. ([58d7d95](https://github.com/sanand0/smartart/commit/58d7d95ef4a3cf018c546807d8c789f130746714)) Takeaway: Theming gives your charts personality, not just utility.
 - **Docsify v5 Upgrade:** Migrated docs site to modern Docsify 5 with improved rendering templates, plugin support, and syntax highlighting. ([58d7d95](https://github.com/sanand0/smartart/commit/58d7d95ef4a3cf018c546807d8c789f130746714)) Takeaway: Keep documentation fresh and easy to explore.
 - **Playwright E2E Tests:** Added automated browser tests verifying layout, colors, sizes, and responsiveness in chevron, column, and stack components. Testing runs in CI and locally via `npm test`. ([87d4959](https://github.com/sanand0/smartart/commit/87d49597a0b2e1490c43fbd932f08d7b8f962acf)) Takeaway: Automated UI tests catch regressions before they surprise your users.
@@ -87,24 +87,24 @@ _Speed hacks for your dotfile syncing and additions for AI-based shell helpers._
 
 ## Lessons
 
-- Upgrade your LLM usage often. GPT-5 mini is becoming the default everywhere for sharper capabilities.  
-- Build UI components (like chatbots) as self-contained bundles to simplify embed and maintenance.  
-- Automate documentation visuals with Playwright + Sharp to catch UI regressions easily.  
-- Treat iterative AI-assisted coding as a first-class workflow with retrospection and continuous improvement.  
-- Small UX improvements and new features—like fuzzy search or panel generation buttons—make tools vastly more productive.  
-- Privacy and offline testing in tools is essential for reliability and trust.  
-- Embedding strategies matter. Reusing references in PicBook saves tokens and creates art consistency.  
+- Upgrade your LLM usage often. GPT-5 mini is becoming the default everywhere for sharper capabilities.
+- Build UI components (like chatbots) as self-contained bundles to simplify embed and maintenance.
+- Automate documentation visuals with Playwright + Sharp to catch UI regressions easily.
+- Treat iterative AI-assisted coding as a first-class workflow with retrospection and continuous improvement.
+- Small UX improvements and new features—like fuzzy search or panel generation buttons—make tools vastly more productive.
+- Privacy and offline testing in tools is essential for reliability and trust.
+- Embedding strategies matter. Reusing references in PicBook saves tokens and creates art consistency.
 - Repeatable and clear embedding instructions unlock wider adoption for interactive features.
 
 ## Suggestions
 
-- Extend PicBook with options for controlling narrative style or artwork genres to broaden creative use cases.  
-- Add more interactive demos and tutorials for Smart Art themes and new Stack layouts.  
-- Continue expanding IITM chatbot to include personalized access controls and richer feedback loops.  
-- Explore incorporating speech recognition improvements into the chatbot interface for hands-free querying.  
-- Develop more sophisticated error handling and observability in the iitmdocs Cloudflare worker with alerting.  
-- Add user authentication and permission layers for private document embedding in IITM docs.  
-- Integrate the new Data Extractor with workflows like Prompt-to-Plot for end-to-end AI-assisted data analysis.  
-- Broaden Hypoforge and DataChat support for larger XLSX datasets and multi-format uploads.  
-- Pursue tighter integration between test suites and CI/CD pipelines for tools for early bug detection.  
+- Extend PicBook with options for controlling narrative style or artwork genres to broaden creative use cases.
+- Add more interactive demos and tutorials for Smart Art themes and new Stack layouts.
+- Continue expanding IITM chatbot to include personalized access controls and richer feedback loops.
+- Explore incorporating speech recognition improvements into the chatbot interface for hands-free querying.
+- Develop more sophisticated error handling and observability in the iitmdocs Cloudflare worker with alerting.
+- Add user authentication and permission layers for private document embedding in IITM docs.
+- Integrate the new Data Extractor with workflows like Prompt-to-Plot for end-to-end AI-assisted data analysis.
+- Broaden Hypoforge and DataChat support for larger XLSX datasets and multi-format uploads.
+- Pursue tighter integration between test suites and CI/CD pipelines for tools for early bug detection.
 - Consider a unified config manager or SDK to sync API keys and LLM model selections across all projects.
