@@ -6,6 +6,7 @@
 
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
+- [31 Aug 2025](week/2025-08-31/): Enriching Talks, Smarter Gmail CLI, and Deep Learning Insights [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-31.mp3)
 - [24 Aug 2025](week/2025-08-24/): AI Coding Guides & Threaded Chats Spark New Tools & Learnings [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-24.mp3)
 - [17 Aug 2025](week/2025-08-17/): Real-Time LLM Feedback, Persona Fusion & Document Patch Editing [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-17.mp3)
 - [10 Aug 2025](week/2025-08-10/): AI Coding, Smart Art Evolution, and IITM Docs Chatbot Progress [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-10.mp3)
