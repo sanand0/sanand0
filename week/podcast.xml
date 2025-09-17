@@ -4,7 +4,118 @@
   <title>Anand's Weekly Codecast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 07 Sep 2025 10:15:19 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 14 Sep 2025 09:01:42 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-09-14</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-14.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-14.mp3</guid>
+    <pubDate>Sun, 14 Sep 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 14 Sep 2025!
+
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: First up, let’s talk about the new talk Anand added called "DuckDB is the new Pandas."
+
+Maya: Oh, that one’s cool. Anand explains why he’s shifting to DuckDB after 12 years with Pandas.
+
+Alex: Yeah! DuckDB is like SQLite but for analytics. It speaks plain SQL and runs embedded everywhere.
+
+Maya: What’s the big win here?
+
+Alex: Speed — Anand showed DuckDB running a unique customer count query 25 times faster than Pandas on 17 million rows.
+
+Maya: Wow! So that’s like interactive dashboards finally getting snappy after waiting forever for aggregations.
+
+Alex: Exactly. Plus, DuckDB can query remote files directly, like Parquet files on S3, removing the need to download huge datasets locally.
+
+Maya: Querying remote Parquet! That’s huge for big data exploration without infrastructure complexity.
+
+Alex: And DuckDB also offers a huge library of extensible functions — lists, maps, regex, lambdas — way beyond Pandas’ basics.
+
+Maya: It even supports vector search now. Anand added a script to embed words and find similarity vectors directly inside DuckDB.
+
+Alex: That’s a non-obvious insight. Combining vector search inside a SQL engine means you can blend structured and unstructured queries seamlessly.
+
+Maya: Plus the talk includes a neat “ask” shell integration to convert voice questions into DuckDB SQL — making database queries conversational!
+
+Alex: Yes! This talk really highlights why DuckDB is a next-gen analytical powerhouse. From speed, flexibility, to advanced features — it levels up data analysis.
+
+Maya: Alright, next up is the collection of updates to Anand’s personal productivity scripts and dotfiles.
+
+Alex: Exactly. He’s modernizing his dev environment setup by standardizing on `mise` for tool management instead of older tools like `fnm`.
+
+Maya: That’s a neat move. One unified manager to install and maintain all dev tools and CLIs means fewer environment headaches.
+
+Alex: He also added new AI voice tools! There’s a ‘ask’ script for voice-to-LLM chat, plus ‘talkcode.sh’ to convert speech to code and paste it into active windows.
+
+Maya: I love the seamless voice-to-code concept. It’s like dictating code snippets directly into your editor and having the LLM handle transcription and formatting.
+
+Alex: And there’s a better OAuth Google API client refactor too, making his Gmail script more maintainable and testable.
+
+Maya: Plus, his coding guidelines got updated — emphasizing clarity, testing, and modern libraries. Always good to keep standards fresh and practical.
+
+Alex: Yep, clear naming, writing tests first, and preferring popular minimal libraries were highlighted.
+
+Maya: Next, we have updates for Anand’s "Tools in Data Science" course documentation.
+
+Alex: The course got some nice restructuring. The overview now opens with the fact anyone can audit it publicly — no barriers!
+
+Maya: That’s an important point. Transparency and open access boost learning opportunities.
+
+Alex: Also, the course modules have been updated to include AI Coding as its own module, reflecting growing importance.
+
+Maya: It’s now 8 modules, including AI coding, large language models, deployment, data sourcing, preparation, analysis, and visualization.
+
+Alex: He also refined the assessments section to clarify grading and added more approachable advice like “Skip content, just do assessments.”
+
+Maya: Plus, they specified that copying and group work with ChatGPT etc. is allowed and even encouraged — that’s great for real-world collaboration skills.
+
+Alex: Exactly, fostering openness and practical skill-building.
+
+Maya: Now, let’s dive into the big feature additions to the ‘Policy as Code’ app — aka MemLearn.
+
+Alex: Ah yes! Anand added document validation against extracted rules. So now, you can upload or link documents and check if they comply with the automatically extracted atomic rules.
+
+Maya: That’s a game-changer! Instead of just extracting rules, you get instant validation feedback on new documents.
+
+Alex: The UI got new components too — a validation table that shows each rule as a row and documents as columns, with pass/fail/n/a/unknown results colored for clarity.
+
+Maya: Real-time streaming updates improve user experience, as validations happen asynchronously.
+
+Alex: Also, he introduced interactive demo presets. Now you can quickly load predefined demos like “European Financial Promotion Guidance” or “AI Model Governance Checklist” with tailored prompts and policies.
+
+Maya: Those demos auto-fill prompts and file lists, so it’s a breeze to try different policy domains.
+
+Alex: On the UI side, rules can now be edited or deleted via modals, improving flexibility for policy refining.
+
+Maya: That’s essential because extracted rules may need human tweaks. Having modal dialogs for editing improves usability tremendously.
+
+Alex: Plus, event delegation refactoring in the code makes interactions more robust and easier to maintain.
+
+Maya: And the whole app is nicely organized with saved state in localStorage, error handling with alerts, and details for old and new state migration.
+
+Alex: Finally, Anand kept improving his Notes repo with updates on LLM benchmarks, tools like gtrending and astgrep, and best practices for prompt engineering.
+
+Maya: So overall this week’s work spans from advanced data analysis with DuckDB, developer productivity enhancements, course documentation refresh, to sophisticated AI-powered policy management tools.
+
+Alex: Amazing range! Deep tech plus teaching and tooling.
+
+Maya: Here’s a quick tip you can try today — when working with cloud or local dev environments, consider using a unified tool manager like ‘mise’ that Anand switched to.
+
+Alex: Oh I like that. It reduces context switching and dependency hell. I’d start by listing out all my frequently used CLIs and see if mise can manage them seamlessly.
+
+Maya: Exactly, it streamlines your setup and upgrades while keeping environments clean.
+
+Alex: Remember, small tweaks — whether in tooling, docs, or code — can have big, cumulative impact.
+
+Maya: And don’t forget to check out your tooling options regularly to find better workflows.
+
+Maya: That’s all for this week on Anand’s Weekly Codecast.
+
+Alex: See you next time!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-09-07</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-07.mp3" length="0" type="audio/mpeg"/>
@@ -12,7 +123,7 @@
     <pubDate>Sun, 07 Sep 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
 Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 07 Sep 2025!  
-Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.  
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
 Alex: First up, let’s talk about that cool project that creates knowledge graphs and mind maps from documents using AI.  
 Maya: Right! This week, Anand updated its license to MIT and refreshed some docs and the favicon.  
@@ -21,7 +132,7 @@ Maya: Absolutely, and switching the default model to GPT 4.1 Mini really balance
 Alex: Plus, they improved PDF uploads, making it easier to analyze real documents, not just text inputs.  
 Maya: It’s great because users can now visually explore relationships in complex files like sustainability reports.  
 Alex: And by cleaning up the README and license, it’s easier for newcomers to understand and contribute.  
-Maya: Small changes, but they boost trust and usability—a solid foundation for an AI-powered knowledge tool!  
+Maya: Small changes, but they boost trust and usability—a solid foundation for an AI-powered knowledge tool!
 
 Alex: Next, the Python code similarity checker got a documentation tweak to reorder the command arguments for clarity.  
 Maya: That’s subtle but important—clear docs help people avoid misuse and get accurate similarity scores.  
@@ -67,6 +178,7 @@ Alex: So, remember, small tweaks like favicon fixes or documentation reorders ca
 Maya: And don’t forget to check out your tooling options—both for development and user experience.  
 Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
+
 ]]></description>
   </item>
   <item>
