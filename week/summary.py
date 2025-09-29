@@ -129,7 +129,7 @@ def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, f
 def get_activity_summary(system_prompt, activity, repo_context):
     context_json = json.dumps(repo_context, indent=2)
     payload = {
-        "model": "gpt-4.1-mini",
+        "model": "gpt-5-mini",
         "input": [
             {"role": "system", "content": system_prompt},
             {
@@ -148,7 +148,8 @@ def get_activity_summary(system_prompt, activity, repo_context):
     response.raise_for_status()
     result = response.json()
     cost = result["usage"]["input_tokens"] * 0.4 + result["usage"]["output_tokens"] * 1.6
-    return cost, result["output"][0]["content"][0]["text"]
+    # Use last .output entry - first few have reasoning
+    return cost, result["output"][-1]["content"][0]["text"]
 
 
 def get_podcast(script, target, config):
