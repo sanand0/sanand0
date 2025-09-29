@@ -6,6 +6,8 @@
 
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
+- [28 Sep 2025](week/2025-09-28/): A week of new demos, calmer ops, and louder voice tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-28.mp3)
+- [21 Sep 2025](week/2025-09-21/): Boosting Learning with Live Sessions and Streamlined LLM Configs [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-21.mp3)
 - [14 Sep 2025](week/2025-09-14/): Faster Dev Workflows, Policy Automation, and Data Coding Insights [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-14.mp3)
 - [07 Sep 2025](week/2025-09-07/): A Week of Smarter LLM Tools, Robust Evaluations, and Data Gen UI Polish [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-07.mp3)
 - [31 Aug 2025](week/2025-08-31/): Enriching Talks, Smarter Gmail CLI, and Deep Learning Insights [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-31.mp3)
