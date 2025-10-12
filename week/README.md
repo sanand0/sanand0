@@ -37,8 +37,12 @@ Options:
 Examples:
 
 ```bash
+# Required environment variables
+export GITHUB_TOKEN=...
+export OPENAI_API_KEY=...
+
 # Get last week's summary. Generates from previous Sunday till latest Saturday EOD, UTC
-uv run summary.py -u sanand0 -n "Anand" -e 2025-05-22
+uv run summary.py -u sanand0 -n "Anand"
 
 # Get specific date range, UTC
 uv run summary.py -u sanand0 -n "Anand" -s 2024-01-01 -e 2024-01-07
