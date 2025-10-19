@@ -89,7 +89,7 @@ def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, f
                 info[path] = ", ".join(val) if isinstance(val, list) else val
             activity.append(info)
 
-        if ev["type"] != "PushEvent":
+        if ev["type"] != "PushEvent" or "commits" not in ev["payload"]:
             continue
 
         for c in ev["payload"]["commits"]:

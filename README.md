@@ -6,6 +6,9 @@
 
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
+- [19 Oct 2025](week/2025-10-19/): A week of polish, publish, and tiny infra fixes [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-10-19.mp3)
+- [12 Oct 2025](week/2025-10-12/): A week of practical automation, clearer notes, and safer AI docs [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-10-12.mp3)
+- [05 Oct 2025](week/2025-10-05/): A week of data stories, smoother tools, and agent-first UX [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-10-05.mp3)
 - [28 Sep 2025](week/2025-09-28/): A week of new demos, calmer ops, and louder voice tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-28.mp3)
 - [21 Sep 2025](week/2025-09-21/): Boosting Learning with Live Sessions and Streamlined LLM Configs [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-21.mp3)
 - [14 Sep 2025](week/2025-09-14/): Faster Dev Workflows, Policy Automation, and Data Coding Insights [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-14.mp3)

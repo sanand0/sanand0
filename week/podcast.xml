@@ -4,7 +4,105 @@
   <title>Anand's Weekly Codecast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 12 Oct 2025 05:39:35 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 19 Oct 2025 03:08:12 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-10-19</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-10-19.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-10-19.mp3</guid>
+    <pubDate>Sun, 19 Oct 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: “Hello and welcome to Anand’s Weekly Codecast for the week of 19 Oct 2025!”
+Maya: “We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.”
+
+Alex: First up — the big flurry of work on Anand’s personal productivity scripts. He pushed a stream of small updates to the live branch all week.
+
+Maya: Right — this is the collection he uses on his laptops: shell helpers, rofi integrations, small CLI tools, and setup snippets for Windows and Linux. Lots of tiny pushes usually means iterating on convenience features and keeping dotfiles in sync.
+
+Alex: Practically, that’s the stuff that makes day-to-day work smoother: faster search for files, keyboard-driven workflows, quick scripts to transcribe calls or fetch Gmail, and repeatable machine setup. When Anand tweaks these, he’s shaving seconds off frequent tasks.
+
+Maya: The non-obvious takeaway is how valuable a tight feedback loop is for these tools. Small, frequent commits to a live branch mean he can deploy changes quickly and catch regressions early — instead of hoarding big, risky rewrites.
+
+Alex: If you keep your own scripts, try the same: small changes, automated checks, and a single live branch for what’s actually in daily use.
+
+Maya: Next, Anand updated his prompts collection — a lot of edits there too.
+
+Alex: This is his library of LLM prompts — everything from call transcript analysis to habit cards. Pushing often to prompts shows he’s treating prompts like code: testing them, refining wording, and versioning improvements.
+
+Maya: Why this matters: small wording changes in prompts can dramatically change the quality of answers you get from LLMs. By keeping them versioned, Anand can roll back, compare outputs, and reuse well-tuned prompts across his apps.
+
+Alex: Practical idea — keep a tiny test harness: store example inputs and compare outputs when you change a prompt. It’s fast feedback and prevents accidental regressions.
+
+Maya: The third big area was Anand’s public notes and weekly “things I learned” site — several live updates there too.
+
+Alex: That repo generates the weekly site and RSS feed from his notes. Frequent pushes mean content is being polished and published in near real-time.
+
+Maya: The practical effect is consistent publishing: students and readers get up-to-date notes. Non-obvious: he uses an automated pipeline to convert short, structured notes into web pages and tags them using embeddings — so small edits make the search and tagging better for everyone.
+
+Alex: Next highlight: a new small library for OAuth popups — Anand created and pushed the initial release.
+
+Maya: This tool is built to make OAuth login smooth in single-page apps: open a popup for Google or GitHub, handle the fallback to a full redirect if the popup is blocked, and resolve the session back to the opener tab.
+
+Alex: That’s really useful. Popup-based OAuth gives a faster login flow and avoids losing app state, but you have to handle popup blockers and timeouts. Anand’s implementation also uses tab broadcast and postMessage fallback — so it’s robust across browsers and tabs.
+
+Maya: Practical idea: if you’re adding OAuth to a static site, use a popup-first approach but always test the redirect fallback. Also expose a configurable timeout so users with slow 2FA aren’t cut off.
+
+Alex: Anand pushed changes to his WhatsApp-to-podcast generator too — the tool that turns group transcripts into a two-host weekly podcast.
+
+Maya: That project parses scraped WhatsApp JSON into threads, asks an LLM to write a polished two-host script, then uses TTS to render each speaker and stitches the audio. Updates there likely improve parsing, script prompts, or voice settings.
+
+Alex: The real-world effect: you can turn messy chat transcripts into something that’s easy to consume — an audio digest. Non-obvious point: watch the LLM and TTS costs and keep control of voice styles so episodes sound consistent.
+
+Maya: He also pushed site updates to the collection of tiny web apps — the “tools” site where he hosts single-page utilities.
+
+Alex: That’s the place for quick tools like JSON-to-CSV, WhatsApp scrapers, and a mini image generator. Deploys go straight to GitHub Pages so small edits become public instantly.
+
+Maya: A practical takeaway: single-file web tools are fantastic for experimenting. Keep metadata in a tools.json so your index can update automatically.
+
+Alex: There were also pushes to the mail-sync script — the tool that downloads Gmail into mbox via the API.
+
+Maya: That tool gives you an offline archive you can analyze. Updates probably tighten query filters, improve OAuth flow, or fix edge cases. It’s a safer, API-first alternative to IMAP for reproducible analysis.
+
+Alex: Reminder: secure your credentials and use the update-only mode when you don’t want to re-download everything.
+
+Maya: Anand made updates to a hypothesis-testing web app as well — the one that suggests hypotheses from data and runs statistical tests.
+
+Alex: That’s a neat assistant: it looks at your CSV or SQLite data, proposes hypotheses, picks reasonable tests, and reports p-values. The danger to watch for is blind trust — automatic test selection is helpful, but you still need to check assumptions (like normality or independence).
+
+Maya: Non-obvious idea: use it as a first pass to find promising leads, then re-run key tests manually or with domain-aware checks.
+
+Alex: He also pushed changes to a demo that personalizes video highlights — extracting audio, transcribing, and tailoring snippets to different audiences.
+
+Maya: The pipeline there shows a typical workflow: extract audio, run a Whisper-style transcript, then use LLMs to summarize and slice the video. It’s a great example of mixing media tools and LLMs to create audience-specific content.
+
+Alex: There were a handful of updates to tutorials and talks — polishing slides and guides, and a short course-management comment reminding students where to ask exam questions.
+
+Maya: That little admin comment matters more than it looks: keeping student questions in the right place reduces confusion and helps instructors manage grading and privacy.
+
+Alex: A few new test branches for static demo sites were created too — housekeeping, but useful for staging experiments.
+
+Maya: Quick non-obvious pattern across all of this: Anand keeps small, focused repos and iterates publicly. That makes it easy for others to reuse parts — a script here, a prompt there — rather than shipping one big monolith.
+
+Alex: Listener tip time. My quick, actionable tip: treat prompts like code — store examples of inputs and expected outputs, and run a small test whenever you tweak wording. That way you catch regressions early. Maya, how would you apply that to your workflows?
+
+Maya: I’d take the prompt tip and add a simple CI job that runs example prompts through the model and saves a diff of results. For my lecture notes, I’d keep a few representative transcripts and ensure prompt changes don’t break formatting or key facts. My turn: a tip from the OAuth popup work — always implement a popup-first OAuth flow but include an automatic redirect fallback and a configurable timeout for slow logins. Alex, where would you plug that in?
+
+Alex: I’d use that pattern in small single-page demos I host — it avoids losing state during login. For my course sites or tiny apps, I’d wire the popup flow into the login button and test both popup and redirect on mobile and desktop.
+
+Maya: One more micro-tip: when you update live scripts, add small unit checks or smoke tests for the most-used commands. It prevents annoying breakages.
+
+Alex: Agreed. And a tiny follow-up from me: when you publish prompts or tools, add a short README section showing a minimal example — it makes reuse immediate.
+
+Maya: That will save people five minutes and a support question.
+
+Alex: That’s all for this week. Thanks for listening and following Anand’s steady stream of small, useful improvements.
+
+Maya: See you next week — same time, same eagerness. Bye!
+
+Alex: Bye!
+
+Maya: Bye!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-10-12</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-10-12.mp3" length="0" type="audio/mpeg"/>
@@ -61,6 +159,7 @@ Alex: That’s our show for this week. Thanks for walking through Anand’s week
 Maya: Thanks Alex — and thank you everyone for listening. See you next week for another roundup of Anand’s commits.
 Alex: Goodbye for the week!
 Maya: Bye!
+
 ]]></description>
   </item>
   <item>
