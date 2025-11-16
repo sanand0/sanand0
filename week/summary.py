@@ -5,7 +5,6 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "jmespath",
 #     "python-dateutil",
 #     "requests",
 #     "tqdm",
@@ -13,7 +12,6 @@
 # ///
 import argparse
 import base64
-import jmespath
 import json
 import os
 import requests
@@ -26,19 +24,52 @@ from pathlib import Path
 from fnmatch import fnmatch
 
 
-def fetch_events(user, headers, since):
-    url = f"https://api.github.com/users/{user}/events/public"
-    events = []
-    while url:
-        r = requests.get(url, headers=headers)
-        r.raise_for_status()
-        page = r.json()
-        events.extend(page)
-        # stop if all events on this page are before our start
-        if all(isoparse(ev["created_at"]) < since for ev in page):
-            break
-        url = r.links.get("next", {}).get("url")
-    return events
+def graphql_query(query, variables, headers):
+    """Execute a GraphQL query against GitHub API."""
+    response = requests.post(
+        "https://api.github.com/graphql",
+        json={"query": query, "variables": variables},
+        headers=headers,
+    )
+    response.raise_for_status()
+    result = response.json()
+    if "errors" in result:
+        raise Exception(f"GraphQL errors: {result['errors']}")
+    return result["data"]
+
+
+def fetch_contributed_repos(user, since, until, headers):
+    """Fetch list of repos user contributed to in date range using GraphQL."""
+    query = """
+    query($user: String!, $from: DateTime!, $to: DateTime!) {
+      user(login: $user) {
+        contributionsCollection(from: $from, to: $to) {
+          commitContributionsByRepository(maxRepositories: 100) {
+            repository {
+              nameWithOwner
+            }
+            contributions {
+              totalCount
+            }
+          }
+        }
+      }
+    }
+    """
+    variables = {
+        "user": user,
+        "from": since.isoformat(),
+        "to": until.isoformat(),
+    }
+
+    data = graphql_query(query, variables, headers)
+    repos = []
+    for item in data["user"]["contributionsCollection"]["commitContributionsByRepository"]:
+        repo_name = item["repository"]["nameWithOwner"]
+        commit_count = item["contributions"]["totalCount"]
+        repos.append((repo_name, commit_count))
+
+    return repos
 
 
 def fetch_repo_commits(repo, since, until, headers):
@@ -167,33 +198,21 @@ def summarize_files(files, skip_files, max_files=12, max_patch_lines=50):
     return result
 
 
-def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, fields):
-    """Fetch and process GitHub events for a user within a date range."""
-    evs = fetch_events(user, headers, since)
+def fetch_github_activity(user, since, until, headers, skip_repos, skip_files):
+    """Fetch and process GitHub activity using GraphQL to discover repos, REST for commit details."""
     activity = []
-    repos = set()
-    seen_commits = set()  # Track commits we've already processed
+    seen_commits = set()
 
-    # First pass: collect repos from events and non-commit activity
-    for ev in tqdm(evs, desc="Get events"):
-        ts = isoparse(ev["created_at"])
-        if not (since <= ts < until):
-            continue
+    # Use GraphQL to discover repos with contributions in date range
+    # This works for historical data beyond 30-day Events API limit
+    contributed_repos = fetch_contributed_repos(user, since, until, headers)
 
-        repo = ev["repo"]["name"]
-        if repo in skip_repos:
-            continue
-        repos.add(repo)
+    # Filter out skipped repos
+    repos = [repo for repo, count in contributed_repos if repo not in skip_repos]
+    tqdm.write(f"Found {len(repos)} repos with contributions")
 
-        if ev["type"] in fields:
-            info = {}
-            for path in fields[ev["type"]]:
-                val = jmespath.search(path, ev)
-                info[path] = ", ".join(val) if isinstance(val, list) else val
-            activity.append(info)
-
-    # Second pass: fetch commits directly from each repo (bypasses Events API limitation)
-    for repo in tqdm(sorted(repos), desc="Get commits"):
+    # Fetch actual commits from each repo
+    for repo in tqdm(repos, desc="Get commits"):
         try:
             commits = fetch_repo_commits(repo, since, until, headers)
         except requests.exceptions.RequestException as e:
@@ -239,7 +258,7 @@ def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, f
                 }
             )
 
-    return activity, list(repos)
+    return activity, repos
 
 
 def get_activity_summary(system_prompt, activity, repo_context):
@@ -414,7 +433,6 @@ def main():
                 headers,
                 skip_repos=config["skip-repos"],
                 skip_files=config["skip-files"],
-                fields=config["github_fields"],
             )
             context = fetch_repo_details(repos, headers)
             with open(context_filename, "w") as f:
