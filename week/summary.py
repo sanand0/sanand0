@@ -41,6 +41,27 @@ def fetch_events(user, headers, since):
     return events
 
 
+def fetch_repo_commits(repo, since, until, headers):
+    """Fetch commits for a repository within a date range using the REST API."""
+    url = f"https://api.github.com/repos/{repo}/commits"
+    params = {
+        "since": since.isoformat(),
+        "until": until.isoformat(),
+        "per_page": 100,
+    }
+    commits = []
+    while url:
+        r = requests.get(url, headers=headers, params=params)
+        if r.status_code == 409:  # Empty repository
+            break
+        r.raise_for_status()
+        page = r.json()
+        commits.extend(page)
+        url = r.links.get("next", {}).get("url")
+        params = {}  # params are in the URL for subsequent pages
+    return commits
+
+
 def fetch_repo_details(repos, headers):
     """Fetch repository details including description, topics and README."""
     details = {}
@@ -66,12 +87,75 @@ def truncated(text, if_over=6000, to=4000):
     return text[:to] + " ..." if len(text) > if_over else text
 
 
+def truncate_patch(patch, max_lines=30):
+    """Truncate patch in the middle to keep start and end context."""
+    if not patch:
+        return ""
+    lines = patch.splitlines()
+    if len(lines) <= max_lines:
+        return patch
+    # Keep first and last portions, truncate middle
+    keep_each = max_lines // 2
+    start = lines[:keep_each]
+    end = lines[-keep_each:]
+    skipped = len(lines) - max_lines
+    return "\n".join(start + [f"\n... [{skipped} lines truncated] ...\n"] + end)
+
+
+def summarize_files(files, skip_files, max_files=12, max_patch_lines=30):
+    """Summarize file changes, limiting number of files and patch size."""
+    if not files:
+        return []
+
+    # Sort files by importance: code files first, then by changes
+    def file_importance(f):
+        name = f.get("filename", "")
+        # Prioritize source code files
+        if any(name.endswith(ext) for ext in [".py", ".js", ".ts", ".go", ".rs", ".java", ".c", ".cpp"]):
+            priority = 0
+        elif any(name.endswith(ext) for ext in [".md", ".txt", ".rst"]):
+            priority = 1
+        elif any(name.endswith(ext) for ext in [".json", ".yaml", ".toml", ".xml"]):
+            priority = 2
+        else:
+            priority = 3
+        return (priority, -f.get("changes", 0))
+
+    sorted_files = sorted(files, key=file_importance)
+
+    result = []
+    for f in sorted_files[:max_files]:
+        should_skip_patch = any(fnmatch(f["filename"], pattern) for pattern in skip_files)
+        result.append({
+            "filename": f["filename"],
+            "additions": f.get("additions", 0),
+            "deletions": f.get("deletions", 0),
+            "changes": f.get("changes", 0),
+            "patch": "..." if should_skip_patch else truncate_patch(f.get("patch", ""), max_patch_lines),
+        })
+
+    if len(files) > max_files:
+        # Add summary of remaining files
+        remaining = files[max_files:]
+        result.append({
+            "filename": f"... and {len(remaining)} more files",
+            "additions": sum(f.get("additions", 0) for f in remaining),
+            "deletions": sum(f.get("deletions", 0) for f in remaining),
+            "changes": sum(f.get("changes", 0) for f in remaining),
+            "patch": "",
+        })
+
+    return result
+
+
 def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, fields):
     """Fetch and process GitHub events for a user within a date range."""
     evs = fetch_events(user, headers, since)
     activity = []
     repos = set()
+    seen_commits = set()  # Track commits we've already processed
 
+    # First pass: collect repos from events and non-commit activity
     for ev in tqdm(evs, desc="Get events"):
         ts = isoparse(ev["created_at"])
         if not (since <= ts < until):
@@ -89,37 +173,50 @@ def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, f
                 info[path] = ", ".join(val) if isinstance(val, list) else val
             activity.append(info)
 
-        if ev["type"] != "PushEvent" or "commits" not in ev["payload"]:
+    # Second pass: fetch commits directly from each repo (bypasses Events API limitation)
+    for repo in tqdm(sorted(repos), desc="Get commits"):
+        try:
+            commits = fetch_repo_commits(repo, since, until, headers)
+        except requests.exceptions.RequestException as e:
+            tqdm.write(f"Error fetching commits for {repo}: {e}")
             continue
 
-        for c in ev["payload"]["commits"]:
+        for commit_info in commits:
+            sha = commit_info["sha"]
+            if sha in seen_commits:
+                continue
+            seen_commits.add(sha)
+
+            # Check if this commit was authored by the user
+            author_login = commit_info.get("author", {})
+            if author_login:
+                author_login = author_login.get("login", "")
+            committer_login = commit_info.get("committer", {})
+            if committer_login:
+                committer_login = committer_login.get("login", "")
+
+            # Skip commits not by this user (e.g., merge commits from others)
+            if author_login != user and committer_login != user:
+                continue
+
+            # Fetch full commit details (includes file changes)
             try:
-                url = f"https://api.github.com/repos/{repo}/commits/{c['sha']}"
+                url = f"https://api.github.com/repos/{repo}/commits/{sha}"
                 r = requests.get(url, headers=headers)
                 r.raise_for_status()
                 cj = r.json()
             except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
-                tqdm.write(str(e))
+                tqdm.write(f"Error fetching commit {sha}: {e}")
                 continue
+
             activity.append(
                 {
                     "type": "commit",
                     "repo.name": repo,
                     "created_at": cj["commit"]["author"]["date"],
-                    "sha": c["sha"],
+                    "sha": sha,
                     "message": cj["commit"]["message"],
-                    "files": [
-                        {
-                            "filename": f["filename"],
-                            "additions": f["additions"],
-                            "deletions": f["deletions"],
-                            "changes": f["changes"],
-                            "patch": "..."
-                            if any(fnmatch(f["filename"], pattern) for pattern in skip_files)
-                            else truncated(f.get("patch", "")),
-                        }
-                        for f in cj.get("files", [])
-                    ],
+                    "files": summarize_files(cj.get("files", []), skip_files),
                 }
             )
 
