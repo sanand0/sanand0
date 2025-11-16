@@ -1,22 +1,20 @@
+#!/usr/bin/env python3
 # Usage: uv run summary.py -u <user>
 # Summarizes Github activity for a user from last Sunday till most recent Saturday
 
-#!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "jmespath",
+#     "httpx",
 #     "python-dateutil",
-#     "requests",
 #     "tqdm",
 # ]
 # ///
 import argparse
 import base64
-import jmespath
+import httpx
 import json
 import os
-import requests
 import tomllib
 from dateutil.parser import isoparse
 from dateutil.tz import UTC
@@ -26,19 +24,97 @@ from pathlib import Path
 from fnmatch import fnmatch
 
 
-def fetch_events(user, headers, since):
-    url = f"https://api.github.com/users/{user}/events/public"
-    events = []
+def http_request(method, url, timeout=300, **kwargs):
+    """Make HTTP request with error body printing for debugging."""
+    response = httpx.request(method, url, timeout=timeout, **kwargs)
+    try:
+        response.raise_for_status()
+    except httpx.HTTPStatusError as e:
+        tqdm.write(f"HTTP {response.status_code} error for {url}")
+        tqdm.write(f"Response body: {response.text[:500]}")
+        raise
+    return response
+
+
+def graphql_query(query, variables, headers):
+    """Execute a GraphQL query against GitHub API."""
+    response = http_request(
+        "POST",
+        "https://api.github.com/graphql",
+        json={"query": query, "variables": variables},
+        headers=headers,
+    )
+    result = response.json()
+    if "errors" in result:
+        raise Exception(f"GraphQL errors: {result['errors']}")
+    return result["data"]
+
+
+def fetch_contributed_repos(user, since, until, headers):
+    """Fetch list of repos user contributed to in date range using GraphQL."""
+    query = """
+    query($user: String!, $from: DateTime!, $to: DateTime!) {
+      user(login: $user) {
+        contributionsCollection(from: $from, to: $to) {
+          commitContributionsByRepository(maxRepositories: 100) {
+            repository {
+              nameWithOwner
+            }
+            contributions {
+              totalCount
+            }
+          }
+        }
+      }
+    }
+    """
+    variables = {
+        "user": user,
+        "from": since.isoformat(),
+        "to": until.isoformat(),
+    }
+
+    data = graphql_query(query, variables, headers)
+    repos = []
+    for item in data["user"]["contributionsCollection"]["commitContributionsByRepository"]:
+        repo_name = item["repository"]["nameWithOwner"]
+        commit_count = item["contributions"]["totalCount"]
+        repos.append((repo_name, commit_count))
+
+    return repos
+
+
+def fetch_repo_commits(repo, since, until, headers):
+    """Fetch commits for a repository within a date range using the REST API."""
+    url = f"https://api.github.com/repos/{repo}/commits"
+    params = {
+        "since": since.isoformat(),
+        "until": until.isoformat(),
+        "per_page": 100,
+    }
+    commits = []
     while url:
-        r = requests.get(url, headers=headers)
-        r.raise_for_status()
-        page = r.json()
-        events.extend(page)
-        # stop if all events on this page are before our start
-        if all(isoparse(ev["created_at"]) < since for ev in page):
+        r = httpx.get(url, headers=headers, params=params)
+        if r.status_code == 409:  # Empty repository
             break
-        url = r.links.get("next", {}).get("url")
-    return events
+        try:
+            r.raise_for_status()
+        except httpx.HTTPStatusError:
+            tqdm.write(f"HTTP {r.status_code} error for {url}")
+            tqdm.write(f"Response body: {r.text[:500]}")
+            raise
+        page = r.json()
+        commits.extend(page)
+        url = r.headers.get("link", "")
+        # Parse Link header for next URL
+        next_url = None
+        for part in url.split(","):
+            if 'rel="next"' in part:
+                next_url = part.split(";")[0].strip().strip("<>")
+                break
+        url = next_url
+        params = {}  # params are in the URL for subsequent pages
+    return commits
 
 
 def fetch_repo_details(repos, headers):
@@ -46,84 +122,166 @@ def fetch_repo_details(repos, headers):
     details = {}
     for repo in tqdm(set(repos), desc="Get repos"):
         try:
-            info = requests.get(f"https://api.github.com/repos/{repo}", headers=headers).json()
-            readme_resp = requests.get(
-                f"https://api.github.com/repos/{repo}/readme", headers=headers
+            info = http_request("GET", f"https://api.github.com/repos/{repo}", headers=headers).json()
+            readme_resp = http_request(
+                "GET", f"https://api.github.com/repos/{repo}/readme", headers=headers
             ).json()
+            readme = base64.b64decode(readme_resp.get("content", "")).decode("utf-8", "ignore")
+            # Truncate README to first 2000 chars to save space while keeping key info
+            if len(readme) > 2000:
+                readme = readme[:2000] + "\n... [README truncated]"
             details[repo] = {
                 "description": info.get("description", ""),
                 "topics": info.get("topics", []),
-                "readme": base64.b64decode(readme_resp.get("content", "")).decode(
-                    "utf-8", "ignore"
-                ),
+                "readme": readme,
             }
         except Exception as e:
             tqdm.write(f"Error fetching {repo}: {e}")
     return details
 
 
-def truncated(text, if_over=6000, to=4000):
-    return text[:to] + " ..." if len(text) > if_over else text
+def truncate_patch(patch, max_lines=50):
+    """Truncate patch in the middle to keep start and end context."""
+    if not patch:
+        return ""
+    lines = patch.splitlines()
+    if len(lines) <= max_lines:
+        return patch
+    # Keep first and last portions, truncate middle
+    keep_each = max_lines // 2
+    start = lines[:keep_each]
+    end = lines[-keep_each:]
+    skipped = len(lines) - max_lines
+    return "\n".join(start + [f"\n... [{skipped} lines truncated] ...\n"] + end)
 
 
-def fetch_github_activity(user, since, until, headers, skip_repos, skip_files, fields):
-    """Fetch and process GitHub events for a user within a date range."""
-    evs = fetch_events(user, headers, since)
+def is_binary_patch(patch):
+    """Check if patch contains binary/generated content (base64, minified, etc.)."""
+    if not patch or len(patch) < 200:
+        return False
+    # Check for base64-like patterns
+    if patch.count("AAAA") > 5 or patch.count("////") > 5:
+        return True
+    # Check for very long lines (minified JS/CSS)
+    for line in patch.splitlines()[:10]:
+        if len(line) > 500:
+            return True
+    return False
+
+
+def summarize_files(files, skip_files, max_files=12, max_patch_lines=50):
+    """Summarize file changes, limiting number of files and patch size."""
+    if not files:
+        return []
+
+    # Sort files by importance: code files first, then by changes
+    def file_importance(f):
+        name = f.get("filename", "")
+        # Prioritize source code files
+        if any(name.endswith(ext) for ext in [".py", ".js", ".ts", ".go", ".rs", ".java", ".c", ".cpp"]):
+            priority = 0
+        elif any(name.endswith(ext) for ext in [".md", ".txt", ".rst"]):
+            priority = 1
+        elif any(name.endswith(ext) for ext in [".json", ".yaml", ".toml", ".xml"]):
+            priority = 2
+        else:
+            priority = 3
+        return (priority, -f.get("changes", 0))
+
+    sorted_files = sorted(files, key=file_importance)
+
+    result = []
+    for f in sorted_files[:max_files]:
+        should_skip_patch = any(fnmatch(f["filename"], pattern) for pattern in skip_files)
+        raw_patch = f.get("patch", "")
+        if should_skip_patch:
+            patch = "..."
+        elif is_binary_patch(raw_patch):
+            patch = "[binary/generated content]"
+        else:
+            patch = truncate_patch(raw_patch, max_patch_lines)
+        result.append({
+            "filename": f["filename"],
+            "additions": f.get("additions", 0),
+            "deletions": f.get("deletions", 0),
+            "changes": f.get("changes", 0),
+            "patch": patch,
+        })
+
+    if len(files) > max_files:
+        # Add summary of remaining files
+        remaining = files[max_files:]
+        result.append({
+            "filename": f"... and {len(remaining)} more files",
+            "additions": sum(f.get("additions", 0) for f in remaining),
+            "deletions": sum(f.get("deletions", 0) for f in remaining),
+            "changes": sum(f.get("changes", 0) for f in remaining),
+            "patch": "",
+        })
+
+    return result
+
+
+def fetch_github_activity(user, since, until, headers, skip_repos, skip_files):
+    """Fetch and process GitHub activity using GraphQL to discover repos, REST for commit details."""
     activity = []
-    repos = set()
+    seen_commits = set()
 
-    for ev in tqdm(evs, desc="Get events"):
-        ts = isoparse(ev["created_at"])
-        if not (since <= ts < until):
+    # Use GraphQL to discover repos with contributions in date range
+    # This works for historical data beyond 30-day Events API limit
+    contributed_repos = fetch_contributed_repos(user, since, until, headers)
+
+    # Filter out skipped repos
+    repos = [repo for repo, count in contributed_repos if repo not in skip_repos]
+    tqdm.write(f"Found {len(repos)} repos with contributions")
+
+    # Fetch actual commits from each repo
+    for repo in tqdm(repos, desc="Get commits"):
+        try:
+            commits = fetch_repo_commits(repo, since, until, headers)
+        except httpx.HTTPStatusError as e:
+            tqdm.write(f"Error fetching commits for {repo}: {e}")
             continue
 
-        repo = ev["repo"]["name"]
-        if repo in skip_repos:
-            continue
-        repos.add(repo)
-
-        if ev["type"] in fields:
-            info = {}
-            for path in fields[ev["type"]]:
-                val = jmespath.search(path, ev)
-                info[path] = ", ".join(val) if isinstance(val, list) else val
-            activity.append(info)
-
-        if ev["type"] != "PushEvent" or "commits" not in ev["payload"]:
-            continue
-
-        for c in ev["payload"]["commits"]:
-            try:
-                url = f"https://api.github.com/repos/{repo}/commits/{c['sha']}"
-                r = requests.get(url, headers=headers)
-                r.raise_for_status()
-                cj = r.json()
-            except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
-                tqdm.write(str(e))
+        for commit_info in commits:
+            sha = commit_info["sha"]
+            if sha in seen_commits:
                 continue
+            seen_commits.add(sha)
+
+            # Check if this commit was authored by the user
+            author_login = commit_info.get("author", {})
+            if author_login:
+                author_login = author_login.get("login", "")
+            committer_login = commit_info.get("committer", {})
+            if committer_login:
+                committer_login = committer_login.get("login", "")
+
+            # Skip commits not by this user (e.g., merge commits from others)
+            if author_login != user and committer_login != user:
+                continue
+
+            # Fetch full commit details (includes file changes)
+            try:
+                url = f"https://api.github.com/repos/{repo}/commits/{sha}"
+                r = http_request("GET", url, headers=headers)
+                cj = r.json()
+            except (httpx.HTTPStatusError, json.JSONDecodeError) as e:
+                tqdm.write(f"Error fetching commit {sha}: {e}")
+                continue
+
             activity.append(
                 {
                     "type": "commit",
                     "repo.name": repo,
                     "created_at": cj["commit"]["author"]["date"],
-                    "sha": c["sha"],
+                    "sha": sha,
                     "message": cj["commit"]["message"],
-                    "files": [
-                        {
-                            "filename": f["filename"],
-                            "additions": f["additions"],
-                            "deletions": f["deletions"],
-                            "changes": f["changes"],
-                            "patch": "..."
-                            if any(fnmatch(f["filename"], pattern) for pattern in skip_files)
-                            else truncated(f.get("patch", "")),
-                        }
-                        for f in cj.get("files", [])
-                    ],
+                    "files": summarize_files(cj.get("files", []), skip_files),
                 }
             )
 
-    return activity, list(repos)
+    return activity, repos
 
 
 def get_activity_summary(system_prompt, activity, repo_context):
@@ -144,8 +302,7 @@ def get_activity_summary(system_prompt, activity, repo_context):
         "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
     }
 
-    response = requests.post("https://api.openai.com/v1/responses", headers=headers, json=payload)
-    response.raise_for_status()
+    response = http_request("POST", "https://api.openai.com/v1/responses", headers=headers, json=payload)
     result = response.json()
     cost = result["usage"]["input_tokens"] * 0.4 + result["usage"]["output_tokens"] * 1.6
     # Use last .output entry - first few have reasoning
@@ -173,14 +330,13 @@ def get_podcast(script, target, config):
             continue
         text = line[len(speaker) + 1 :].strip()
         body = {
-            "model": "gpt-4o-mini-tts",
+            "model": "tts-1",
             "input": text,
             "voice": speakers[speaker]["voice"],
             "instructions": speakers[speaker]["instructions"],
             "response_format": "opus",
         }
-        r = requests.post("https://api.openai.com/v1/audio/speech", headers=headers, json=body)
-        r.raise_for_status()
+        r = http_request("POST", "https://api.openai.com/v1/audio/speech", headers=headers, json=body)
         with open(podcast_filename, "wb") as f:
             f.write(r.content)
 
@@ -202,7 +358,7 @@ def get_podcast(script, target, config):
 def generate_podcast(weeks, script_dir):
     output_path = script_dir / "podcast.xml"
     base_url = "https://github.com/sanand0/sanand0/releases/download/main"
-    title = "Anand's Weekly Codecast"
+    title = "Anand's Weekly Code Cast"
     link = "https://github.com/sanand0/sanand0"
     description = "Weekly audio summaries of Anand's commits to GitHub."
     now = datetime.now(UTC).strftime("%a, %d %b %Y %H:%M:%S GMT")
@@ -243,7 +399,7 @@ def update_prompt(prompt, until, args):
     return (
         prompt.replace("$USER", args.user)
         .replace("$NAME", args.name)
-        .replace("$WEEK", until.strftime("%d %b %Y"))
+        .replace("$WEEK", until.strftime("%d %B %Y"))
     )
 
 
@@ -298,7 +454,6 @@ def main():
                 headers,
                 skip_repos=config["skip-repos"],
                 skip_files=config["skip-files"],
-                fields=config["github_fields"],
             )
             context = fetch_repo_details(repos, headers)
             with open(context_filename, "w") as f:
