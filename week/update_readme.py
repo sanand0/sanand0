@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+
 """Update README.md with recent activity from week/ summaries."""
 from pathlib import Path
 from datetime import datetime
