@@ -287,7 +287,7 @@ def fetch_github_activity(user, since, until, headers, skip_repos, skip_files):
 def get_activity_summary(system_prompt, activity, repo_context):
     context_json = json.dumps(repo_context, indent=2)
     payload = {
-        "model": "gpt-5.1-mini",
+        "model": "gpt-5-mini",
         "input": [
             {"role": "system", "content": system_prompt},
             {
