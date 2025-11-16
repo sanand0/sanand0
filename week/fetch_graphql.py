@@ -2,7 +2,7 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "requests",
+#     "httpx",
 #     "tqdm",
 #     "python-dateutil",
 # ]
@@ -13,9 +13,9 @@ This approach works for historical data (beyond 30-day Events API limit).
 """
 import argparse
 import base64
+import httpx
 import json
 import os
-import requests
 from datetime import datetime, timedelta
 from dateutil.parser import isoparse
 from dateutil.tz import UTC
@@ -24,14 +24,26 @@ from pathlib import Path
 from tqdm import tqdm
 
 
+def http_request(method, url, **kwargs):
+    """Make HTTP request with error body printing for debugging."""
+    response = httpx.request(method, url, **kwargs)
+    try:
+        response.raise_for_status()
+    except httpx.HTTPStatusError:
+        tqdm.write(f"HTTP {response.status_code} error for {url}")
+        tqdm.write(f"Response body: {response.text[:500]}")
+        raise
+    return response
+
+
 def graphql_query(query, variables, headers):
     """Execute a GraphQL query against GitHub API."""
-    response = requests.post(
+    response = http_request(
+        "POST",
         "https://api.github.com/graphql",
         json={"query": query, "variables": variables},
         headers=headers,
     )
-    response.raise_for_status()
     result = response.json()
     if "errors" in result:
         raise Exception(f"GraphQL errors: {result['errors']}")
@@ -83,15 +95,27 @@ def fetch_repo_commits(repo, since, until, headers):
     }
     commits = []
     while url:
-        r = requests.get(url, headers=headers, params=params)
+        r = httpx.get(url, headers=headers, params=params)
         if r.status_code == 409:  # Empty repository
             break
         if r.status_code == 404:  # Repo not accessible
             break
-        r.raise_for_status()
+        try:
+            r.raise_for_status()
+        except httpx.HTTPStatusError:
+            tqdm.write(f"HTTP {r.status_code} error for {url}")
+            tqdm.write(f"Response body: {r.text[:500]}")
+            raise
         page = r.json()
         commits.extend(page)
-        url = r.links.get("next", {}).get("url")
+        # Parse Link header for next URL
+        link_header = r.headers.get("link", "")
+        next_url = None
+        for part in link_header.split(","):
+            if 'rel="next"' in part:
+                next_url = part.split(";")[0].strip().strip("<>")
+                break
+        url = next_url
         params = {}  # params are in the URL for subsequent pages
     return commits
 
@@ -101,9 +125,9 @@ def fetch_repo_details(repos, headers):
     details = {}
     for repo in tqdm(set(repos), desc="Get repo details"):
         try:
-            info = requests.get(f"https://api.github.com/repos/{repo}", headers=headers).json()
-            readme_resp = requests.get(
-                f"https://api.github.com/repos/{repo}/readme", headers=headers
+            info = http_request("GET", f"https://api.github.com/repos/{repo}", headers=headers).json()
+            readme_resp = http_request(
+                "GET", f"https://api.github.com/repos/{repo}/readme", headers=headers
             ).json()
             readme = base64.b64decode(readme_resp.get("content", "")).decode("utf-8", "ignore")
             # Truncate README to first 2000 chars to save space while keeping key info
@@ -216,7 +240,7 @@ def fetch_github_activity_graphql(user, since, until, headers, skip_repos, skip_
     for repo in tqdm(repos, desc="Get commits"):
         try:
             commits = fetch_repo_commits(repo, since, until, headers)
-        except requests.exceptions.RequestException as e:
+        except httpx.HTTPStatusError as e:
             tqdm.write(f"Error fetching commits for {repo}: {e}")
             continue
 
@@ -241,10 +265,9 @@ def fetch_github_activity_graphql(user, since, until, headers, skip_repos, skip_
             # Fetch full commit details
             try:
                 url = f"https://api.github.com/repos/{repo}/commits/{sha}"
-                r = requests.get(url, headers=headers)
-                r.raise_for_status()
+                r = http_request("GET", url, headers=headers)
                 cj = r.json()
-            except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
+            except (httpx.HTTPStatusError, json.JSONDecodeError) as e:
                 tqdm.write(f"Error fetching commit {sha}: {e}")
                 continue
 
