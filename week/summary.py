@@ -71,23 +71,21 @@ def fetch_repo_details(repos, headers):
             readme_resp = requests.get(
                 f"https://api.github.com/repos/{repo}/readme", headers=headers
             ).json()
+            readme = base64.b64decode(readme_resp.get("content", "")).decode("utf-8", "ignore")
+            # Truncate README to first 2000 chars to save space while keeping key info
+            if len(readme) > 2000:
+                readme = readme[:2000] + "\n... [README truncated]"
             details[repo] = {
                 "description": info.get("description", ""),
                 "topics": info.get("topics", []),
-                "readme": base64.b64decode(readme_resp.get("content", "")).decode(
-                    "utf-8", "ignore"
-                ),
+                "readme": readme,
             }
         except Exception as e:
             tqdm.write(f"Error fetching {repo}: {e}")
     return details
 
 
-def truncated(text, if_over=6000, to=4000):
-    return text[:to] + " ..." if len(text) > if_over else text
-
-
-def truncate_patch(patch, max_lines=30):
+def truncate_patch(patch, max_lines=50):
     """Truncate patch in the middle to keep start and end context."""
     if not patch:
         return ""
@@ -102,7 +100,21 @@ def truncate_patch(patch, max_lines=30):
     return "\n".join(start + [f"\n... [{skipped} lines truncated] ...\n"] + end)
 
 
-def summarize_files(files, skip_files, max_files=12, max_patch_lines=30):
+def is_binary_patch(patch):
+    """Check if patch contains binary/generated content (base64, minified, etc.)."""
+    if not patch or len(patch) < 200:
+        return False
+    # Check for base64-like patterns
+    if patch.count("AAAA") > 5 or patch.count("////") > 5:
+        return True
+    # Check for very long lines (minified JS/CSS)
+    for line in patch.splitlines()[:10]:
+        if len(line) > 500:
+            return True
+    return False
+
+
+def summarize_files(files, skip_files, max_files=12, max_patch_lines=50):
     """Summarize file changes, limiting number of files and patch size."""
     if not files:
         return []
@@ -126,12 +138,19 @@ def summarize_files(files, skip_files, max_files=12, max_patch_lines=30):
     result = []
     for f in sorted_files[:max_files]:
         should_skip_patch = any(fnmatch(f["filename"], pattern) for pattern in skip_files)
+        raw_patch = f.get("patch", "")
+        if should_skip_patch:
+            patch = "..."
+        elif is_binary_patch(raw_patch):
+            patch = "[binary/generated content]"
+        else:
+            patch = truncate_patch(raw_patch, max_patch_lines)
         result.append({
             "filename": f["filename"],
             "additions": f.get("additions", 0),
             "deletions": f.get("deletions", 0),
             "changes": f.get("changes", 0),
-            "patch": "..." if should_skip_patch else truncate_patch(f.get("patch", ""), max_patch_lines),
+            "patch": patch,
         })
 
     if len(files) > max_files:
