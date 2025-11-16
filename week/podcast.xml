@@ -1,10 +1,210 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-  <title>Anand's Weekly Codecast</title>
+  <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 26 Oct 2025 08:59:39 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 16 Nov 2025 08:35:23 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-11-16</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-16.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-16.mp3</guid>
+    <pubDate>Sun, 16 Nov 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 16 November 2025!
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: Big one first — the large proposal and demo repository Anand was working on all week. He turned a rough folder of notes and charts into a full RFP response: a readable technical proposal, a compliance checklist, review checklists, PDF/HTML build tooling, and a 16-chart interactive data story + dashboard. What jumped out to you, Maya?
+Maya: The scale. He didn’t just write a proposal — he automated pieces, generated standardized CV PDFs, created a single “information needed” checklist, and made the whole thing deployable. There’s a script to render CVs into a Straive-styled PDF, exhaustive gaps and task lists, and multiple iterations of the site build so the docs and deploy flow actually work.
+Alex: Why does that matter practically? It means the “proposal” is a reproducible artifact you can iterate on, test, and hand off. Instead of one-off Word/PDF edits, Anand produced versioned HTML, automated builds, and even a GitHub Action to publish — so the final deliverable is auditable and repeatable.
+Maya: Non-obvious takeaway: when you use LLMs and agents to create content, don’t leave the outputs ephemeral. He made the model produce files (CVs, legal docs, a single source of truth for gaps), sanitized sensitive bits, and hooked them into a build and review workflow. That’s how you make AI-assisted work credible in procurement scenarios.
+Alex: Practical idea: if you’re preparing a client response, keep one canonical checklist file, generate normalized artifacts (pdfs, short bios), and add a quick validation step that replaces placeholders and flags missing legal items before you click “send.” Also, cache and version any generated assets so you can reproduce the exact submission later.
+
+Maya: The research monorepo was also huge this week — lots of experiments and tools. Anand built a FastAPI wrapper around the Codex CLI and then extended it to do token-by-token streaming for a typewriter UX. He added an SSE server, a tokenizer/delta tracker, and a browser UI that shows tokens as they arrive. What’s the real-world win there?
+Alex: That gives you a smoother interactive experience for CLI-driven agents — instead of waiting for a large event to finish, the UI updates word-by-word. Technically, because many agent CLIs emit cumulative text in events, you need delta tracking to avoid repeating earlier text. The wrapper handles that and streams clean, incremental tokens to the browser.
+Maya: He also ran a bunch of tool benchmarks and extractor comparisons: jaq beats jq for speed, node-html-markdown was best for HTML→Markdown when tables matter, and Mozilla Readability + Turndown remains a strong article extractor for stable heading IDs. Plus a Docker/uv cache mount benchmark that shows cache mounts cut install time by ~85% after the first run.
+Alex: Why this matters: small infrastructure choices add up. Switch jq scripts to jaq where compatible for immediate speedups; use node-html-markdown when you care about table fidelity; and always build Docker with proper cache mounts or bind caches to save developer time. Also, for interactive UIs that show streaming LLMs, invest in token-level delta logic — word-level streaming hits the sweet spot for UX vs message volume.
+Maya: Practical idea: in your next prototype, add a tiny “delta stream” layer between the CLI output and the UI. And replace local jq calls with jaq to speed up big JSON transformations.
+
+Alex: Anand also shipped some playful but polished demos — browser 3D flight games and a couple of arcade demos. He committed a fully working Three.js flight game, a few variants with tests, and a Node-friendly game scaffold with unit tests for HUD elements and audio. Why include this in a weekly summary?
+Maya: Because these are real engineering outputs: 3D rendering, audio, particle systems, and automated tests for canvas-based UI. He showed you can ship a visually rich demo while having repeatable tests (happy-dom + vitest) for critical HUD bits — that’s useful for product demos and for teaching interactive UX.
+Alex: Takeaway: build demos that are testable. If you need stakeholders to sign off, a small automated test that checks “HUD shows speed and altitude” is a lot simpler to run than a manual demo. For game devs, pack assets as data URLs or versioned artifacts and include smoke tests for visuals and audio.
+
+Maya: On the collaboration front, Anand updated the weekly group podcast generation and per-week transcript tooling. He’s been automating the conversion of a WhatsApp group into a polished two-host script and rough podcast assets. That weekly digest you saw was generated and refined — it’s a neat example of turning group chat noise into repeatable, shareable content.
+Alex: The practical effect is: less manual editing of long chat threads, and a reasonably consistent host script every week. If you moderate communities, automating a first-draft script is a huge time saver. Non-obvious tip: always keep the original messages as an archival artifact so you can reconnect claims to source messages later.
+
+Alex: Anand’s prompt collection grew too — fresh prompts for fake data, prompt fragments, mermaid diagrams, and mutual-fund analysis. Small, but they amplify the rest of the work.
+Maya: Yes — that’s the kind of infrastructure that multiplies productivity. The “fake-data” prompt can create realistic test datasets so you don’t have to use real client data, and the mermaid prompt helps translate codebases into architecture diagrams quickly. Practical idea: keep these prompts in a prompt-store in Git and pair each with a short test input so you can validate prompt changes automatically.
+
+Alex: He also touched the developer tooling and scripts repo — adding a sparse clone helper, centralizing dev container tooling, and a new codextools analyzer to summarize which external tools agents call in CLI logs.
+Maya: That codextools script is clever: it parses CLI session logs and surfaces which tools succeed or fail most, which makes debugging agent runs practical. And the sparse-clone helper (gitget.sh) means you can fetch only the parts of remote skill repos you actually need without pulling entire repos into your tree.
+Alex: Why it matters: when you build agent-based systems that depend on many micro-skills, having one command to fetch or update skills and a script to audit tool usage will save hours. Non-obvious takeaway: treat agent skills as external dependencies — version them, cache them, and audit calls.
+
+Maya: On the course/public content side, Anand added a link for the course’s remote online exam and updated a few public talk pages — small but useful housekeeping for students and attendees. He also committed a polished Snake HTML game to a small test repo — a nice interactive toy that’s easy to run locally.
+Alex: Those are handy smaller wins: improve accessibility to course material (linking the exam) and ship small interactive demos people can open in a browser.
+
+Maya: Quick note on documentation and hygiene — Anand repeatedly sanitized and centralized the “source of truth” for the RFP (proposal/proposal-info.md), added .gitignore exclusions for compiled outputs, and manually collated semi-confidential CV data rather than committing it. That shows an appropriate privacy-awareness when generating lots of outputs with LLMs.
+Alex: Absolutely. When agents create content that touches real people or sensitive company facts, collect and sanitize, then add the sanitized summary to the repo rather than raw CVs. That’s a practical compliance pattern.
+
+Maya: Okay — listener tips. I’ll go first: if you’re using LLMs to produce code or documents for a client, always generate file artifacts and a concise checklist of missing pieces. Store these artifacts in version control or an artifact store, and wire a pre-submission validation job that checks placeholders, signatures, and required annexes. Alex, how would you apply that?
+Alex: I’d add that validation job as a GitHub Action that runs on a “submission” branch — it replaces any placeholders, checks that required files are present, attempts to build the PDFs, and fails loudly if legal declarations or sign-off letters are missing. That means no accidental placeholder slips at submission time.
+
+Alex: My tip: when you rely on CLI JSON tools, swap jq for jaq where compatible — you’ll get a measurable speedup without changing your commands. Try it on one script first and measure runtime difference. Maya, how would you apply that?
+Maya: I’d run a small benchmark across our most-used JSON pipelines, replace jq with jaq in CI, and confirm outputs are bit-for-bit identical. Then roll it into production scripts and document the change in the ops playbook.
+
+Maya: One more quick tip: for interactive streaming UIs, prefer word-level token streaming with delta tracking instead of raw event-level pushes. That gives a smoother UX with manageable event rates. Alex, how would you apply it?
+Alex: I’d wrap any CLI streaming output in a tiny delta layer that computes the new text since the last event, tokenize that chunk by word, and SSE those tokens to the client — keep a short buffer on the client to handle network jitter. Add basic telemetry (tokens/sec) so you can tune granularity later.
+
+Maya: That’s a wrap for this week.
+Alex: Thanks for listening — we’ll be back next week with more highlights from Anand’s repos and experiments. Goodbye from Alex.
+Maya: Goodbye from Maya. See you next week!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2025-11-09</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-09.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-09.mp3</guid>
+    <pubDate>Sun, 09 Nov 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 09 November 2025!
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: Big week on the course front. Anand updated the public course materials for the Tools in Data Science class — added a firm live evaluation time for Project 2, dropped a pile of FAQ-style transcripts from live sessions, and rewrote the little shell tool that turns YouTube sessions into FAQ transcripts.
+Maya: That shell tool rewrite is the quiet hero here. Anand added explicit chunking of long videos, a short overlap to avoid clipped audio, caching so reruns are fast, and clearer usage docs. What does that actually do for students?
+Alex: Practically, it means long tutorial videos stop failing when they’re too large for the transcription step. Chunking with overlap keeps sentences from being chopped, caching saves money and time when you re-run the pipeline, and the FAQ transcripts make lecture content searchable and reusable.
+Maya: Why that matters beyond this class: if you’re processing any long media — lectures, meetings, webinars — you hit limits in tools and models. The pattern Anand used is useful: split long inputs into ~1 hour chunks, small overlaps, name chunks predictably, cache results, and keep a playlist manifest so you can rerun only the missing pieces.
+Alex: Non-obvious takeaway: when you automate media work, design for incremental re-runs. Don’t rerun the whole pipeline because one chunk failed — keep a cache manifest and chunk-level outputs named by date+id so recovery is cheap. Practical idea: apply the same chunk + overlap + cache pattern when sending long docs to any LLM that has token limits.
+
+Maya: Relatedly, Anand added a prompt and a plan page describing how to improve that FAQ script — step-by-step notes, token usage comments, and instructions to automatically create .opus and .md files per chunk. That kind of internal prompt-as-spec is a great way to make future edits safer.
+Alex: Yes — documenting the prompt that produced the edits is like shipping a mini spec for future maintainers. If you’re doing any LLM-assisted coding, save the prompt that created the change.
+
+Maya: Next big area: scraping and archiving discussion forums. Anand published a full Discourse-thread scraper — both as a browser bookmarklet in the tools collection and as a standalone CLI project that calls the Discourse API, writes one JSON per thread, and a companion script that turns those JSON files into neat Markdown mirrors.
+Alex: That’s huge for courses and archival work. Instead of losing a week’s worth of Q&A buried in a forum, you can snapshot topics as structured JSON, produce readable Markdown, and feed those into search tools or LLM pipelines.
+Maya: Practical effects: easier offline review, reproducible LLM prompts over a thread, and the ability to query or summarize historical discussion. Non-obvious takeaway: scrape as JSON first and keep that as the canonical archive; generate human-facing outputs (Markdown, summaries) lazily from the JSON so you can reprocess with improved parsers later.
+Alex: And a nice engineering touch — the bookmarklet approach works around client-rendered UIs where curl fails, while the CLI uses the official API when you have credentials. If you plan to build course analytics, this is an immediate data source.
+
+Maya: Shifting gears to talks: Anand added two new talk pages — a full deck and transcript for an “LLM Psychology” podcast episode and a detailed talk about Diagram Chasing and making open data useful. He also fixed a bunch of slide links and errata.
+Alex: For listeners that build talk assets: those commits show a tidy way to manage talk materials — Marp slides, transcripts, QR links, and a short feedback checklist. The practical effect is better discoverability and reliable links for old slides.
+Maya: Non-obvious tip: date-prefix release files (e.g., 2024-08-10-...) for slide assets so links stay stable across releases. Also, CC0 transcripts make it safe to reuse examples in teaching.
+
+Alex: Another neat story: Anand analyzed GitHub Copilot CLI logs from student runs and turned that into a data story. He published a short analysis that shows environment mix (lots of Windows), model choices students used, and verification practices.
+Maya: That’s an actionable dataset for instructors. If most students use Windows and a specific model, design labs and scripts to match that default. And he suggests requiring a simple verification banner in student outputs — a one-line proof so graders get consistent automation.
+Alex: Non-obvious takeaway: small grading requirements (a 2-line verification banner) dramatically reduce friction in automated grading pipelines. If you teach, lock a tiny machine-checkable artifact into the spec.
+
+Maya: On the product side, Anand improved a policy-validation web app: he added a “generate sample documents” button that makes two short example docs — likely pass and likely fail — using the current rule set, and moved a destructive storage-clear button into a less-hidden location next to ingest/consolidate.
+Alex: That’s a great usability win. People often don’t know how to exercise validation rules; generating a positive and negative sample instantly surfaces gaps in rule-extraction. Also, moving the clear button into the main row makes the action discoverable but still obvious — less chance of surprising users.
+Maya: Non-obvious idea: always give users a failing example early — it helps them tune their rules and prevents the “it says everything passes” problem.
+
+Alex: On the developer tooling front, Anand added multiple improvements to his scripts and contributors’ workflow: pre-commit hooks, a dev smoke-test script that checks the container and common tools, filter/truncate options for session listings, and a brief guideline to cache LLM/API/HTTP results during loops.
+Maya: Those are reliability and onboarding wins. The dev.test.sh means new contributors can run a single script to sanity-check their environment. The caching guideline is important — agents looping over similar inputs can otherwise explode API cost and latency.
+Alex: Non-obvious takeaway: put small, focused smoke tests in repo roots — they pay back when CI flakes or new machines are provisioned. And when you use LLMs in loops, write results to .cache/ with a key that includes the prompt and inputs — you’ll cut cost drastically.
+
+Maya: On the stats tooling side, Anand updated a small data-science tool to show p-values in the UI and allow re-testing hypotheses. So users now see a numeric p-value and can re-run tests from the UI.
+Alex: That’s helpful — p-value in one phrase: it’s the probability of seeing data at least as extreme as observed if the null hypothesis is true. Showing the number, plus an interpretation, helps people avoid magic black boxes.
+Maya: Practical idea: always show p-values with a plain-language sentence: “p = 0.03 — this suggests the observed effect is unlikely under the null hypothesis (about 3%).” Numbers plus interpretation beat raw stat dumps.
+
+Alex: A small but important permission change: the API playground that talks to Google Workspace now includes calendar write scopes and updated prompt text. So the agent can now create or modify calendar events, not just read them.
+Maya: That opens up real automations — the app can schedule, update, or delete events on behalf of users. But remember: write scopes require careful prompts and explicit user consent. Non-obvious: when you enable write access, log intent and provide an undo path — users expect reversible actions.
+
+Maya: A cluster of smaller polish items: Anand tweaked a trending-repos UI to rename status labels to more actionable verbs, added a link to “Terminal to HTML” tools, and recommended a maintained SSE parser in place of his tiny package.
+Alex: Those are usability and maintenance wins. Renaming statuses to verbs helps people act faster; pointing folks to a maintained parse-sse reduces maintenance burden; and linking to a trusted external tool is honest curation.
+
+Maya: On LLM pricing and audio: Anand refreshed his LLM frontier data and published a focused note on OpenAI TTS costs. He measured real requests, compared models, and concluded TTS-1 is a decent cost/quality point for podcast-style audio.
+Alex: Practical effect: if you’re producing constant audio, these per-minute math and sample measurements help pick a voice model that balances cost versus fidelity. Non-obvious find: input tokens to TTS can multiply into many audio tokens — measure end-to-end cost before choosing the default.
+
+Maya: Anand also updated the weekly group podcast generator: changed date formatting and switched the TTS model used for rendering voices to a different TTS engine. Small, but it affects final audio size, cost, and voice quality.
+Alex: That’s the sort of engineering detail that saves money across weekly runs. If you produce audio at scale, choose a TTS that hits your quality target at the lowest cost and test a representative episode before locking it in.
+
+Maya: On testing and infra: Anand refactored an internal test suite for his API-proxy project, moving many tests into a modern workers+vitest setup and adding helpers. That’s a large rewrite of test scaffolding.
+Alex: The practical effect: faster, more robust CI, clearer test helpers, and better isolation for Cloudflare worker-style tests. For maintainers, good test infra reduces fear of refactors.
+
+Maya: One last note: he published a new tool in the toolkit — a Discourse bookmarklet entry, sample fixtures, and a packaged minified script, plus tests. That ties back to the scraping work but also shows a full tool lifecycle: UI page, min build, tests, and docs.
+Alex: A good reminder — when you release small web tools, ship a tiny index page, tests, and an example HTML fixture. It reduces friction for users and reviewers.
+
+Maya: Listener tips time. Quick and actionable — one each, and then ask the other how they’d apply it.
+Alex: Tip one: If you process long audio or long documents with LLMs, always chunk with a small overlap and keep a chunk-level cache manifest. That way, failed chunks are re-runnable and cached outputs let you iterate cheaply. Maya — where would you use that this week?
+Maya: I’d use it to make meeting notes reliable: chunk recordings at 20–30 minute intervals with 10s overlap, transcribe each chunk, then stitch summaries. That reduces token spikes and makes manual edits local to one chunk.
+
+Maya: My tip: when you add write permissions to an app (calendar, drive), add lightweight undo and an activity log view that shows recent automated changes. Make “revert last 5 changes” possible from the UI. Alex — how would you apply that in a student project?
+Alex: I’d add an “audit” endpoint and a one-click revert that re-posts a prior version. For a course, that means students can experiment with calendar automation without risking lost demo slots — and graders can see what the app actually did.
+
+Alex: And one bonus tip from our discussions — when you use LLMs to generate negative test cases (failing examples), keep both a pass and fail sample in your repo. It’ll catch brittle rules and teach your validator what “bad” looks like.
+Maya: I’ll apply that to the policy validation UI — generate a failing doc and wire it to one-click download in the UI so users can run the validator right away.
+
+Alex: That’s all from us for this week. Thanks to Anand for the steady stream of practical fixes and people-focused improvements.
+Maya: See you next week. Keep experimenting, write down the tiny operational rules that save time, and don’t forget to cache the expensive stuff. Goodbye for now!
+Alex: Goodbye!
+Maya: Bye!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2025-11-02</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-02.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-02.mp3</guid>
+    <pubDate>Sun, 02 Nov 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 02 Nov 2025!
+Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
+
+Alex: Big one to start: Anand updated a public course that teaches tools in data science. He added a fleshed‑out Project 2, rewrote an entire module around what he calls “vibe analysis” (an outcome‑focused way to use LLMs), and added practical tutorials—LLM-powered website scraping and a Datasette guide for publishing and exploring data.
+Maya: That’s a lot. What should listeners understand about the Project 2 changes?
+Alex: Practically, students now have a clear quiz system: they register via a Google form, submit an API endpoint that will accept quiz tasks, and provide two prompts — a system prompt (meant to prevent revealing a secret code word) and a user prompt (meant to try to override it). Anand documented how prompts will be tested against each other, required HTTPS for endpoints, and added a demo endpoint you can hit to try your implementation.
+Maya: Why does that matter beyond class logistics?
+Alex: It’s a small lesson in building resilient, auditable agent services. The project forces students to think about authentication (a secret string), defensive endpoint behavior (return 403 on bad secrets), and reproducible prompt-testing setups. Those exact same concerns show up in production when agents call webhooks or when you grade model behavior automatically.
+Maya: Any non-obvious takeaways?
+Alex: Two. One, explicitly designing tests that mix system and user prompts is a great way to evaluate prompt robustness—don’t just test prompts in isolation. Two, require an MIT license and a public repo at evaluation time: it dramatically simplifies reproducibility and grader automation.
+Maya: Practical idea from this: if you’re building an agent that accepts external tasks, start by offering a demo URL and a small sample payload so integrators can smoke test without deploying full infra.
+Alex: And a quick checklist: verify secrets server‑side, return 403 on mismatch, and log session resets so you can debug prompt interactions.
+
+Alex: Next up — design and slides. Anand shipped a new Marp theme and a number of refinements: layout utilities to justify multi‑column content, font sizing utilities, new CSS variables for consistent styling, and a small but very useful <transcript> tag that hides content from slide rendering while keeping it visible in raw Markdown.
+Maya: Tell me why the <transcript> tag is useful in practice.
+Alex: It’s simple but powerful: you can embed speaker notes, full transcripts, or references in the same Markdown file, have them show up on GitHub or in a README, but keep slides visually clean when rendered with Marp. That helps accessibility and keeps a single source of truth for slides and notes.
+Maya: And the layout utilities—what do they buy you?
+Alex: A lot of polish with little effort. The columns-justify utility auto aligns first element left, last right, and centers the rest. That makes headers and footers with mixed elements (title, nav, icons) look balanced without custom CSS per slide. He also added small font classes (.small, .small-1, etc.) and some build fixes for the GitHub Actions workflow so the site actually generates with the theme.
+Maya: Non-obvious tip: centralizing spacing and font sizes into variables means you can rebrand a whole slide deck with only a few edits—great for templates and for keeping consistency across talks.
+Alex: Practical idea: put long speaker notes or full transcripts inside <transcript> and link them in your show notes; you get both presenter help and public transcripts without extra files.
+
+Alex: Closely related: Anand updated his talks repo to use that theme and refactored the build process. He added a setup script that downloads the theme and runs Marp across all slide directories, and he ignored the downloaded theme in git so it’s always fetched during build.
+Maya: Why split out the build into a script?
+Alex: Maintainability. The script centralizes logic (download theme, iterate directories, build if README.md changed), which is easier to debug and update than a giant inline npm command. It’s also safer for CI and for anyone cloning the repo: run setup.sh and you get a reproducible build.
+Maya: There was also a major new talk on LLM data visualization, right?
+Alex: Yes—lots of code, notebooks, and reproducible demos: SOM demos, UMAP-based topography visualizations, novel “river flow” and “topography” metaphors, synthetic data generators and classroom-ready materials. For instructors and practitioners this is an immediately usable teaching pack.
+
+Alex: On the tooling front, Anand made a large set of changes to his developer scripts and agent tooling. The Gmail CLI was rewritten to an async implementation that streams results, emits JSONL, and adds a --reauth option. He improved OAuth handling to cope with refresh failures, added lots of small shell helpers, and beefed up a dev container script so it supports GPUs, SSH agent forwarding, and many useful mounts.
+Maya: That sounds like infrastructure polish, but what’s the practical effect for daily work?
+Alex: Better ergonomics and reliability. The Gmail CLI now streams message details rather than buffering, which is much friendlier in pipelines. The OAuth changes detect refresh errors and fall back to re‑auth flow instead of silently failing. The dev container now makes it easy to test GPU workloads and gives consistent mounts for agent credentials—huge for reproducible development of LLM tooling.
+Maya: Any subtle warnings?
+Alex: A couple. First, when you make a CLI produce JSONL you enable much better composability, but be sure consumers handle one-JSON-per-line. Second, when you mount lots of host config into containers, treat secrets carefully—don’t mount production credentials into ephemeral dev containers.
+
+Alex: Anand also added a new web tool: an X (Twitter) thread scraper bookmarklet. It scrapes a tweet and its replies into JSON, filters out promoted tweets, and computes two handy scores—“buzz” (short‑term engagement signals like reposts and likes) and “keep” (longer‑term signals like bookmarks and replies). He included unit tests, a fixture HTML file, a verify script that uses Chrome Remote Debugging for in‑browser checks, and an index page that builds the bookmarklet.
+Maya: So it’s not just another scraper—there’s scoring and verification.
+Alex: Exactly. The buzz/keep scores help you prioritize which replies or threads to keep for research. The verify.mjs script uses the Chrome DevTools Protocol so you can inject and validate the bookmarklet against real tabs automatically—great for trustworthiness.
+Maya: Non-obvious tip: because X changes DOM structure often, having unit tests and a fixture saves a ton of debugging time when the site shifts.
+Alex: Practical idea: use the bookmarklet to collect threads for qualitative research, then run the scoring to find the 10 posts worth saving and feed them into a downstream analysis pipeline.
+
+Alex: In data experiments, Anand published a careful prompt‑caching experiment for OpenAI. He wrote scripts to run, log, and analyze caching behavior and produced a short report: caching works but has variable lag and TTL. Multi‑message prompts sometimes got larger cached slices; single‑message prompts sometimes missed the immediate repeat and warmed up after ~60 seconds. TTLs varied too.
+Maya: That’s a useful empirical result. How should people interpret this?
+Alex: If your system assumes deterministic prompt caching you’ll be surprised. The safe pattern is: 1) treat caching as a best‑effort performance boost, not a guaranteed speedup; 2) warm up a prompt by repeating it once before the real work if latency matters; 3) log cache headers if your provider exposes them.
+Maya: Practical takeaway: for latency‑sensitive flows, design a warm‑up or short retry strategy and measure per‑region behavior since caches and routing can vary.
+
+Alex: A few smaller but helpful updates: Anand regenerated a weekly podcast episode script in the generative‑AI group project, updated some tutorial config examples to add provider profiles (Gemini, Azure, OpenRouter), and improved documentation for a video personalization demo.
+Maya: All the usual polishing that keeps a collection of tools usable—documentation, examples, and small bug fixes.
+
+Alex: Time for listener tips. I’ll go first: when you expose an HTTP endpoint for agents or graders, always include a small demo payload and a clear failure mode—return 403 for bad secrets, 400 for malformed payloads, and 200 for accepted tasks with a concise JSON response. Maya, how would you apply that?
+Maya: I’d wire that into CI: add a smoke test that POSTs the demo payload to the deployed endpoint and asserts a 200 and a known JSON schema. That catches runtime config or TLS problems before grading or production traffic hits the service.
+
+Maya: My tip: if you rely on prompt caching to save cost or latency, instrument and measure it—log cached_token counts and elapsed time on warm vs cold requests. Treat caching as probabilistic and build a short warm-up pass if you need consistent latency. Alex, how would you use that?
+Alex: I’d add a middleware that automatically issues a tiny, free warm-up request for critical prefixes after deployment or when a new prompt is first used, and expose a dashboard showing cache hit ratio and median latency per prompt.
+
+Alex: One more quick tip—use the <transcript> tag in your slides to publish transcripts and long notes alongside slides so people can read them in the repo without cluttering slides. Maya, would you use that?
+Maya: Absolutely. I’d put full meeting transcripts and speaker notes there and link them from the talk page—searchable, accessible, and single‑file source control.
+
+Alex: That’s it for this week. Thanks to Anand for the steady stream of practical updates—course material, theme work, developer tooling, and reproducible experiments.
+Maya: See you next week. Keep experimenting, test your assumptions, and remember to log the things you care about.
+Alex: Goodbye for the week!
+Maya: Bye — and happy building!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-10-26</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-10-26.mp3" length="0" type="audio/mpeg"/>
@@ -49,6 +249,7 @@ Alex: That’s it for this week’s highlights — lots of small, high-quality w
 Maya: Thanks for tuning in. We’ll be back next week with another roundup of Anand’s commits and what they mean in practice.
 Alex: Goodbye for the week — see you next Sunday!
 Maya: Bye everyone — keep shipping small improvements.
+
 ]]></description>
   </item>
   <item>
