@@ -1,7 +1,7 @@
+#!/usr/bin/env python3
 # Usage: uv run summary.py -u <user>
 # Summarizes Github activity for a user from last Sunday till most recent Saturday
 
-#!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
@@ -24,9 +24,9 @@ from pathlib import Path
 from fnmatch import fnmatch
 
 
-def http_request(method, url, **kwargs):
+def http_request(method, url, timeout=300, **kwargs):
     """Make HTTP request with error body printing for debugging."""
-    response = httpx.request(method, url, **kwargs)
+    response = httpx.request(method, url, timeout=timeout, **kwargs)
     try:
         response.raise_for_status()
     except httpx.HTTPStatusError as e:
@@ -287,7 +287,7 @@ def fetch_github_activity(user, since, until, headers, skip_repos, skip_files):
 def get_activity_summary(system_prompt, activity, repo_context):
     context_json = json.dumps(repo_context, indent=2)
     payload = {
-        "model": "gpt-5-mini",
+        "model": "gpt-5.1-mini",
         "input": [
             {"role": "system", "content": system_prompt},
             {
@@ -330,7 +330,7 @@ def get_podcast(script, target, config):
             continue
         text = line[len(speaker) + 1 :].strip()
         body = {
-            "model": "gpt-4o-mini-tts",
+            "model": "tts-1",
             "input": text,
             "voice": speakers[speaker]["voice"],
             "instructions": speakers[speaker]["instructions"],
@@ -358,7 +358,7 @@ def get_podcast(script, target, config):
 def generate_podcast(weeks, script_dir):
     output_path = script_dir / "podcast.xml"
     base_url = "https://github.com/sanand0/sanand0/releases/download/main"
-    title = "Anand's Weekly Codecast"
+    title = "Anand's Weekly Code Cast"
     link = "https://github.com/sanand0/sanand0"
     description = "Weekly audio summaries of Anand's commits to GitHub."
     now = datetime.now(UTC).strftime("%a, %d %b %Y %H:%M:%S GMT")
@@ -399,7 +399,7 @@ def update_prompt(prompt, until, args):
     return (
         prompt.replace("$USER", args.user)
         .replace("$NAME", args.name)
-        .replace("$WEEK", until.strftime("%d %b %Y"))
+        .replace("$WEEK", until.strftime("%d %B %Y"))
     )
 
 
