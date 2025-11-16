@@ -82,4 +82,10 @@ gh release upload main $WEEK/podcast-$WEEK.mp3
 gh release upload main --clobber podcast.xml
 ```
 
-Update [../README.md](../README.md) **manually** for now.
+Update [../README.md](../README.md):
+
+```bash
+uv run update_readme.py
+```
+
+This updates the `<!-- ACTIVITY START -->` to `<!-- ACTIVITY END -->` section in `README.md` with all weekly summaries.

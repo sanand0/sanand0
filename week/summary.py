@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-# Usage: uv run summary.py -u <user>
-# Summarizes Github activity for a user from last Sunday till most recent Saturday
-
+#!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
@@ -10,6 +7,8 @@
 #     "tqdm",
 # ]
 # ///
+
+"""Summarizes Github activity --user from last Sunday till most recent Saturday (UTC)"""
 import argparse
 import base64
 import httpx
