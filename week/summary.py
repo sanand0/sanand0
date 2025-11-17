@@ -308,28 +308,57 @@ def get_activity_summary(system_prompt, activity, repo_context):
     return cost, result["output"][-1]["content"][0]["text"]
 
 
-def filter_code_files(activity, code_extensions, skip_review_repos):
-    """Filter activity to only include code file changes, skipping non-code repos."""
+def truncate_patch_for_review(patch, file_type, max_code_lines=500, max_data_lines=50):
+    """Truncate patch based on file type - more lines for code, fewer for data/docs."""
+    if not patch:
+        return ""
+    lines = patch.splitlines()
+    max_lines = max_code_lines if file_type == "code" else max_data_lines
+    if len(lines) <= max_lines:
+        return patch
+    # Keep first and last portions, truncate middle
+    keep_each = max_lines // 2
+    start = lines[:keep_each]
+    end = lines[-keep_each:]
+    skipped = len(lines) - max_lines
+    return "\n".join(start + [f"\n... [{skipped} lines truncated] ...\n"] + end)
+
+
+def filter_code_files(activity, code_extensions, data_extensions, doc_extensions):
+    """Filter activity to include code, data, and doc files with appropriate truncation."""
     filtered_activity = []
 
     for commit in activity:
-        repo = commit.get("repo.name", "")
-        # Skip repos that match skip patterns
-        if any(fnmatch(repo.lower(), pattern.lower()) for pattern in skip_review_repos):
-            continue
-
-        # Filter files to only include code files
-        code_files = []
+        # Filter files to include reviewable files
+        reviewable_files = []
         for f in commit.get("files", []):
             filename = f.get("filename", "")
-            if any(filename.endswith(ext) for ext in code_extensions):
-                # Only include if there's actual code change (patch exists and not trivial)
-                if f.get("patch") and f.get("patch") not in ["...", "[binary/generated content]"]:
-                    code_files.append(f)
+            patch = f.get("patch", "")
 
-        if code_files:
+            # Skip if no patch or trivial
+            if not patch or patch in ["...", "[binary/generated content]"]:
+                continue
+
+            # Determine file type and truncate appropriately
+            if any(filename.endswith(ext) for ext in code_extensions):
+                file_type = "code"
+            elif any(filename.endswith(ext) for ext in data_extensions):
+                file_type = "data"
+            elif any(filename.endswith(ext) for ext in doc_extensions):
+                file_type = "doc"
+            else:
+                continue  # Skip other file types
+
+            # Truncate patch based on file type
+            truncated_patch = truncate_patch_for_review(patch, file_type)
+            new_file = f.copy()
+            new_file["patch"] = truncated_patch
+            new_file["file_type"] = file_type
+            reviewable_files.append(new_file)
+
+        if reviewable_files:
             filtered_commit = commit.copy()
-            filtered_commit["files"] = code_files
+            filtered_commit["files"] = reviewable_files
             filtered_activity.append(filtered_commit)
 
     return filtered_activity
@@ -582,7 +611,8 @@ def main():
             code_activity = filter_code_files(
                 activity,
                 config.get("code-extensions", []),
-                config.get("skip-code-review-repos", []),
+                config.get("data-extensions", []),
+                config.get("doc-extensions", []),
             )
             if code_activity:
                 net_diff = compute_net_diff(code_activity)
@@ -595,7 +625,7 @@ def main():
                 else:
                     print("No code changes found for review")
             else:
-                print("No code repositories found for review")
+                print("No reviewable files found for code review")
     if not podcast_output.exists():
         get_podcast(podcast_filename.read_text(), week_dir, config)
 

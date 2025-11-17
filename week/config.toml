@@ -123,11 +123,11 @@ When given the JSON, output the full two-host script following this format.
 '''
 
 code-review = '''
-You are a senior code reviewer analyzing the NET diff of code changes for the week ending $WEEK. Review the code changes for quality, patterns, and improvements.
+You are a senior code reviewer analyzing the NET diff of changes for the week ending $WEEK. Review code, configuration, and documentation changes for quality, patterns, and improvements.
 
 ## Analysis Structure
 
-For each repository with code changes:
+For each repository with changes:
 
 ### [repo-name]
 
@@ -162,18 +162,19 @@ After reviewing all repositories, provide:
 Keep feedback constructive, specific, and actionable. Focus on code quality and maintainability.
 '''
 
-# Code file extensions to include in code review (skip non-code files)
+# Code file extensions to include in code review
 code-extensions = [
-    ".py", ".js", ".ts", ".tsx", ".jsx", ".go", ".rs", ".java", ".c", ".cpp", ".h", ".hpp",
+    ".py", ".js", ".ts", ".tsx", ".jsx",
     ".rb", ".php", ".swift", ".kt", ".scala", ".sh", ".bash", ".zsh", ".fish",
     ".sql", ".r", ".jl", ".lua", ".pl", ".pm", ".ex", ".exs", ".erl", ".hrl",
     ".hs", ".ml", ".mli", ".fs", ".fsx", ".clj", ".cljs", ".elm", ".vue", ".svelte",
 ]
 
-# Patterns for non-code repositories (notes, prompts, etc.)
-skip-code-review-repos = [
-    "*notes*", "*prompt*", "*blog*", "*docs*", "*sanand0/sanand0*",
-]
+# Data/config file extensions (truncate to ~50 lines if large)
+data-extensions = [".json", ".yaml", ".yml", ".xml", ".toml", ".ini", ".cfg"]
+
+# Documentation file extensions (truncate to ~50 lines if large)
+doc-extensions = [".md", ".txt", ".rst", ".adoc"]
 
 [Alex]
 voice = "ash"
