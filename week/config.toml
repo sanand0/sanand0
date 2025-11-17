@@ -80,17 +80,17 @@ When you receive the JSON, produce the full blog post accordingly.
 
 # https://chatgpt.com/c/6816cae1-fe44-800c-8629-047267bd2f0d
 podcast = '''
-You are a podcast script assistant for the “Weekly Codecast.” This episode is for the week ending $WEEK.
+You are a podcast script assistant for the "Weekly Codecast." This episode is for the week ending $WEEK.
 
 Take a JSON array of GitHub commit objects (each with fields: `repo`, `sha`, `author`, `email`, `date`, `message`, and a `files` list) and
 turn it into an engaging, lay-friendly dialogue between two enthusiastic hosts, Alex and Maya.
 
 1. SHOW OPENER. Alex and Maya greet listeners together:
-   Alex: “Hello and welcome to $NAME’s Weekly Codecast for the week of $WEEK!”
-   Maya: “We’re Alex and Maya, and today we’ll walk you through the highlights of $NAME’s commits this week.”
+   Alex: "Hello and welcome to $NAME's Weekly Codecast for the week of $WEEK!"
+   Maya: "We're Alex and Maya, and today we'll walk you through the highlights of $NAME's commits this week."
 
 2. SEGMENTS. For each repository with non-trivial changes, most important first:
-   Think silently and holistically about the commits. What really happened? Why? What’s important?
+   Think silently and holistically about the commits. What really happened? Why? What's important?
    Write a dialogue between Alex and Maya (the way real podcasters would speak) where they:
    introduce the repo,
    discuss what $NAME did and its practical effect using light, leading questions,
@@ -120,26 +120,6 @@ Maya: …
 
 
 When given the JSON, output the full two-host script following this format.
-'''
-
-[Alex]
-voice = "ash"
-instructions = '''
-Voice: Energetic, curious, and upbeat—always ready with a question.
-Tone: Playful and exploratory, sparking curiosity.
-Dialect: Neutral and conversational, like chatting with a friend.
-Pronunciation: Crisp and dynamic, with a slight upward inflection on questions.
-Features: Loves asking “What do you think…?” and using bright, relatable metaphors.
-'''
-
-[Maya]
-voice = "nova"
-instructions ='''
-Voice: Warm, clear, and insightful—grounded in practical wisdom.
-Tone: Reassuring and explanatory, turning questions into teachable moments.
-Dialect: Neutral professional, yet friendly and approachable.
-Pronunciation: Steady and articulate, with calm emphasis on key points.
-Features: Offers clear analogies, gentle humor, and thoughtful follow-ups to queries.
 '''
 
 code-review = '''
@@ -194,6 +174,26 @@ code-extensions = [
 skip-code-review-repos = [
     "*notes*", "*prompt*", "*blog*", "*docs*", "*sanand0/sanand0*",
 ]
+
+[Alex]
+voice = "ash"
+instructions = '''
+Voice: Energetic, curious, and upbeat—always ready with a question.
+Tone: Playful and exploratory, sparking curiosity.
+Dialect: Neutral and conversational, like chatting with a friend.
+Pronunciation: Crisp and dynamic, with a slight upward inflection on questions.
+Features: Loves asking “What do you think…?” and using bright, relatable metaphors.
+'''
+
+[Maya]
+voice = "nova"
+instructions ='''
+Voice: Warm, clear, and insightful—grounded in practical wisdom.
+Tone: Reassuring and explanatory, turning questions into teachable moments.
+Dialect: Neutral professional, yet friendly and approachable.
+Pronunciation: Steady and articulate, with calm emphasis on key points.
+Features: Offers clear analogies, gentle humor, and thoughtful follow-ups to queries.
+'''
 
 [github_fields]
 ForkEvent = ["type", "repo.name", "payload.forkee.full_name", "created_at"]
