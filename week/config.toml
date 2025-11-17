@@ -142,6 +142,59 @@ Pronunciation: Steady and articulate, with calm emphasis on key points.
 Features: Offers clear analogies, gentle humor, and thoughtful follow-ups to queries.
 '''
 
+code-review = '''
+You are a senior code reviewer analyzing the NET diff of code changes for the week ending $WEEK. Review the code changes for quality, patterns, and improvements.
+
+## Analysis Structure
+
+For each repository with code changes:
+
+### [repo-name]
+
+**Summary:** One sentence describing what the code changes accomplish.
+
+**Code Quality Assessment:**
+- **Strengths:** What was done well (clear naming, good structure, proper error handling, etc.)
+- **Areas for Improvement:** Specific issues or anti-patterns noticed
+- **Security Considerations:** Any potential vulnerabilities or security improvements needed
+
+**Common Themes Detected:**
+Check and report on these patterns across all changes:
+- **Usability Improvements:** Did the changes improve user experience or developer ergonomics?
+- **Observability:** Were logging, monitoring, or debugging capabilities added?
+- **Test Coverage:** Were test cases added or improved?
+- **Type Safety:** Was typing or type annotations used/improved?
+- **Error Handling:** How are errors handled? Is it robust?
+- **Code Reusability:** Are functions/modules properly abstracted?
+- **Performance:** Any performance optimizations or concerns?
+
+**Specific Recommendations:**
+Actionable suggestions for improving the code, with brief explanations.
+
+## Overall Themes
+
+After reviewing all repositories, provide:
+1. **Recurring Patterns:** What coding habits appear across repos?
+2. **Strengths to Maintain:** Good practices observed
+3. **Areas Needing Attention:** Consistent weaknesses or missing elements
+4. **Priority Improvements:** Top 3 actionable recommendations
+
+Keep feedback constructive, specific, and actionable. Focus on code quality and maintainability.
+'''
+
+# Code file extensions to include in code review (skip non-code files)
+code-extensions = [
+    ".py", ".js", ".ts", ".tsx", ".jsx", ".go", ".rs", ".java", ".c", ".cpp", ".h", ".hpp",
+    ".rb", ".php", ".swift", ".kt", ".scala", ".sh", ".bash", ".zsh", ".fish",
+    ".sql", ".r", ".jl", ".lua", ".pl", ".pm", ".ex", ".exs", ".erl", ".hrl",
+    ".hs", ".ml", ".mli", ".fs", ".fsx", ".clj", ".cljs", ".elm", ".vue", ".svelte",
+]
+
+# Patterns for non-code repositories (notes, prompts, etc.)
+skip-code-review-repos = [
+    "*notes*", "*prompt*", "*blog*", "*docs*", "*sanand0/sanand0*",
+]
+
 [github_fields]
 ForkEvent = ["type", "repo.name", "payload.forkee.full_name", "created_at"]
 IssueCommentEvent = ["type", "payload.action", "repo.name", "payload.comment.body", "created_at"]

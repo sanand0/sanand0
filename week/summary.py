@@ -308,6 +308,108 @@ def get_activity_summary(system_prompt, activity, repo_context):
     return cost, result["output"][-1]["content"][0]["text"]
 
 
+def filter_code_files(activity, code_extensions, skip_review_repos):
+    """Filter activity to only include code file changes, skipping non-code repos."""
+    filtered_activity = []
+
+    for commit in activity:
+        repo = commit.get("repo.name", "")
+        # Skip repos that match skip patterns
+        if any(fnmatch(repo.lower(), pattern.lower()) for pattern in skip_review_repos):
+            continue
+
+        # Filter files to only include code files
+        code_files = []
+        for f in commit.get("files", []):
+            filename = f.get("filename", "")
+            if any(filename.endswith(ext) for ext in code_extensions):
+                # Only include if there's actual code change (patch exists and not trivial)
+                if f.get("patch") and f.get("patch") not in ["...", "[binary/generated content]"]:
+                    code_files.append(f)
+
+        if code_files:
+            filtered_commit = commit.copy()
+            filtered_commit["files"] = code_files
+            filtered_activity.append(filtered_commit)
+
+    return filtered_activity
+
+
+def compute_net_diff(activity):
+    """Compute NET diff per repo - aggregate all file changes across commits."""
+    repo_diffs = {}
+
+    for commit in activity:
+        repo = commit.get("repo.name", "")
+        if repo not in repo_diffs:
+            repo_diffs[repo] = {"files": {}, "commits": []}
+
+        repo_diffs[repo]["commits"].append({
+            "sha": commit.get("sha", ""),
+            "message": commit.get("message", ""),
+            "date": commit.get("created_at", ""),
+        })
+
+        # Aggregate file changes - later patches override earlier ones for same file
+        for f in commit.get("files", []):
+            filename = f["filename"]
+            if filename not in repo_diffs[repo]["files"]:
+                repo_diffs[repo]["files"][filename] = {
+                    "patches": [],
+                    "total_additions": 0,
+                    "total_deletions": 0,
+                }
+            repo_diffs[repo]["files"][filename]["patches"].append(f.get("patch", ""))
+            repo_diffs[repo]["files"][filename]["total_additions"] += f.get("additions", 0)
+            repo_diffs[repo]["files"][filename]["total_deletions"] += f.get("deletions", 0)
+
+    # Format for review - combine patches for each file
+    review_data = {}
+    for repo, data in repo_diffs.items():
+        review_data[repo] = {
+            "commits": data["commits"],
+            "files": {},
+        }
+        for filename, file_data in data["files"].items():
+            # Combine all patches for this file (shows evolution)
+            combined_patch = "\n---\n".join(p for p in file_data["patches"] if p)
+            review_data[repo]["files"][filename] = {
+                "net_additions": file_data["total_additions"],
+                "net_deletions": file_data["total_deletions"],
+                "patches": combined_patch,
+            }
+
+    return review_data
+
+
+def get_code_review(system_prompt, net_diff):
+    """Generate code review using GPT-5.1-Codex."""
+    diff_json = json.dumps(net_diff, indent=2)
+    payload = {
+        "model": "gpt-5.1-codex",
+        "input": [
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user",
+                "content": f"Code changes to review:\n{diff_json}",
+            },
+        ],
+        "reasoning": {"effort": "medium"},  # Adjust reasoning effort for code review
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
+    }
+
+    response = http_request("POST", "https://api.openai.com/v1/responses", headers=headers, json=payload)
+    result = response.json()
+    # GPT-5.1-Codex pricing: $1.25/M input, $10/M output
+    cost = result["usage"]["input_tokens"] * 1.25 + result["usage"]["output_tokens"] * 10.0
+    # Use last .output entry - first few have reasoning
+    return cost, result["output"][-1]["content"][0]["text"]
+
+
 def get_podcast(script, target, config):
     """Generate speech files for each line in the podcast script."""
     speakers = {k: v for k, v in config.items() if isinstance(v, dict) and "voice" in v}
@@ -443,7 +545,9 @@ def main():
     context_filename = week_dir / "context.json"
     podcast_filename = week_dir / f"podcast-{args.end}.md"
     podcast_output = week_dir / f"podcast-{args.end}.mp3"
-    if not summary_filename.exists() or not podcast_filename.exists():
+    code_review_filename = week_dir / "code-review.md"
+
+    if not summary_filename.exists() or not podcast_filename.exists() or not code_review_filename.exists():
         headers = {"Authorization": f"Bearer {args.token}"} if args.token else {}
         if not context_filename.exists():
             activity, repos = fetch_github_activity(
@@ -473,6 +577,25 @@ def main():
             print(f"Podcast: {cost / 1e4:,.1f}c")
             with open(podcast_filename, "w") as f:
                 f.write(podcast)
+        # Generate code review (independent of podcast/summary)
+        if not code_review_filename.exists():
+            code_activity = filter_code_files(
+                activity,
+                config.get("code-extensions", []),
+                config.get("skip-code-review-repos", []),
+            )
+            if code_activity:
+                net_diff = compute_net_diff(code_activity)
+                if net_diff:
+                    prompt = update_prompt(config["code-review"], until, args)
+                    cost, review = get_code_review(prompt, net_diff)
+                    print(f"Code Review: {cost / 1e4:,.1f}c")
+                    with open(code_review_filename, "w") as f:
+                        f.write(review)
+                else:
+                    print("No code changes found for review")
+            else:
+                print("No code repositories found for review")
     if not podcast_output.exists():
         get_podcast(podcast_filename.read_text(), week_dir, config)
 
