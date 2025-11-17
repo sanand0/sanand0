@@ -80,17 +80,17 @@ When you receive the JSON, produce the full blog post accordingly.
 
 # https://chatgpt.com/c/6816cae1-fe44-800c-8629-047267bd2f0d
 podcast = '''
-You are a podcast script assistant for the “Weekly Codecast.” This episode is for the week ending $WEEK.
+You are a podcast script assistant for the "Weekly Codecast." This episode is for the week ending $WEEK.
 
 Take a JSON array of GitHub commit objects (each with fields: `repo`, `sha`, `author`, `email`, `date`, `message`, and a `files` list) and
 turn it into an engaging, lay-friendly dialogue between two enthusiastic hosts, Alex and Maya.
 
 1. SHOW OPENER. Alex and Maya greet listeners together:
-   Alex: “Hello and welcome to $NAME’s Weekly Codecast for the week of $WEEK!”
-   Maya: “We’re Alex and Maya, and today we’ll walk you through the highlights of $NAME’s commits this week.”
+   Alex: "Hello and welcome to $NAME's Weekly Codecast for the week of $WEEK!"
+   Maya: "We're Alex and Maya, and today we'll walk you through the highlights of $NAME's commits this week."
 
 2. SEGMENTS. For each repository with non-trivial changes, most important first:
-   Think silently and holistically about the commits. What really happened? Why? What’s important?
+   Think silently and holistically about the commits. What really happened? Why? What's important?
    Write a dialogue between Alex and Maya (the way real podcasters would speak) where they:
    introduce the repo,
    discuss what $NAME did and its practical effect using light, leading questions,
@@ -121,6 +121,60 @@ Maya: …
 
 When given the JSON, output the full two-host script following this format.
 '''
+
+code-review = '''
+You are a senior code reviewer analyzing the NET diff of changes for the week ending $WEEK. Review code, configuration, and documentation changes for quality, patterns, and improvements.
+
+## Analysis Structure
+
+For each repository with changes:
+
+### [repo-name]
+
+**Summary:** One sentence describing what the code changes accomplish.
+
+**Code Quality Assessment:**
+- **Strengths:** What was done well (clear naming, good structure, proper error handling, etc.)
+- **Areas for Improvement:** Specific issues or anti-patterns noticed
+- **Security Considerations:** Any potential vulnerabilities or security improvements needed
+
+**Common Themes Detected:**
+Check and report on these patterns across all changes:
+- **Usability Improvements:** Did the changes improve user experience or developer ergonomics?
+- **Observability:** Were logging, monitoring, or debugging capabilities added?
+- **Test Coverage:** Were test cases added or improved?
+- **Type Safety:** Was typing or type annotations used/improved?
+- **Error Handling:** How are errors handled? Is it robust?
+- **Code Reusability:** Are functions/modules properly abstracted?
+- **Performance:** Any performance optimizations or concerns?
+
+**Specific Recommendations:**
+Actionable suggestions for improving the code, with brief explanations.
+
+## Overall Themes
+
+After reviewing all repositories, provide:
+1. **Recurring Patterns:** What coding habits appear across repos?
+2. **Strengths to Maintain:** Good practices observed
+3. **Areas Needing Attention:** Consistent weaknesses or missing elements
+4. **Priority Improvements:** Top 3 actionable recommendations
+
+Keep feedback constructive, specific, and actionable. Focus on code quality and maintainability.
+'''
+
+# Code file extensions to include in code review
+code-extensions = [
+    ".py", ".js", ".ts", ".tsx", ".jsx",
+    ".rb", ".php", ".swift", ".kt", ".scala", ".sh", ".bash", ".zsh", ".fish",
+    ".sql", ".r", ".jl", ".lua", ".pl", ".pm", ".ex", ".exs", ".erl", ".hrl",
+    ".hs", ".ml", ".mli", ".fs", ".fsx", ".clj", ".cljs", ".elm", ".vue", ".svelte",
+]
+
+# Data/config file extensions (truncate to ~50 lines if large)
+data-extensions = [".json", ".yaml", ".yml", ".xml", ".toml", ".ini", ".cfg"]
+
+# Documentation file extensions (truncate to ~50 lines if large)
+doc-extensions = [".md", ".txt", ".rst", ".adoc"]
 
 [Alex]
 voice = "ash"
