@@ -7,6 +7,7 @@
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [23 Nov 2025](week/2025-11-23/): A week of data stories, research pushes, and tooling polish — shipping reproducible analysis and safer defaults. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-23.mp3)
 - [16 Nov 2025](week/2025-11-16/): A week of proposal polishing, token-by-token streaming, and tiny playable worlds [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-16.mp3)
 - [09 Nov 2025](week/2025-11-09/): A week of polishing course infrastructure, scrapers, and LLM tooling. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-09.mp3)
 - [02 Nov 2025](week/2025-11-02/): A week of course polish, UI themes, and scraping tools — small changes, big clarity wins. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-02.mp3)

@@ -4,7 +4,75 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Mon, 17 Nov 2025 09:38:45 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 24 Nov 2025 00:51:43 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-11-23</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-23.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-23.mp3</guid>
+    <pubDate>Sun, 23 Nov 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 23 November 2025!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week for the interactive data stories site — Anand published a major Michelin restaurants investigation. He built a full interactive story, added cleaned datasets and reproducible analysis scripts, and then did something I loved: he walked the whole project through three stages of thinking — initial findings, a skeptical critique, and a balanced synthesis.
+Maya: Right — the story isn't just "look at these charts." Anand included the raw CSVs, the processing and visualization code, and a critical-analysis document that shows where his first instincts were too hasty and how he corrected them. That matters because it turns a data story into a reproducible, teachable process.
+Alex: A practical effect: you can open the interactive site, inspect the JSON used by the charts, and re-run the Python pipeline to validate results. Non-obvious takeaway: when you publish data-driven claims, ship the pipeline and the critique. It reduces the chance of spreading an interesting but fragile claim.
+Maya: Practical idea: if you publish an analysis, include a short "three-stage journey" box — initial insight, what might be wrong, and what you finally believe with caveats. Folks can adopt that pattern immediately.
+
+Alex: Also in the same place, Anand shipped a large teaching/data-analysis package about improving student outcomes — a "TDS improvements" story — with meta-learnings on how self-critique improves analysis. He added deliverables, HTML pages, and an extensive "meta-learnings" doc.
+Maya: The useful bit here is the playbook: within-subject checks, interaction effects, and conservative impact estimates. For people running education analytics, those methodological checks are actionable — test within-student, not just between groups.
+
+Alex: Shifting to Anand's scientific-research collection — huge activity. First: a careful, corrected analysis of Clarivate's Highly Cited Researchers list. Anand found major sampling errors in an early take, corrected them, and documented the self-critique. The end result is an evidence-backed narrative about country and institutional concentration.
+Maya: That's a textbook example of why you validate your sample. The practical effect is a corrected dataset and scripts to reproduce country/institution breakdowns. Non-obvious takeaway: small alphabetical or paginated samples can produce wildly misleading geopolitical conclusions.
+Alex: Idea: before tweeting a big stat, compare your sample proportions to the official totals. If they disagree a lot, pause.
+
+Maya: Also in scientific research: Anand added a big, practical article-metadata-extraction toolkit and report — hybrid PyMuPDF + LLM approach, scripts for GROBID and GPT-based workflows, and cost/speed estimates. This is valuable for anyone scraping papers or building scholarly tools.
+Alex: He reports 90–98% accuracy and cost estimates of a few cents per paper when using text-first + LLM structuring rather than vision-only. That matters — it makes large-scale extraction feasible and cheap. Non-obvious tip: keep bounding boxes in outputs so humans can validate quickly; that’s a huge time saver during curation.
+
+Maya: The research repo also got a package on tariffs & ecommerce — a framework of research topics that use the 2024–25 de minimis policy change as a natural experiment. Anand added an eighth category: consumer nationalism as an alternative to tariffs.
+Alex: That’s an example of turning a policy change into multiple testable research designs. Practically, policy researchers now have a prioritized short list to study with available data. Takeaway: natural experiments from policy shifts are gold — map them fast.
+
+Maya: Another big deliverable: a computational dye‑discovery pipeline. Anand produced a multi-stage virtual screening pipeline, identified a few novel anthraquinone candidates, and bundled the code, plots, and a clear synthesis path.
+Alex: For chemists and product teams, that’s actionable — it shortens lab cycles. Non-obvious lesson: the same workflow pattern — generate candidates, predict multiple properties, rank by composite score — works across discovery domains if you keep the checks and uncertainty estimates.
+
+Maya: The research monorepo also includes lots of practical tooling and smaller stories: a fuzzy-PDF search web app that uses PDF.js and Fuse.js, an exhaustive correction to the Wikipedia "names that start and end with AI" search, a Jakarta private-schools spreadsheet, and a large GitHub-based scrape identifying data professionals in India.
+Alex: The Jakarta spreadsheet and the India data-professionals collections are straight utility work — contact lists and curated profiles. Useful for outreach or recruiting. The fuzzy-PDF search is neat: small, pragmatic improvements like sentence-level chunking plus bookmarkable URLs make PDF search actually usable.
+
+Maya: He also added a polished Word file splitter/renamer GUI — full GUI, tests, fixtures and packaging notes. For people who wrangle big doc batches, that’s a time saver.
+Alex: And he included fixtures and 44 tests — so it’s ready for others to use or extend. Devops-friendly.
+
+Maya: On the infrastructure / platform side Anand updated AI Pipe — the small proxy that lets front-ends access LLM APIs. The big change: support for native provider API keys so users can pass their own OpenAI, OpenRouter, Gemini keys and bypass AIPipe’s billing/tracking when they need to.
+Alex: In plumbing terms, that’s a big flexibility win: you can still host AIPipe for convenience and then choose to use your own key if you prefer direct billing or a special model. Non-obvious point: the code also skips cost-tracking for native keys, so administrators should be aware of that when auditing usage.
+
+Maya: For the Cloudflare-worker Google-Chat bot that runs SQL from natural language, Anand added a boiler dataset and made the request/response handling more robust. He tuned the LLM model choice for short Cloudflare worker timeouts and improved error handling so queries and interpretation steps are more reliable.
+Alex: The practical effect is a bot more resilient to timeouts and easier to point at multiple datasets. Non-obvious takeaway: when you have short worker time windows, favor smaller/fast models for intent + then offload heavy work to asynchronous jobs or background flows.
+
+Maya: Tools saw some important fixes. The WhatsApp scraper got emoji handling and phone-number extraction fixes — it now reads emojis embedded as <img> tags correctly and pulls phone numbers from the pre-plain-text field rather than internal IDs.
+Alex: That’s one of those tiny-looking fixes that saves hours of messy post-processing. If you scrape chat UIs, always prefer data-pre-plain-text and test emoji cases — they often hide in attributes.
+
+Maya: System and setup work too: Anand updated his machine setup scripts, added a Touchegg touchpad config for Wayland gestures, systemd rclone units, and improved the setup documentation. It's the sort of housekeeping that makes reproducible workstation provisioning possible.
+Alex: For anyone provisioning a laptop, the lesson is to capture both the systemd mount units and gesture configs — they make day‑to‑day use much smoother.
+
+Maya: A quick note on workflow and prompts: Anand consolidated his "developer styles" into a single styles.md, and added a small prompt for generating git commit messages from diffs — handy if you use LLMs for commit message drafting.
+Alex: That commit-message prompt is practical: generate a concise Conventional Commit from a diff, then let the developer review. It improves commit hygiene instantly.
+
+Maya: Finally, there's a schema for agent workflows and some guidance docs for building multi-agent flows, which is useful for anyone experimenting with agent orchestration.
+Alex: Good to see the schema and AGENTS guidance — they give a baseline for routing, human-in-the-loop checks and fail-safes.
+
+Maya: Listener Tip time. My quick, actionable tip: when publishing a data analysis, always publish the pipeline (data, processing script, visualization JSON) and add a short critique section that lists potential biases and validation steps. How would you apply that, Alex?
+Alex: I’d add a single "reproduction" section to every repo README with commands to run analysis locally and a checklist of bias checks. That makes the work instantly verifiable.
+
+Alex: My tip: if you're building a chat-to-SQL bot, keep a small set of deterministic "golden" SQL tests — a few golden inputs and expected outputs — and run them in CI. It catches pipeline regressions fast. Maya, how would you use that?
+Maya: I'd wire those golden cases into a CI job that runs when schema or prompt files change and alerts the team. For the heavier, subjective checks, run a nightly VLM/human sample batch.
+
+Alex: Bonus micro-tip from the week: for image-editing apps, add a mask-based "did the requested region change?" unit test. Fast, objective, and CI-friendly.
+Maya: I’d put that test in every PR that touches the editing pipeline — huge ROI.
+
+Alex: That wraps our rundown. Thanks for listening — and thanks to Anand for sharing all this work and for being transparent about methods and mistakes; that makes these tech stories much more useful.
+Maya: We'll be back next week. Until then — build things that can be reproduced, questioned, and improved. Goodbye for the week!
+Alex: Goodbye!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-11-16</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-16.mp3" length="0" type="audio/mpeg"/>
