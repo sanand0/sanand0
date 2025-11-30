@@ -9,11 +9,13 @@
 # ///
 
 """Summarizes Github activity --user from last Sunday till most recent Saturday (UTC)"""
+
 import argparse
 import base64
 import httpx
 import json
 import os
+import re
 import tomllib
 from dateutil.parser import isoparse
 from dateutil.tz import UTC
@@ -28,7 +30,7 @@ def http_request(method, url, timeout=300, **kwargs):
     response = httpx.request(method, url, timeout=timeout, **kwargs)
     try:
         response.raise_for_status()
-    except httpx.HTTPStatusError as e:
+    except httpx.HTTPStatusError:
         tqdm.write(f"HTTP {response.status_code} error for {url}")
         tqdm.write(f"Response body: {response.text[:500]}")
         raise
@@ -447,18 +449,27 @@ def get_podcast(script, target, config):
         "Content-Type": "application/json",
     }
 
-    lines = [ln.strip() for ln in script.splitlines() if ln.strip()]
+    # Pattern: speaker name, optional annotation (max 25 chars), then colon
+    speaker_pattern = re.compile(rf"^({'|'.join(re.escape(s) for s in speakers)}).{{0,25}}:")
+
+    raw_lines = [ln.strip() for ln in script.splitlines() if ln.strip()]
+    # Concatenate lines without a speaker to the previous line
+    lines = []
+    for line in raw_lines:
+        if speaker_pattern.match(line):
+            lines.append(line)
+        elif lines:
+            lines[-1] += "\n" + line
+
     filenames = []
     for line in tqdm(lines, desc="Get speech"):
-        # Skip lines without valid speaker
-        speaker = next((s for s in speakers if line.startswith(f"{s}:")), None)
-        if speaker is None:
-            continue
+        match = speaker_pattern.match(line)
+        speaker = match.group(1)
         podcast_filename = target / f"{len(filenames) + 1:03d}.opus"
         filenames.append(podcast_filename)
         if podcast_filename.exists():
             continue
-        text = line[len(speaker) + 1 :].strip()
+        text = line[match.end() :].strip()
         body = {
             "model": "tts-1",
             "input": text,
