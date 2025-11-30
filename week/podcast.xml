@@ -4,7 +4,85 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Mon, 24 Nov 2025 00:51:43 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 30 Nov 2025 03:15:05 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-11-30</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-30.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-30.mp3</guid>
+    <pubDate>Sun, 30 Nov 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 30 November 2025!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: First up — Anand spent a lot of time polishing his "data stories" site: narrative pages, charts, and the code that scrapes and cleans data for those stories.
+Maya: Right — the big visible thing is a student-analysis story that got renamed and reworked: we now have a clear "before" and "after" — an older framing plus a new framing that Anand calls "The Cliff", and a separate page showing where students actually got stuck at a particular step.
+Alex: Practically, that means readers can see both the original interpretation and the updated one, and the site now includes richer visuals and a marks-distribution chart. Behind the scenes Anand also linted and cleaned a bunch of scraper and analysis scripts — things like CSV/JSON outputs, data-cleaning fixes, and more robust chart code.
+Maya: Why that matters: it’s an author doing the hard work of iterating on a story and keeping the raw analysis pipeline tidy. The public value is twofold — transparency (you can compare old vs new) and reproducibility (fixed scrapers and cleaned pipelines mean the story is less likely to bit-rot).
+Alex: Non-obvious takeaway: when your interpretation changes, ship both versions. Showing the prior narrative plus the revision helps readers trust the process and teaches others how interpretation evolves.
+Maya: Practical idea: if you publish analysis, include a "what changed" page and keep the code that generated each version. It saves you answering the same questions later.
+
+Alex: Next up — Anand's little tool collection got several developer-facing improvements, especially a "fancy text" converter that now works both ways.
+Maya: Yes — the converter used to be Markdown → styled Unicode; Anand added Unicode → Markdown too, with smarter style detection and code-block handling, plus lots of tests and docs.
+Alex: That’s a deceptively useful feature: you can paste Unicode-styled text from social media and get back proper Markdown. He also factored a small download helper into a shared module and updated a data-extraction UI to reuse it.
+Maya: The practical effect: the tool is more robust and reusable across the mini-apps. And the new tests mean fewer regressions.
+Alex: Non-obvious takeaway: bidirectional conversion forces you to think about noisy input and edge cases — like surrogate pairs, monospace digits, and when to emit fenced code blocks — which makes the forward conversion better too.
+Maya: Idea to try: when you build small web utilities, extract tiny helpers that repeat across apps (file-to-data-url, copy-to-clipboard) — it reduces drift and keeps interfaces consistent.
+
+Alex: Another big tools-area change: Anand modularized the GitHub-activity fetcher used to summarize commits.
+Maya: He pulled GitHub fetching into a reusable "activity client" — it handles pagination, truncates huge patches, marks binary/generated content, allows skipping files by wildcard, and exposes progress callbacks.
+Alex: That makes the summary UI much more reliable and gives you more control over what you send to the summarizer. He also added an editable JSON "context" box in the UI so you can tweak what gets sent to the language model before you generate a summary.
+Maya: Why this matters: collecting repository activity is messy — big diffs, generated files, and paging quirks. Centralizing that logic prevents accidental leakage (huge patches), lets you redact unhelpful files, and surfaces progress so users don't stare at a spinner.
+Alex: Non-obvious takeaway: when you build automation around code, think about truncation and skip-lists up front. It's better to redact and note it than to blindly send megabytes to a model.
+Maya: Practical idea: if you make summaries from repo commits, include a human-editable context field so non-developers can add framing before the LLM produces text.
+
+Alex: Anand also made lots of system and productivity changes in his setup and scripts repo — this is the "laptop and tooling" side of his work.
+Maya: He added a tiny terminal chat helper that uses a running browser for automation via CDP, documented a powerful PDF tool, tuned GNOME keybindings, updated dev container scripts, and refined many setup aliases.
+Alex: The practical outcome: smoother local dev environment, a quick terminal-to-LLM pathway for ad-hoc queries, and better reproducibility of a preferred workstation setup.
+Maya: Caveat: the terminal chat helper needs a running Chromium with remote debugging — neat, but be careful with CDP URLs and access. And some gsettings are opinionated — good for his laptop, but review before applying on your own machine.
+Alex: Non-obvious takeaway: small ergonomics changes (keybindings, niche CLI tools like qsv or pdfcpu) add up to a much faster day-to-day flow. Document them so you can reproduce the environment later.
+Maya: Try adding one small alias or tool to your setup each week and measure the time it saves — the cumulative benefit is real.
+
+Alex: Anand also expanded his prompt collection — a big rework of the "developer styles" and a major reorganization of non-fiction and many new categories.
+Maya: He turned a compact list into a large, structured prompt library covering everything from author voices and educational content to experiments, A/B tests, and house styles for clients.
+Alex: Why that matters: having a categorized, practical prompt library makes it far easier to instruct models for different tasks — writing, reviewing, decision notes — with consistent voice and format.
+Maya: Non-obvious takeaway: think beyond “tone” and include format + constraints (e.g., decision journal format, Wardley map steps, or experiment pre-registration). That structure makes prompts reliably repeatable.
+Alex: Practical idea: pick three recurring writing tasks you do and build a small standardized prompt template for each — then use those templates across projects.
+
+Alex: Over in Hypothesis Forge — Anand centralized prompts and schemas into a config file and wired the UI to use those presets.
+Maya: That’s a quality-of-life change: rather than duplicating prompt text in the page, the app now loads a canonical prompt and schema from a single place. He also left placeholders for a modeling preset to be enabled later.
+Alex: Effect: easier to maintain and switch analysis modes, and less chance for mismatched prompts in the UI versus the code.
+Maya: Non-obvious takeaway: keep your prompts as first-class config. It makes experimentation much cleaner and safer — you can A/B prompt versions without changing code.
+Alex: Try it: if you build small data-analysis apps, move prompts and response schemas into a config file and allow a preset selector in the UI.
+
+Alex: Anand also added two neat tutorials — one on how a terminal map renderer rasterizes vector tiles into Braille characters, and another on how to shorten code elegantly.
+Maya: The map tutorial is a clear, practical walkthrough: use Braille chars for a 2×4 pixel grid, coordinate transforms, Bresenham lines, earcut triangulation for fills, and ANSI colors. Great for anyone doing terminal graphics.
+Alex: The "short code" tutorial distills refactoring principles: prefer data-driven design, DRY, modern JS idioms, early returns, and keeping readability as the guardrail while removing boilerplate.
+Maya: These are the kind of notes that are immediately usable: pick one principle from the short-code piece and refactor a function this week.
+Alex: Non-obvious takeaway: tutorials that pair "why" with "how" are the most useful — they teach pattern recognition, not just a sequence of commands.
+
+Alex: A couple of smaller but meaningful items: Anand refreshed his weekly notes — new LLM pointers, CLI tools he likes, and he updated a course project endpoint so students know where to hit the API during a scheduled window.
+Maya: He also reverted a small model choice in a data-exploration app back to a more compatible model and dropped a temperature parameter to keep things stable across provider differences.
+Alex: Good reminder: compatibility and predictable behavior often beat chasing the newest model in production flows.
+Maya: Non-obvious takeaway: when integrating LLMs into apps, prefer models whose semantics and parameters are well-understood by your code path.
+
+Alex: Finally — the group podcast generator got updated with a fresh weekly digest — Anand keeps that pipeline running: convert threaded chat into scripts and generated audio.
+Maya: It's a reminder that these side projects form a virtuous loop: chats produce content; content generates podcast episodes; podcast episodes surface insights that seed the next set of notes.
+
+Maya: Listener Tip time! I'll go first: keep prompts and small UI defaults in a single config file. It makes experiments repeatable and switching presets trivial. Alex, how would you apply that in your projects?
+Alex: I'd extract prompts from my notebooks into a JSON/JS module, wire the editor to load a default on empty input, and add a preset dropdown so non-technical teammates can pick the right style without touching code.
+
+Alex: My tip: when summarizing repo activity or sending patches to a model, truncate large diffs and redact auto-generated files instead of sending everything. That reduces noise, saves tokens, and avoids accidental leakage. Maya, how would you use that?
+Maya: I'd build a small preprocessor that removes node_modules, images, and big patches, replaces long patches with a "[truncated]" note, and includes a short diff summary — then feed that to the summarizer.
+
+Maya: One more quick tip — try the bidirectional Unicode ↔ Markdown tool workflow: paste styled text you found online into the Unicode input and recover clean Markdown before archiving or quoting. Alex, would you try that when clipping web fragments?
+Alex: Absolutely — I'd use it to salvage copy from weirdly styled sites, restore links and code blocks, and then paste clean Markdown into notes or repo docs.
+
+Alex: That's it for this week. Thanks for walking through Anand's commits with me.
+Maya: Thanks everyone for listening — experiment with small ergonomics wins, keep your prompts tidy, and stay curious.
+Alex: Bye for now — see you next week!
+Maya: Bye!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-11-23</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-23.mp3" length="0" type="audio/mpeg"/>
