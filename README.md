@@ -7,6 +7,7 @@
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [14 Dec 2025](week/2025-12-14/): A week of stories, tooling, and tidy fixes — shipping better docs, demos, and data narratives. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-14.mp3)
 - [07 Dec 2025](week/2025-12-07/): A week of talks, data stories, and polish — shipping transcripts, demos, and cleaner tooling. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-07.mp3)
 - [30 Nov 2025](week/2025-11-30/): A week of stories, tools, and tidy wiring — content, conversion, and cleaner infra. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-30.mp3)
 - [23 Nov 2025](week/2025-11-23/): A week of data stories, research pushes, and tooling polish — shipping reproducible analysis and safer defaults. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-11-23.mp3)

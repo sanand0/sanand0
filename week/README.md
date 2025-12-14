@@ -78,7 +78,7 @@ Or to upload a single release:
 
 ```bash
 npx -y pretty-quick
-gh release upload main $WEEK/podcast-$WEEK.mp3
+WEEK=... gh release upload main $WEEK/podcast-$WEEK.mp3
 gh release upload main --clobber podcast.xml
 ```
 

@@ -4,7 +4,74 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 07 Dec 2025 12:22:36 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 14 Dec 2025 14:27:34 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2025-12-14</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-14.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-14.mp3</guid>
+    <pubDate>Sun, 14 Dec 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 14 December 2025!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big one to start: the talks site got a huge refresh. Anand added a full workshop called "Mining Digital Exhaust," complete with a polished landing page, transcripts, sketchnotes, a WhatsApp-thread dump and a bunch of story-style pages. He also added a guest talk on AI for HR with slides, transcript, and feedback notes.
+Maya: So basically more content and nicer packaging — workshop pages, visual stories, and a recorded talk with concrete feedback for the speaker. Why does that matter for listeners who aren't into web publishing?
+Alex: Two practical effects: one, anyone running workshops or teaching can reuse the structure — index + transcript + sketchnote + small interactive story — to turn ephemeral sessions into reusable learning assets. Two, Anand included specific editorial feedback for the HR talk, so speakers can see how to tighten claims, cite data, and make Q&A more focused.
+Maya: Non-obvious takeaway: the WhatsApp thread and the small utilities Anand uses show a pattern — collect messy interactions, render them as multiple formats (transcript, story, sketchnote), then publish. That pipeline is a lightweight content business model: low-cost capture -> curated output -> multiple formats for different audiences.
+Alex: Practical idea: if you run a one-off workshop, capture chat and audio, write a 5-slide "story" version and a longer transcript. It doubles the audience reach with little extra effort.
+
+Maya: Next: the course materials for his data-science class got a notable feature — a grading/evaluation toolkit for a prompt-security exercise. Anand added scripts to run pairwise duels between prompts, compress logs, and a scoring module with multiple scoring schemes.
+Alex: That's the code that lets instructors pit "system" prompts against "user" prompts, log whether secrets leak, and then score students with sensible accounting for uneven numbers of matches. Why is that useful?
+Maya: For teachers, it makes grading defensible: there are normalized win-rates, difficulty-weighted scoring, and an exportable CSV. For students, the tooling creates reproducible experiments so you can iterate on prompts and see quantitative improvement.
+Alex: Non-obvious point: the scoring schemes are deliberately varied — raw wins, normalized rates, and difficulty-weighted credit — which avoids rewarding players who simply had more attempts. If you teach or run competitions, think beyond "count the wins."
+Maya: Practical idea for course staff: use the difficulty-weighted mode when you suspect some prompts are much harder; that gives credit where it's due.
+
+Alex: On the creative tools side, his art-styles project had a major upgrade: category support, batch generation, a category selector UI, dotenv for API keys, and many generated images added. The generator script now iterates categories and skips already-generated files.
+Maya: So the art site moved from a flat list to a category-first workflow and the generator script became production-friendly. Practically that means: easier experimentation across styles, cheaper runs because it skips existing outputs, and a nicer web UI that lets you pick a category via URL param.
+Alex: Why this matters: if you're iterating image prompts across many styles and models, you need orchestration — categories, a generator that resumes, and a UI that surfaces variations. Anand added all of that, plus multi-model outputs so you can compare models side-by-side.
+Maya: Non-obvious tip: put your API keys in .env and build the generator to be idempotent — it saves money and prevents accidental re-runs. Also using query params for category makes sharing specific galleries simple.
+
+Maya: Tools updates were busy too. Anand introduced a “Hacker News thread to nested Markdown” bookmarklet and later improved the extractor to number comments like 1, 1.1, 1.1.1. There are tests, a UI to drag the bookmarklet, and a clipboard fallback.
+Alex: This is a tiny quality-of-life win: one click to capture a discussion as nested bullets you can paste into notes or a PR. Why it’s useful: it turns messy comment trees into structured material for research, citations, or sharing with teammates.
+Maya: Non-obvious detail: the implementation gracefully handles link normalization, timestamp parsing and clipboard fallbacks — so it works in imperfect environments. The numbering feature helps when you want to reference specific comments in later writing.
+Alex: Practical idea: when you see an interesting HN thread, hit the bookmarklet, paste the nested markdown into a note, and immediately highlight the comments you want to quote.
+
+Alex: Another small but practical repo change: the popular cross-platform trash utility got a Linux fix — .trashinfo paths are now encoded per the XDG spec. In short, filenames with spaces and special chars no longer break the trash metadata.
+Maya: That matters if you use the package on Linux and rely on correct restore behavior. Non-obvious: tests were updated to assert the encoding, so regressions are less likely.
+Alex: Practical idea: if you maintain cross-platform utilities, encode path metadata rather than patching around edge cases.
+
+Maya: Anand also added a new sync tool in his scripts collection — audiosync.py. It aligns phone-recorded audio with screen recordings using cross-correlation (librosa/scipy), then uses ffmpeg to render a hybrid output that copies the original audio stream and re-encodes video efficiently.
+Alex: That's huge for anyone doing screencasts: phone audio is often clearer than system audio, and syncing them manually is tedious. This script automates alignment and keeps your original audio quality intact by stream-copying the audio track.
+Maya: Non-obvious takeaway: the tool is careful — it finds the offset, trims appropriately, re-encodes video but doesn't re-encode audio. That preserves voice quality and is fast. Practical idea: when you record demos with a phone or lav mic, run audiosync to merge the best audio with your screen video before publishing.
+
+Alex: Data stories got new entries: a dramatic weight-loss story with changepoints and a revamped “promptfight” narrative showing win-rate distributions and visualizations. The promptfight page now includes a win-rate chart and clearer storytelling sections.
+Maya: So more polished visual analyses and interactive charts. Why it matters: these are examples of how to present analytics — hook, viz, then defend with a methods appendix. Non-obvious: the promptfight story shows how distributions can hide a "fat middle" of mediocrity and surface a tiny elite, which is a useful visualization pattern for teaching.
+Alex: Practical idea: when you have contest-like data, plot categorical win-rate bands — that led to a useful insight in his work.
+
+Maya: There were helpful doc updates to the prompts collection too: new reusable fragments like "Brainstorming," "Read between Lines," and a "Confession / Post-mortem" fragment that asks models to call out shortcuts. Also new writing-style entries (Marilynne Robinson, Ursula K. Le Guin, David Mitchell).
+Alex: For prompt builders, that’s gold — small prompt fragments you can drop into other prompts to get consistent behavior. The “Confession” fragment is especially useful when you want a model to surface its weaknesses or acknowledge uncertainty.
+Maya: Practical idea: keep a library of small fragments and apply them as overlays — e.g., append the confession fragment when you need an audit of the model's reasoning.
+
+Alex: A quick note: Anand updated his generative-AI group podcast script for last week — the weekly digest entry was refreshed with the sort of discussion we just summarized: NotebookLM workflows, math + formal tools, agent orchestration, model ecosystems, and practical tips like building a 200–300 question benchmark for RAG systems.
+Maya: It’s neat because the podcast itself is produced from the chat data — the same pattern we mentioned: capture, chunk, synthesize into a two-host script. Non-obvious takeaway: keeping a small benchmark and logging production failures early makes iteration fast.
+Alex: Practical idea: if you run a shared chat group, export weekly threads and run the podcast generator pipeline to surface the best conversations as an episode.
+
+Maya: Smaller but useful: Anand added two demos to a demos index — a parallel-editing experiment and an agent-builder demo — making them easier to discover. For folks exploring multi-agent or collaborative experiments, those links are handy.
+Alex: And his notes repo got richer with langextract analysis and TIL updates — lots of reading and replication notes for people doing extraction and chunking experiments.
+
+Maya: Okay, time for our listener tips. Alex, your quick actionable tip?
+Alex: Tip: When you ingest messy chat logs into an LLM-based tool, pre-chunk intentionally — by thread, by question, or by topic — instead of dumping everything. That fixes many retrieval problems. Maya, how would you apply that to your projects?
+Maya: I’d use the chunking when building a support knowledge base: split logs by customer intent, tag by product area, and feed those labeled chunks to the retriever so answers stay on-topic and citations map to the right source. My micro-tip: add a short header to each chunk summarizing the intent.
+
+Alex: My second tip: if you record screen + phone audio, use audiosync-style alignment and stream-copy the original audio into the final video to preserve quality. Maya, how would you use that?
+Maya: I’d run audiosync after every demo recording to replace laptop mic audio with the lav mic track, then re-upload the polished file to our internal docs. For small teams, that step boosts perceived quality dramatically with minimal time investment.
+
+Alex: That’s our show. Thanks for listening.
+Maya: Thanks to Anand for the work and to everyone who contributes repos and notes that turn into episodes. See you next week!
+Alex: Goodbye from Alex.
+Maya: Goodbye from Maya. Have a great week!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-12-07</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-07.mp3" length="0" type="audio/mpeg"/>
@@ -62,6 +129,7 @@ Alex: Absolutely — I'll include a "how I prompted" appendix with the key promp
 Alex: That's our show for the week — lots of practical, reproducible work from Anand: talks turned into living demos, reproducible data stories, and stronger developer tooling around agents.
 Maya: Thanks for listening. We'll be back next week with more highlights. Bye for now!
 Alex: Bye!
+
 ]]></description>
   </item>
   <item>
