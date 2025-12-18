@@ -471,7 +471,7 @@ def get_podcast(script, target, config):
             continue
         text = line[match.end() :].strip()
         body = {
-            "model": "tts-1",
+            "model": "gpt-4o-mini-tts-2025-12-15",
             "input": text,
             "voice": speakers[speaker]["voice"],
             "instructions": speakers[speaker]["instructions"],
