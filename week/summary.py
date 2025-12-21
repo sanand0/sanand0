@@ -4,6 +4,7 @@
 # dependencies = [
 #     "httpx",
 #     "python-dateutil",
+#     "python-dotenv",
 #     "tqdm",
 # ]
 # ///
@@ -16,9 +17,11 @@ import httpx
 import json
 import os
 import re
+import subprocess
 import tomllib
 from dateutil.parser import isoparse
 from dateutil.tz import UTC
+from dotenv import load_dotenv
 from tqdm import tqdm
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -123,10 +126,10 @@ def fetch_repo_details(repos, headers):
     details = {}
     for repo in tqdm(set(repos), desc="Get repos"):
         try:
-            info = http_request("GET", f"https://api.github.com/repos/{repo}", headers=headers).json()
-            readme_resp = http_request(
-                "GET", f"https://api.github.com/repos/{repo}/readme", headers=headers
-            ).json()
+            repo_url = f"https://api.github.com/repos/{repo}"
+            info = http_request("GET", repo_url, headers=headers).json()
+            readme_url = f"https://api.github.com/repos/{repo}/readme"
+            readme_resp = http_request("GET", readme_url, headers=headers).json()
             readme = base64.b64decode(readme_resp.get("content", "")).decode("utf-8", "ignore")
             # Truncate README to first 2000 chars to save space while keeping key info
             if len(readme) > 2000:
@@ -170,26 +173,20 @@ def is_binary_patch(patch):
     return False
 
 
-def summarize_files(files, skip_files, max_files=12, max_patch_lines=50):
+def summarize_files(files, config, skip_files, max_files=12, max_patch_lines=50):
     """Summarize file changes, limiting number of files and patch size."""
     if not files:
         return []
 
-    # Sort files by importance: code files first, then by changes
-    def file_importance(f):
+    # Sort files by priority: code files first, then by changes
+    def file_priority(f):
         name = f.get("filename", "")
-        # Prioritize source code files
-        if any(name.endswith(ext) for ext in [".py", ".js", ".ts", ".go", ".rs", ".java", ".c", ".cpp"]):
-            priority = 0
-        elif any(name.endswith(ext) for ext in [".md", ".txt", ".rst"]):
-            priority = 1
-        elif any(name.endswith(ext) for ext in [".json", ".yaml", ".toml", ".xml"]):
-            priority = 2
-        else:
-            priority = 3
-        return (priority, -f.get("changes", 0))
+        for priority, exts in enumerate(config["source_priority"]):
+            if any(name.endswith(ext) for ext in exts):
+                return (priority, -f.get("changes", 0))
+        return (len(config["source_priority"]), -f.get("changes", 0))
 
-    sorted_files = sorted(files, key=file_importance)
+    sorted_files = sorted(files, key=file_priority)
 
     result = []
     for f in sorted_files[:max_files]:
@@ -201,29 +198,31 @@ def summarize_files(files, skip_files, max_files=12, max_patch_lines=50):
             patch = "[binary/generated content]"
         else:
             patch = truncate_patch(raw_patch, max_patch_lines)
-        result.append({
+        update = {
             "filename": f["filename"],
             "additions": f.get("additions", 0),
             "deletions": f.get("deletions", 0),
             "changes": f.get("changes", 0),
             "patch": patch,
-        })
+        }
+        result.append(update)
 
     if len(files) > max_files:
         # Add summary of remaining files
         remaining = files[max_files:]
-        result.append({
+        update = {
             "filename": f"... and {len(remaining)} more files",
             "additions": sum(f.get("additions", 0) for f in remaining),
             "deletions": sum(f.get("deletions", 0) for f in remaining),
             "changes": sum(f.get("changes", 0) for f in remaining),
             "patch": "",
-        })
+        }
+        result.append(update)
 
     return result
 
 
-def fetch_github_activity(user, since, until, headers, skip_repos, skip_files):
+def fetch_github_activity(user, since, until, headers, config, skip_repos, skip_files):
     """Fetch and process GitHub activity using GraphQL to discover repos, REST for commit details."""
     activity = []
     seen_commits = set()
@@ -278,7 +277,7 @@ def fetch_github_activity(user, since, until, headers, skip_repos, skip_files):
                     "created_at": cj["commit"]["author"]["date"],
                     "sha": sha,
                     "message": cj["commit"]["message"],
-                    "files": summarize_files(cj.get("files", []), skip_files),
+                    "files": summarize_files(cj.get("files", []), config, skip_files),
                 }
             )
 
@@ -303,7 +302,9 @@ def get_activity_summary(system_prompt, activity, repo_context):
         "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
     }
 
-    response = http_request("POST", "https://api.openai.com/v1/responses", headers=headers, json=payload)
+    response = http_request(
+        "POST", "https://api.openai.com/v1/responses", headers=headers, json=payload
+    )
     result = response.json()
     cost = result["usage"]["input_tokens"] * 0.4 + result["usage"]["output_tokens"] * 1.6
     # Use last .output entry - first few have reasoning
@@ -375,11 +376,12 @@ def compute_net_diff(activity):
         if repo not in repo_diffs:
             repo_diffs[repo] = {"files": {}, "commits": []}
 
-        repo_diffs[repo]["commits"].append({
+        commit = {
             "sha": commit.get("sha", ""),
             "message": commit.get("message", ""),
             "date": commit.get("created_at", ""),
-        })
+        }
+        repo_diffs[repo]["commits"].append(commit)
 
         # Aggregate file changes - later patches override earlier ones for same file
         for f in commit.get("files", []):
@@ -433,7 +435,8 @@ def get_code_review(system_prompt, net_diff):
         "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
     }
 
-    response = http_request("POST", "https://api.openai.com/v1/responses", headers=headers, json=payload)
+    url = "https://api.openai.com/v1/responses"
+    response = http_request("POST", url, headers=headers, json=payload)
     result = response.json()
     # GPT-5.1-Codex pricing: $1.25/M input, $10/M output
     cost = result["usage"]["input_tokens"] * 1.25 + result["usage"]["output_tokens"] * 10.0
@@ -441,59 +444,41 @@ def get_code_review(system_prompt, net_diff):
     return cost, result["output"][-1]["content"][0]["text"]
 
 
-def get_podcast(script, target, config):
-    """Generate speech files for each line in the podcast script."""
-    speakers = {k: v for k, v in config.items() if isinstance(v, dict) and "voice" in v}
+def get_podcast_gemini(script, target, config):
+    """Generate a podcast audio file using Gemini 2.5 Flash Preview TTS."""
+    output_path = target / f"podcast-{target.name}.mp3"
+    if output_path.exists():
+        return output_path
+
+    script_text = f"{config['podcast_style']}\n\n{script.strip()}"
+    payload = {
+        "contents": [{"role": "user", "parts": [{"text": script_text}]}],
+        "generationConfig": config["gemini"]["generation_config"],
+    }
     headers = {
-        "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
+        "x-goog-api-key": os.environ["GEMINI_API_KEY"],
         "Content-Type": "application/json",
     }
+    url = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        "gemini-2.5-flash-preview-tts:generateContent"
+    )
+    result = http_request("POST", url, headers=headers, json=payload).json()
+    json_path = target / "gemini-audio.json"
+    json_path.write_text(json.dumps(result, indent=2))
 
-    # Pattern: speaker name, optional annotation (max 25 chars), then colon
-    speaker_pattern = re.compile(rf"^({'|'.join(re.escape(s) for s in speakers)}).{{0,25}}:")
+    audio_b64 = result["candidates"][0]["content"]["parts"][0]["inlineData"]["data"]
+    pcm_path = target / "podcast.pcm"
+    audio_pcm = base64.b64decode(audio_b64)
+    pcm_path.write_bytes(audio_pcm)
+    ffmpeg_args = [
+        arg.format(pcm=pcm_path, output=output_path) for arg in config["gemini"]["ffmpeg_command"]
+    ]
+    subprocess.run(ffmpeg_args, check=True)
+    pcm_path.unlink()
+    json_path.unlink()
 
-    raw_lines = [ln.strip() for ln in script.splitlines() if ln.strip()]
-    # Concatenate lines without a speaker to the previous line
-    lines = []
-    for line in raw_lines:
-        if speaker_pattern.match(line):
-            lines.append(line)
-        elif lines:
-            lines[-1] += "\n" + line
-
-    filenames = []
-    for line in tqdm(lines, desc="Get speech"):
-        match = speaker_pattern.match(line)
-        speaker = match.group(1)
-        podcast_filename = target / f"{len(filenames) + 1:03d}.opus"
-        filenames.append(podcast_filename)
-        if podcast_filename.exists():
-            continue
-        text = line[match.end() :].strip()
-        body = {
-            "model": "gpt-4o-mini-tts-2025-12-15",
-            "input": text,
-            "voice": speakers[speaker]["voice"],
-            "instructions": speakers[speaker]["instructions"],
-            "response_format": "opus",
-        }
-        r = http_request("POST", "https://api.openai.com/v1/audio/speech", headers=headers, json=body)
-        with open(podcast_filename, "wb") as f:
-            f.write(r.content)
-
-    # Concatenate all audio files
-    list_file = target / "list.txt"
-    list_file.write_text("\n".join(f"file '{f.name}'" for f in filenames))
-    # -safe 0 allows for absolute paths
-    # -c:a libmp3lame uses the LAME MP3 encoder
-    # -qscale:a 5 is about 96 kbps. Lower values have higher quality and size
-    # -ar 44100 sets sample rate to 44.1 kHz (standard for podcasts)
-    # -ac 1 downmix to mono to halve file size at no loss
-    # -id3v2_version 3 sets ID3v2.3 tags for compatibility with most players
-    podcast = target / f"podcast-{target.name}.mp3"
-    concat = f"ffmpeg -y -f concat -i {list_file} -safe 0 -c:a libmp3lame -qscale:a 5 -ar 44100 -ac 1 -id3v2_version 3 {podcast}"
-    os.system(concat)
-    list_file.unlink()
+    return output_path
 
 
 def generate_podcast(weeks, script_dir):
@@ -587,7 +572,11 @@ def main():
     podcast_output = week_dir / f"podcast-{args.end}.mp3"
     code_review_filename = week_dir / "code-review.md"
 
-    if not summary_filename.exists() or not podcast_filename.exists() or not code_review_filename.exists():
+    if (
+        not summary_filename.exists()
+        or not podcast_filename.exists()
+        or not code_review_filename.exists()
+    ):
         headers = {"Authorization": f"Bearer {args.token}"} if args.token else {}
         if not context_filename.exists():
             activity, repos = fetch_github_activity(
@@ -595,6 +584,7 @@ def main():
                 since,
                 until,
                 headers,
+                config,
                 skip_repos=config["skip-repos"],
                 skip_files=config["skip-files"],
             )
@@ -638,7 +628,7 @@ def main():
             else:
                 print("No reviewable files found for code review")
     if not podcast_output.exists():
-        get_podcast(podcast_filename.read_text(), week_dir, config)
+        get_podcast_gemini(podcast_filename.read_text(), week_dir, config)
 
     # Get all directories beginning with "20" only if it contains podcast script
     weeks = [
@@ -650,4 +640,5 @@ def main():
 
 
 if __name__ == "__main__":
+    load_dotenv()
     main()

@@ -1,13 +1,22 @@
 skip-repos = [
-   # This repo has commits that refer to the previous week, which can be confusing
-   "sanand0/sanand0",
+  # This repo has commits that refer to the previous week, which can be confusing
+  "sanand0/sanand0",
 ]
 
 skip-files = [
-   # Skip generated files that are committed
-   "*.lock", "*-lock.json", "*-lock.yaml",
-   # Skip data files
-   "*.csv",
+  # Skip generated files that are committed
+  "*.lock",
+  "*-lock.json",
+  "*-lock.yaml",
+  # Skip data files
+  "*.csv",
+]
+
+# Prioritize source code files
+source_priority = [
+   [".py", ".js", ".ts", ".go", ".rs", ".java", ".c", ".cpp"],
+   [".md", ".txt", ".rst"],
+   [".json", ".yaml", ".toml", ".xml"]
 ]
 
 summary = '''
@@ -122,6 +131,36 @@ Maya: …
 When given the JSON, output the full two-host script following this format.
 '''
 
+podcast_style = "Podcast style: Warm, conversational, and enthusiastic."
+
+[gemini]
+ffmpeg_command = [
+  "ffmpeg",
+  "-y",
+  "-f",
+  "s16le",
+  "-ar",
+  "24000",
+  "-ac",
+  "1",
+  "-i",
+  "{pcm}",
+  "-safe",
+  "0",
+  "-c:a",
+  "libmp3lame",
+  "-qscale:a",
+  "5",
+  "-ar",
+  "44100",
+  "-ac",
+  "1",
+  "-id3v2_version",
+  "3",
+  "{output}",
+]
+generation_config = { responseModalities = ["audio"], speech_config = { multi_speaker_voice_config = { speaker_voice_configs = [{ speaker = "Alex", voice_config = { prebuilt_voice_config = { voice_name = "Algieba" } } }, { speaker = "Maya", voice_config = { prebuilt_voice_config = { voice_name = "Kore" } } }] } } }
+
 code-review = '''
 You are a senior code reviewer analyzing the NET diff of changes for the week ending $WEEK. Review code, configuration, and documentation changes for quality, patterns, and improvements.
 
@@ -164,10 +203,40 @@ Keep feedback constructive, specific, and actionable. Focus on code quality and 
 
 # Code file extensions to include in code review
 code-extensions = [
-    ".py", ".js", ".ts", ".tsx", ".jsx",
-    ".rb", ".php", ".swift", ".kt", ".scala", ".sh", ".bash", ".zsh", ".fish",
-    ".sql", ".r", ".jl", ".lua", ".pl", ".pm", ".ex", ".exs", ".erl", ".hrl",
-    ".hs", ".ml", ".mli", ".fs", ".fsx", ".clj", ".cljs", ".elm", ".vue", ".svelte",
+  ".py",
+  ".js",
+  ".ts",
+  ".tsx",
+  ".jsx",
+  ".rb",
+  ".php",
+  ".swift",
+  ".kt",
+  ".scala",
+  ".sh",
+  ".bash",
+  ".zsh",
+  ".fish",
+  ".sql",
+  ".r",
+  ".jl",
+  ".lua",
+  ".pl",
+  ".pm",
+  ".ex",
+  ".exs",
+  ".erl",
+  ".hrl",
+  ".hs",
+  ".ml",
+  ".mli",
+  ".fs",
+  ".fsx",
+  ".clj",
+  ".cljs",
+  ".elm",
+  ".vue",
+  ".svelte",
 ]
 
 # Data/config file extensions (truncate to ~50 lines if large)
@@ -175,26 +244,6 @@ data-extensions = [".json", ".yaml", ".yml", ".xml", ".toml", ".ini", ".cfg"]
 
 # Documentation file extensions (truncate to ~50 lines if large)
 doc-extensions = [".md", ".txt", ".rst", ".adoc"]
-
-[Alex]
-voice = "ash"
-instructions = '''
-Voice: Energetic, curious, and upbeat—always ready with a question.
-Tone: Playful and exploratory, sparking curiosity.
-Dialect: Neutral and conversational, like chatting with a friend.
-Pronunciation: Crisp and dynamic, with a slight upward inflection on questions.
-Features: Loves asking “What do you think…?” and using bright, relatable metaphors.
-'''
-
-[Maya]
-voice = "nova"
-instructions ='''
-Voice: Warm, clear, and insightful—grounded in practical wisdom.
-Tone: Reassuring and explanatory, turning questions into teachable moments.
-Dialect: Neutral professional, yet friendly and approachable.
-Pronunciation: Steady and articulate, with calm emphasis on key points.
-Features: Offers clear analogies, gentle humor, and thoughtful follow-ups to queries.
-'''
 
 [github_fields]
 ForkEvent = ["type", "repo.name", "payload.forkee.full_name", "created_at"]
@@ -204,7 +253,14 @@ PullRequestEvent = ["type", "payload.action", "repo.name", "payload.pull_request
 PullRequestReviewEvent = ["type", "payload.review.state", "repo.name", "payload.pull_request.title", "created_at"]
 PullRequestReviewCommentEvent = ["type", "repo.name", "payload.comment.body", "created_at"]
 PushEvent = ["type", "repo.name", "payload.ref", "payload.commits[*].message", "created_at"]
-ReleaseEvent = ["type", "payload.action", "repo.name", "payload.release.tag_name", "short_description_html", "created_at"]
+ReleaseEvent = [
+  "type",
+  "payload.action",
+  "repo.name",
+  "payload.release.tag_name",
+  "short_description_html",
+  "created_at",
+]
 CreateEvent = ["type", "payload.ref_type", "repo.name", "payload.ref", "created_at"]
 DeleteEvent = ["type", "payload.ref_type", "repo.name", "payload.ref", "created_at"]
 WatchEvent = ["type", "payload.action", "repo.name", "created_at"]
