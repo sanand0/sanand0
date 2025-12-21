@@ -8,14 +8,13 @@ This script generates AI summaries of your GitHub activity by analyzing commits 
 
 1. [uv](https://github.com/astral-sh/uv) for Python package management: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 2. [ffmpeg](https://ffmpeg.org/) for audio processing: `sudo apt install ffmpeg` (Ubuntu/Debian)
-3. GitHub API token with `repo` scope: Generate at https://github.com/settings/tokens
-4. OpenAI API key: Get from https://platform.openai.com/api-keys
 
-Set up environment variables:
+Add these environment variables to `.env` at the root of this repo:
 
 ```bash
-export GITHUB_TOKEN="your_github_token"
-export OPENAI_API_KEY="your_openai_key"
+GITHUB_TOKEN=...    # To read GitHub repo. https://github.com/settings/tokens
+OPENAI_API_KEY=...  # To generate summary. https://platform.openai.com/api-keys
+GEMINI_API_KEY=...  # To generate podcast. https://aistudio.google.com/api-keys
 ```
 
 ## Usage
@@ -37,10 +36,6 @@ Options:
 Examples:
 
 ```bash
-# Required environment variables
-export GITHUB_TOKEN=...
-export OPENAI_API_KEY=...
-
 # Get last week's summary. Generates from previous Sunday till latest Saturday EOD, UTC
 uv run summary.py -u sanand0 -n "Anand"
 
