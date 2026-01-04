@@ -4,7 +4,120 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 21 Dec 2025 06:12:21 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 04 Jan 2026 11:41:56 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-01-04</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-04.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-04.mp3</guid>
+    <pubDate>Sun, 04 Jan 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 04 January 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week for Anand's blog and website — he did a major content and platform tidy-up.
+Maya: Right — he finished migrating the site to a static site setup, added a bunch of prompt pages, turned on code-copy buttons, and reworked templates and footer logic. What’s the practical effect of that?
+Alex: For readers it means cleaner URLs under /blog, lots of new prompt pages you can browse, and a little "copy code" button on code blocks so you can grab examples with one click. For editors it means pages that should appear in the footer must live under the site’s pages/ area — the footer now only lists files that actually exist there.
+Maya: And he changed the templates so you can add page-specific CSS classes through front-matter, and fixed wrapped code styling so long lines read nicely. That’s small but useful — you can make a post add a wrap-code class to improve readability.
+Alex: He also expanded the deploy workflow to run on multiple branches and made the site rely on a few newer Hugo template functions. So if you build the site in CI, double-check your Hugo version — otherwise build errors can surprise you.
+Maya: Non-obvious takeaway: when you move large amounts of content and normalize URLs, expect link fallout. Anand bulk-updated internal links to the new /blog paths — that’s why the site commit includes hundreds of content changes. If you ever restructure a site, plan a link-normalization pass and a way to serve redirects.
+
+Alex: Anand also centralized his prompt library — he moved the prompts repo into the blog as live pages and replaced the originals with links. Why does that matter?
+Maya: It reduces duplication and creates a single canonical place for prompts, which makes maintenance easier. Practically, anyone using those prompts should update bookmarks; authors should edit the blog pages instead of the old repo. And because the blog now hosts them, they get the same site styling and searchability as other posts.
+
+Alex: Over in the data-visualization corner, Anand shipped a big new data story about Indian trade — an interactive investigative piece.
+Maya: That project includes a full narrative, analysis notes, and a hefty D3-driven script for visualizations. The story is built from a large export-import dataset and pairs Codex and Claude analyses with interactive charts.
+Alex: Practically, readers get a narrative-driven, interactive article that backs claims with data and code. For people who work with data, Anand included an ANALYSIS.md and the prompts he used so you can reproduce his steps or reuse the prompts in your own projects.
+Maya: Non-obvious bit: he noted an import-coverage gap in the dataset and encoded it in his methodology — that's an important honesty move. If you reuse public datasets, flag coverage quirks early and surface them in the story.
+
+Alex: On the tools front, there were UI and polish updates.
+Maya: Yes — small UX improvements like better favicons and a tweak to the Trending Repos title, plus a larger mobile-responsive redesign of the trending-repos tool. The trending view now switches to a card layout on phones, keeps the table on desktops, and adds mobile sorting and touch-friendly interactions.
+Alex: He also made the ideation tool open its prompt without forcing a specific model in the URL, so it uses whatever the browser or service defaults to — cleaner and more portable.
+Maya: Takeaway: small UI changes and responsive layouts dramatically improve discoverability on phones. If you have a data table, think about a card fallback for mobile.
+
+Alex: In his scripts and personal tooling repo, Anand removed a "plan" system skill and also deleted the Hetzner rclone systemd services and a weekly updater.
+Maya: That’s an intentional cleanup — he removed the on-disk plan templates and helper scripts, and stopped automating a Hetzner mount. The docs and setup notes were updated accordingly.
+Alex: Practical effect: less automation to manage, but if you relied on those systemd services or the plan tooling, you need to migrate your workflows or re-add them manually. He also added some helpful setup tweaks — a lossless webp helper and an explicit note about creating a Cloudflare R2 bucket, plus a few dev-image/tooling tweaks.
+Maya: Non-obvious point: when you remove automations, remember to leave clear migration notes. Anand updated README and removed references where appropriate, but if you mirror his setup, check for any remaining instructions that reference removed services.
+
+Alex: He also moved a small but handy script from the talks repo into the scripts repo — the slide renderer.
+Maya: Right — the slide tool that renders markdown slides in the terminal was relocated into the scripts collection, and references in talks were updated to point to that centralized copy. So the effect is fewer scattered utilities and one source of truth for local tools.
+
+Alex: Anand’s weekly notes repo got a big batch of updates too — TIL entries, book notes, and course ideas for a Jan 2026 teaching run.
+Maya: He added a TDS Jan course plan and lots of December notes — book summaries, tooling tips (rclone, xz), and TODOs for apps. It’s useful if you follow his learning log: there are short pointers and links you can steal.
+Alex: One small caution: some setup instructions in those notes still referenced the Hetzner rclone mount he removed from scripts — so cross-check when following setup docs. That mismatch is exactly the sort of thing to watch for after coordinating multiple repos.
+
+Alex: Finally, docs for a tutorials / LLM integration project were improved — clearer examples for configuring OpenAI, OpenRouter, and Azure in local profiles.
+Maya: He added example profiles, highlighted that Azure expects a deployment name as the model field, and included CLI test snippets. So it's easier to wire up model providers when you try to run the demo locally.
+Alex: That’s a nice little quality-of-life change — fewer confusions when switching providers.
+
+Maya: Quick practical ideas from across the week: if you run a site with lots of small tools and pages, treat prompts, tools, and site content as first-class content — centralize them, enable copy-to-clipboard for code, and add small metadata (date, folder) for better presentation and linking.
+Alex: And when you publish a data story, include a reproducible analysis file and the prompts used — that makes your work both credible and reusable.
+
+Alex: Listener tip: my quick, actionable tip this week is — if you’re restructuring a site, run a bulk link fix pass and add redirects, then pin the exact static-site generator version in CI. That prevents build surprises and preserves inbound links. Maya, how would you apply that?
+Maya: I’d add a redirect map and a simple smoke test that crawls a few important pages after deploy. I’d also add a check in the CI job that prints the Hugo version and fails if it’s below the required minimum.
+
+Maya: My tip: when you publish an interactive data story, include an ANALYSIS.md with the derivation steps and the prompts or code used to produce charts. That makes the work reproducible and invites others to build on it. Alex, how would you apply that?
+Alex: I’d put the analysis and prompts in a small data/ folder alongside the story, and add a one-command script to rebuild the core charts. Then link that script from the story’s footer so curious readers can reproduce specific figures.
+
+Alex: That’s it for our roundup. Thanks for listening — and thanks to Anand for sharing all these updates.
+Maya: See you next week. Keep shipping and keep learning — bye!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2025-12-28</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-28.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-28.mp3</guid>
+    <pubDate>Sun, 28 Dec 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 28 December 2025!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: First up — Anand poured a lot of work into his data-visualization site, adding two big, polished music stories and the code that makes them reproducible.
+Maya: Right — one story is a deep dive into how people label emotions in short music clips, with interactive charts, audio examples, and a clear modeling summary. The other compares an LLM’s music-emotion estimates against human ratings.
+Alex: Practically, listeners can now open fully self-contained pages that play clips, show emotion distributions, and explore model performance. Anand also added scripts to extract audio features, train and evaluate models, compute feature importance, and bundle story-ready JSON.
+Maya: That means the visuals aren’t just pretty — they’re backed by a reproducible pipeline. If you want to re-run the experiment, re-extract features, or test a different model, the code is there.
+Alex: Why this matters: it treats emotion labeling as a messy, multi-label crowd problem rather than a single “right” label. Anand’s evaluation highlights uncertainty — confidence intervals, bootstrap ranges, and leave-one-genre-out tests that measure how models generalize across musical styles.
+Maya: A non-obvious takeaway: the Random Forest model Anand reports aligns with the crowd mean much better than a single random human rater. In other words, the model reduces the random noise of individual listeners — but it also “hedges” and rarely makes perfectly extreme predictions, which is expected for regressors.
+Alex: Practical idea: if you build or evaluate perceptual models, don’t only report point estimates. Show human ranges, multiple interval definitions, and per-genre cross-validation so people see where the model is confident and where it’s not.
+Maya: And from the storytelling side, Anand’s design choices — a dark “vinyl” aesthetic, animated waveforms, and short audio clips — make a technical paper approachable. The lesson: good visuals plus reproducible code makes complex ideas memorable and inspectable.
+
+Alex: Next big one: Anand’s developer tooling and agent skills work got a major upgrade — new plan and skill templates, installers, packaging helpers, and a replacement for an older log tool.
+Maya: He added a “plan” system to create and list lightweight project plans, templates for building new skills, and a skill-installer that can fetch and install skills from GitHub. There’s also a new claudelog tool that renders agent conversation logs into readable Markdown.
+Alex: The practical effect is huge if you build agent-style tooling: it’s faster to scaffold a new skill, validate it, bundle it for sharing, and install someone else’s skill into your environment.
+Maya: Why this matters: modularizing agent capabilities as “skills” lowers friction for experimentation and safer sharing. The claudelog replacement also helps with auditing — turning opaque JSON logs into human-readable notes for review.
+Alex: A couple of smart engineering choices jump out: lightweight frontmatter parsers so the plan lister reads just metadata without loading whole files; incremental installs that avoid re-downloading; and packaging scripts that create distributable archives.
+Maya: Practical idea: try using a template to create a minimal skill, run the quick validator, package it, and then install it locally — it’s a nice feedback loop for making small, testable agent capabilities.
+Alex: Also, the dev container/devtools improvements — Playwright helpers for checking charts, PDF tooling, and added CLIs — make it easier to validate web visualizations and generate reproducible artifacts for publishing.
+
+Maya: Third, Anand expanded his prompts and documentation collection with a big “presentations” section, prompt-checklist fragments, and tweaks to the ideation scoring rubric.
+Alex: In plain terms: he added many presentation templates — editorial spreads, journey maps, pyramid-structured decks, and more — plus prompt fragments that tell LLMs how to handle ambiguity, double-check themselves, and when to call external tools.
+Maya: The practical effect is that anyone using his prompts gains a richer palette of output styles and a short checklist for safer, clearer replies. He also changed ideator behavior to generate six diverse candidates and added feasibility to scoring.
+Alex: Why that matters: designing prompts that request clarifying questions or multiple interpretations reduces hallucination and improves relevance. Adding feasibility to idea scoring nudges the system away from fanciful but impossible suggestions.
+Maya: Non-obvious takeaway: small meta-rules — like “ask 1–3 clarifying questions if the prompt is ambiguous” or “soften absolute claims on self-scan” — materially improve practical outputs when you engineer prompts for real workflows.
+Alex: Practical idea: when you ask an LLM for ideas, ask it to produce 6 diverse options, score them on novelty, utility, and feasibility, and include one clarifying question before it proceeds.
+
+Alex: A smaller but handy update — the demo aggregator got new entries, including links to the new music stories.
+Maya: That’s the curated list of interactive LLM demos. Anand added a few community demos and linked the new music investigations so visitors can discover them from a single page.
+Alex: Practical effect: easier discovery and more traffic to live demos. The takeaway is to keep your demo index in sync with new projects so people can try things without hunting GitHub.
+
+Maya: Finally, Anand updated his weekly “things I learned” notes — practical TILs about TTS costs and recommendations, reasoning/feedback takeaways, and a pragmatic rewrite of AI personhood ideas, plus many small command-line tips.
+Alex: The useful bits: updated TTS recommendations (Gemini 2.5 Flash Preview is his favorite for value and voice quality), handy ffmpeg/uv/demucs snippets, and reflections on how sequential vs parallel feedback works for model improvement.
+Maya: Why that matters: those little saved commands and reflections speed up day-to-day experiments. The note about parallel versus sequential feedback is especially actionable: parallel sampling plus an external test often outperforms naive self-critique loops.
+Alex: Non-obvious takeaway: documenting short how-tos and the “why” behind choices (cost, speed, quality) makes the next run much faster and less error-prone.
+
+Maya: Okay — listener tips. I’ll go first: if you’re exploring subjective labels (emotion, taste, preference), visualize the crowd distribution and add at least one interval measure (like a bootstrap or Wilson interval) rather than only reporting a point estimate. Alex, how would you apply that in your projects?
+Alex: I’d apply it to any user-feedback dashboard I build: show the crowd mean, the 90% interval, and highlight unanimity cases. That helps product people see where consensus exists and where user signals are noisy. My tip: when you publish a demo or report, package the data + scripts so readers can reproduce a single chart — it builds trust. Maya, how would you use reproducible bundles?
+Maya: I’d use them when sharing prototypes with teammates — one click to run the preprocessing and see the same visuals removes all the “it works on my machine” friction.
+
+Alex: One more quick tip from me: when you prompt models for ideas, ask for 6 diverse candidates and include a feasibility score. That reduces the chance of getting three similar variants and three wild fantasies. Maya, how would you fold that into a brainstorming session?
+Maya: I’d run the prompt at the start of a session, then quickly vote on feasibility to prioritize prototypes. Also, ask the model to produce one clarifying question first if the brief is fuzzy.
+
+Alex: That’s our show for this week. Thanks for listening and exploring Anand’s work with us.
+Maya: See you next week — happy tinkering, and enjoy the music stories if you haven’t already!
+Alex: Goodbye for now!
+Maya: Bye!
+]]></description>
+  </item>
   <item>
     <title>Week of 2025-12-21</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-21.mp3" length="0" type="audio/mpeg"/>
@@ -133,6 +246,7 @@ Alex: That’s our show. Thanks for listening.
 Maya: Thanks to Anand for the work and to everyone who contributes repos and notes that turn into episodes. See you next week!
 Alex: Goodbye from Alex.
 Maya: Goodbye from Maya. Have a great week!
+
 ]]></description>
   </item>
   <item>
@@ -1044,61 +1158,61 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-09-07.mp3</guid>
     <pubDate>Sun, 07 Sep 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 07 Sep 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 07 Sep 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
-Alex: First up, let’s talk about that cool project that creates knowledge graphs and mind maps from documents using AI.
-Maya: Right! This week, Anand updated its license to MIT and refreshed some docs and the favicon.
-Alex: That favicon change, a tiny SVG embedded directly—nice for blazing-fast loading, right?
-Maya: Absolutely, and switching the default model to GPT 4.1 Mini really balances speed and capability for users.
-Alex: Plus, they improved PDF uploads, making it easier to analyze real documents, not just text inputs.
-Maya: It’s great because users can now visually explore relationships in complex files like sustainability reports.
-Alex: And by cleaning up the README and license, it’s easier for newcomers to understand and contribute.
+Alex: First up, let’s talk about that cool project that creates knowledge graphs and mind maps from documents using AI.  
+Maya: Right! This week, Anand updated its license to MIT and refreshed some docs and the favicon.  
+Alex: That favicon change, a tiny SVG embedded directly—nice for blazing-fast loading, right?  
+Maya: Absolutely, and switching the default model to GPT 4.1 Mini really balances speed and capability for users.  
+Alex: Plus, they improved PDF uploads, making it easier to analyze real documents, not just text inputs.  
+Maya: It’s great because users can now visually explore relationships in complex files like sustainability reports.  
+Alex: And by cleaning up the README and license, it’s easier for newcomers to understand and contribute.  
 Maya: Small changes, but they boost trust and usability—a solid foundation for an AI-powered knowledge tool!
 
-Alex: Next, the Python code similarity checker got a documentation tweak to reorder the command arguments for clarity.
-Maya: That’s subtle but important—clear docs help people avoid misuse and get accurate similarity scores.
-Alex: The underlying method tokenizes Python files and compares token sequences, ignoring comments and whitespace.
-Maya: It’s a smart way to spot functionally identical code even if superficial parts differ, helping detect copy-pasted code.
-Alex: These tools save tons of time during code reviews and help maintain clean, modular repositories.
+Alex: Next, the Python code similarity checker got a documentation tweak to reorder the command arguments for clarity.  
+Maya: That’s subtle but important—clear docs help people avoid misuse and get accurate similarity scores.  
+Alex: The underlying method tokenizes Python files and compares token sequences, ignoring comments and whitespace.  
+Maya: It’s a smart way to spot functionally identical code even if superficial parts differ, helping detect copy-pasted code.  
+Alex: These tools save tons of time during code reviews and help maintain clean, modular repositories.  
 Maya: Right, and by improving documentation, Anand helps users make the most of such powerful utilities.
 
-Alex: Over in the AI Pipe project, Anand fixed a potential open redirect vulnerability in the login flow.
-Maya: That’s a crucial security patch, preventing attackers from redirecting users to malicious websites after login.
-Alex: Plus, they refactored the usage display page to use lit-html, making the UI rendering more streamlined and maintainable.
-Maya: It’s a good reminder that security and user experience both need ongoing care in production services.
-Alex: Absolutely. Security issues can undermine user trust, and a clear UI improves adoption and support.
+Alex: Over in the AI Pipe project, Anand fixed a potential open redirect vulnerability in the login flow.  
+Maya: That’s a crucial security patch, preventing attackers from redirecting users to malicious websites after login.  
+Alex: Plus, they refactored the usage display page to use lit-html, making the UI rendering more streamlined and maintainable.  
+Maya: It’s a good reminder that security and user experience both need ongoing care in production services.  
+Alex: Absolutely. Security issues can undermine user trust, and a clear UI improves adoption and support.  
 Maya: I love seeing this blend of backend safety and frontend polish in action!
 
-Alex: Now, regarding the evaluation tools for the Tools in Data Science course, big upgrades here!
-Maya: The evaluation scripts have much better error handling—logging multiple errors per LLM response and improving retry logic.
-Alex: Also, making the OpenAI API key mandatory helps catch config mistakes early, avoiding silent failures.
-Maya: They standardized configuration with a pyproject.toml and improved test coverage too.
-Alex: This means course evaluations will be more reliable, transparent, and easier to maintain.
+Alex: Now, regarding the evaluation tools for the Tools in Data Science course, big upgrades here!  
+Maya: The evaluation scripts have much better error handling—logging multiple errors per LLM response and improving retry logic.  
+Alex: Also, making the OpenAI API key mandatory helps catch config mistakes early, avoiding silent failures.  
+Maya: They standardized configuration with a pyproject.toml and improved test coverage too.  
+Alex: This means course evaluations will be more reliable, transparent, and easier to maintain.  
 Maya: And that’s a win for both instructors and students getting fair, consistent grading.
 
-Alex: The data generation app got a fresh UI boost—demo templates moved to external JSON, plus an advanced settings accordion.
-Maya: That’s a neat UX improvement, decluttering the interface while keeping powerful model and prompt controls accessible.
-Alex: They also improved feedback when generating datasets, like showing spinner states and enabling/disabling buttons.
-Maya: Plus, the demos list now fetches dynamically, letting users pick scenarios like e-commerce sales or IoT sensor data easily.
-Alex: It’s a smooth way to onboard non-expert users to realistic synthetic data generation for testing or demos.
+Alex: The data generation app got a fresh UI boost—demo templates moved to external JSON, plus an advanced settings accordion.  
+Maya: That’s a neat UX improvement, decluttering the interface while keeping powerful model and prompt controls accessible.  
+Alex: They also improved feedback when generating datasets, like showing spinner states and enabling/disabling buttons.  
+Maya: Plus, the demos list now fetches dynamically, letting users pick scenarios like e-commerce sales or IoT sensor data easily.  
+Alex: It’s a smooth way to onboard non-expert users to realistic synthetic data generation for testing or demos.  
 Maya: Exactly, all these little touches make AI-powered data tools feel truly accessible!
 
-Alex: Finally, in the personal scripts repo, Anand polished the fish shell scripts—improved the meeting recording helper and added nicer audio recording instructions.
-Maya: The new meeting function auto-creates a nicely structured transcript file with tags and headings—great for organized note-taking.
-Alex: And expanding the record script with kind candor reminders? That’s thoughtful human-centered tooling!
-Maya: Plus, the updated commands use audio filters and align with modern best practices—very practical.
-Alex: These productivity scripts may seem small but can significantly boost daily workflow efficiency.
+Alex: Finally, in the personal scripts repo, Anand polished the fish shell scripts—improved the meeting recording helper and added nicer audio recording instructions.  
+Maya: The new meeting function auto-creates a nicely structured transcript file with tags and headings—great for organized note-taking.  
+Alex: And expanding the record script with kind candor reminders? That’s thoughtful human-centered tooling!  
+Maya: Plus, the updated commands use audio filters and align with modern best practices—very practical.  
+Alex: These productivity scripts may seem small but can significantly boost daily workflow efficiency.  
 Maya: Totally agree. Efficient personal tooling is the backbone of lasting development productivity.
 
-Maya: Here’s a quick tip you can try today: when building UI forms, consider using tools like the saveform library Anand updated recently. It persists form inputs across reloads seamlessly.
-Alex: Oh, that’s super useful! It means users won’t lose data accidentally when browsing or refreshing.
-Maya: Exactly! Small UX improvements like that make apps feel polished and user-friendly. Alex, how would you use that in your projects?
+Maya: Here’s a quick tip you can try today: when building UI forms, consider using tools like the saveform library Anand updated recently. It persists form inputs across reloads seamlessly.  
+Alex: Oh, that’s super useful! It means users won’t lose data accidentally when browsing or refreshing.  
+Maya: Exactly! Small UX improvements like that make apps feel polished and user-friendly. Alex, how would you use that in your projects?  
 Alex: I’d definitely add it to dashboard filters or multi-step forms where session continuity is key. Saves pain later!
 
-Alex: So, remember, small tweaks like favicon fixes or documentation reorders can have a big impact over time.
-Maya: And don’t forget to check out your tooling options—both for development and user experience.
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Alex: So, remember, small tweaks like favicon fixes or documentation reorders can have a big impact over time.  
+Maya: And don’t forget to check out your tooling options—both for development and user experience.  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -1197,67 +1311,67 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-24.mp3</guid>
     <pubDate>Sun, 24 Aug 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 24 Aug 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 24 Aug 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
-Alex: First up, let’s talk about the personal productivity scripts Anand updated this week.
-Maya: Yeah, the focus was mostly on improving AI code agent guidelines in the “ai-code-rules” directory.
-Alex: What caught your eye there?
-Maya: A small but neat fix updating paths for GitHub Copilot custom instructions to match actual config locations. This helps keep AI coding setups tidy.
-Alex: Those small path fixes often save hours of confusion for users setting up their environments.
-Maya: Exactly! Plus there’s a note about WindSurf—apparently no documented global “rules” markdown for it yet. A subtle hint that some tools still need adoption for AI agent workflows.
+Alex: First up, let’s talk about the personal productivity scripts Anand updated this week.  
+Maya: Yeah, the focus was mostly on improving AI code agent guidelines in the “ai-code-rules” directory.  
+Alex: What caught your eye there?  
+Maya: A small but neat fix updating paths for GitHub Copilot custom instructions to match actual config locations. This helps keep AI coding setups tidy.  
+Alex: Those small path fixes often save hours of confusion for users setting up their environments.  
+Maya: Exactly! Plus there’s a note about WindSurf—apparently no documented global “rules” markdown for it yet. A subtle hint that some tools still need adoption for AI agent workflows.  
 Alex: It’s interesting how these tiny updates reflect the complex ecosystem of AI-assisted coding setups—not glamorous, but vital.
 
-Maya: Moving on, Anand’s notes repo got refreshed with some deep insights on knowledge work and AI.
-Alex: Right! The Things I Learned repo was enriched with new reflections on how LLM “attention” works—like words pulling one another in a “gravity” analogy.
-Maya: That’s a clever metaphor. It highlights the core of attention mechanisms where embeddings interact asymmetrically, which isn’t obvious to many.
-Alex: Also, there’s a warning about AI coding making people overconfident since current models only get it right about 20% of the time.
-Maya: That’s critical— knowing when to trust AI-generated code and when to verify or intervene is key to effective AI-assisted work.
+Maya: Moving on, Anand’s notes repo got refreshed with some deep insights on knowledge work and AI.  
+Alex: Right! The Things I Learned repo was enriched with new reflections on how LLM “attention” works—like words pulling one another in a “gravity” analogy.  
+Maya: That’s a clever metaphor. It highlights the core of attention mechanisms where embeddings interact asymmetrically, which isn’t obvious to many.  
+Alex: Also, there’s a warning about AI coding making people overconfident since current models only get it right about 20% of the time.  
+Maya: That’s critical— knowing when to trust AI-generated code and when to verify or intervene is key to effective AI-assisted work.  
 Alex: Anand even shared notes on throwback airplane fun—pilots steering steep curves while waiting for landing clearance. I loved that human touch amidst all the tech!
 
-Alex: Next, a big highlight: the new “ThreadChat” tool added to the web apps collection—a lightweight client-only discussion board inspired by Hacker News.
-Maya: Oh yes, this is quite exciting! ThreadChat supports fake sign-up and sign-in, lets users submit posts and comments, upvote, and browse profiles—all stored in-memory on the client.
-Alex: So no backend? Just JavaScript running everything in your browser? Nice for prototyping.
-Maya: Exactly, it’s great for demos or rapid prototyping without the hassle of server setup. Plus it uses Bootstrap for a polished look.
-Alex: I saw that the discussion structure supports nested comments with inline replies and thread collapsing. That’s quite a user-friendly UX for a simple app.
-Maya: And it includes dynamic counts for comments and last-updated timestamps computed on the fly. Very thoughtful details.
-Alex: What do you think made this demo so useful?
-Maya: For one, it provides a foundation to build community features easily, helping devs quickly test UIs and understand engagement hooks.
-Alex: Plus, reusing tried-and-true design patterns like Hacker News keeps user expectations clear.
+Alex: Next, a big highlight: the new “ThreadChat” tool added to the web apps collection—a lightweight client-only discussion board inspired by Hacker News.  
+Maya: Oh yes, this is quite exciting! ThreadChat supports fake sign-up and sign-in, lets users submit posts and comments, upvote, and browse profiles—all stored in-memory on the client.  
+Alex: So no backend? Just JavaScript running everything in your browser? Nice for prototyping.  
+Maya: Exactly, it’s great for demos or rapid prototyping without the hassle of server setup. Plus it uses Bootstrap for a polished look.  
+Alex: I saw that the discussion structure supports nested comments with inline replies and thread collapsing. That’s quite a user-friendly UX for a simple app.  
+Maya: And it includes dynamic counts for comments and last-updated timestamps computed on the fly. Very thoughtful details.  
+Alex: What do you think made this demo so useful?  
+Maya: For one, it provides a foundation to build community features easily, helping devs quickly test UIs and understand engagement hooks.  
+Alex: Plus, reusing tried-and-true design patterns like Hacker News keeps user expectations clear.  
 Maya: And removing IndexedDB dependency for stability makes it reliable in browsers without complex storage quirks.
 
-Maya: Shifting gears, a neat update came to the transcription and exam practice app called "Viva."
-Alex: That’s the practice viva exam tool where users record answers, get them transcribed with Google’s Gemini API, and receive rubric-based feedback.
-Maya: Exactly! This week’s updates include a polished UI with mic recording tests and the ability to toggle transcript visibility.
-Alex: So it’s really bridging spoken answers to automated evaluation via LLMs. How does the transcription flow work?
-Maya: It records audio, converts to WebM/Opus format, sends base64 inline data to Gemini API, then renders transcription live with playback controls.
-Alex: That inline base64 approach is clever—skip uploads and streamline the API interaction for speed and simplicity.
-Maya: Plus, it’s designed with clear user flow: mic check, recording, transcription, and structured evaluation for feedback.
+Maya: Shifting gears, a neat update came to the transcription and exam practice app called "Viva."  
+Alex: That’s the practice viva exam tool where users record answers, get them transcribed with Google’s Gemini API, and receive rubric-based feedback.  
+Maya: Exactly! This week’s updates include a polished UI with mic recording tests and the ability to toggle transcript visibility.  
+Alex: So it’s really bridging spoken answers to automated evaluation via LLMs. How does the transcription flow work?  
+Maya: It records audio, converts to WebM/Opus format, sends base64 inline data to Gemini API, then renders transcription live with playback controls.  
+Alex: That inline base64 approach is clever—skip uploads and streamline the API interaction for speed and simplicity.  
+Maya: Plus, it’s designed with clear user flow: mic check, recording, transcription, and structured evaluation for feedback.  
 Alex: This could really help students rehearse smartly and reduce anxiety by getting instant rubric insights.
 
-Alex: On the AI demos front, the curated LLM demos collection was updated with some fresh interactive projects from collaborators.
-Maya: Like the browser-based 3D object generator that uses LLMs to create and modify Three.js scenes in real time.
-Alex: Combining text prompts and optional reference images to build/export geometry sounds super hands-on.
-Maya: It’s a great example of integrating generative AI with rich frontend tooling for creative coding.
+Alex: On the AI demos front, the curated LLM demos collection was updated with some fresh interactive projects from collaborators.  
+Maya: Like the browser-based 3D object generator that uses LLMs to create and modify Three.js scenes in real time.  
+Alex: Combining text prompts and optional reference images to build/export geometry sounds super hands-on.  
+Maya: It’s a great example of integrating generative AI with rich frontend tooling for creative coding.  
 Alex: Such demos help broaden understanding of what is possible beyond text generation.
 
-Maya: Finally, Anand tweaked the GitHub AI Coders summary tool.
-Alex: That tool aggregates merged pull requests from AI code tools, showing contributors their PR counts and repo scores based on stars.
-Maya: It’s an insightful way to quantify AI-assisted coding contributions and understand influence by repo popularity.
-Alex: It fetched data from GitHub APIs, deduplicated results, and calculates a combined score using stars weighted by PR volume.
+Maya: Finally, Anand tweaked the GitHub AI Coders summary tool.  
+Alex: That tool aggregates merged pull requests from AI code tools, showing contributors their PR counts and repo scores based on stars.  
+Maya: It’s an insightful way to quantify AI-assisted coding contributions and understand influence by repo popularity.  
+Alex: It fetched data from GitHub APIs, deduplicated results, and calculates a combined score using stars weighted by PR volume.  
 Maya: I think this adds accountability and visibility for AI-coding impact in teams and open source communities.
 
-Alex: Before we wrap up, here’s a quick tip inspired by the OCR discussion in Anand’s generative AI group.
-Maya: When you work with domain-specific text in OCR pipelines, supply your language model with a curated dictionary or superset list of acceptable terms.
-Alex: That’s smart—this reduces misinterpretations like confusing chemical names or currency symbols, boosting output accuracy.
-Maya: Plus it’s a lightweight way to augment LLMs without retraining, especially helpful in specialized industries.
-Alex: I’d integrate this by intercepting OCR outputs, run dictionary-based post-processing, then prompt the LLM with verified terms.
+Alex: Before we wrap up, here’s a quick tip inspired by the OCR discussion in Anand’s generative AI group.  
+Maya: When you work with domain-specific text in OCR pipelines, supply your language model with a curated dictionary or superset list of acceptable terms.  
+Alex: That’s smart—this reduces misinterpretations like confusing chemical names or currency symbols, boosting output accuracy.  
+Maya: Plus it’s a lightweight way to augment LLMs without retraining, especially helpful in specialized industries.  
+Alex: I’d integrate this by intercepting OCR outputs, run dictionary-based post-processing, then prompt the LLM with verified terms.  
 Maya: Perfect! That kind of layered approach smooths the AI workflow gracefully.
 
-Alex: My takeaway this week is that small tooling improvements and smart UI choices can make developer experiences way friendlier.
+Alex: My takeaway this week is that small tooling improvements and smart UI choices can make developer experiences way friendlier.  
 Maya: And I want to highlight that blending quick prototyping tools like ThreadChat with solid feedback loops leads to more engaged and iterative development.
 
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -1334,71 +1448,71 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-08-10.mp3</guid>
     <pubDate>Sun, 10 Aug 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 10 Aug 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 10 Aug 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
-Alex: First up, the collection of web apps that Anand calls "Tools".
-Maya: This week’s big change is a cool new feature in the PicBook tool—a story textarea that auto-generates panels!
-Alex: Yeah! Instead of manually listing image panels, you can now paste a full story, and it uses an AI model to write captions and prompts for each panel.
-Maya: So, practically, it’s like turning paragraphs into illustrated comic panels automatically? That’s neat!
-Alex: Exactly, it’s a huge productivity boost for users creating picture books or comics. It even references the previous image or a base image for style consistency.
-Maya: That makes the visuals coherent, keeping a consistent style across panels without manual tweaking. Also, they improved the UI with a nice “Create panels” button and better layout.
-Alex: And behind the scenes, the system prompt was carefully crafted to teach the AI how to write captions and image prompts on separate lines. It’s pretty elegant.
-Maya: Plus, they cleaned up some legacy branches, focusing on mainline improvement and better testing. Speaking of that, the tools repo got improved test infrastructure and local asset mirroring for robust testing.
+Alex: First up, the collection of web apps that Anand calls "Tools".  
+Maya: This week’s big change is a cool new feature in the PicBook tool—a story textarea that auto-generates panels!  
+Alex: Yeah! Instead of manually listing image panels, you can now paste a full story, and it uses an AI model to write captions and prompts for each panel.  
+Maya: So, practically, it’s like turning paragraphs into illustrated comic panels automatically? That’s neat!  
+Alex: Exactly, it’s a huge productivity boost for users creating picture books or comics. It even references the previous image or a base image for style consistency.  
+Maya: That makes the visuals coherent, keeping a consistent style across panels without manual tweaking. Also, they improved the UI with a nice “Create panels” button and better layout.  
+Alex: And behind the scenes, the system prompt was carefully crafted to teach the AI how to write captions and image prompts on separate lines. It’s pretty elegant.  
+Maya: Plus, they cleaned up some legacy branches, focusing on mainline improvement and better testing. Speaking of that, the tools repo got improved test infrastructure and local asset mirroring for robust testing.  
 Alex: This kind of attention to automated tests saves a lot of developer time and maintains quality.
 
-Maya: Shifting gears, the academic program docs embed project made solid progress too!
-Alex: Right, they added a collapsible chatbot widget that can be embedded anywhere with a single script.
-Maya: That’s a big usability win—no separate CSS file, just one JS file that injects everything dynamically.
-Alex: Exactly, the chatbot interface got restyled with purple headers and a nice clear chat feature.
-Maya: And the chatbot window is now responsive, adjusting its height for different screen sizes, great for desktop and mobile users.
-Alex: This makes embedding an academic document Q&A assistant really seamless and visually integrated.
-Maya: Plus, the backend got enhanced logging in the Cloudflare worker, with clearly structured logs per request, tracking the search and answer generation steps.
-Alex: That helps with observability and debugging, very important for production AI services.
+Maya: Shifting gears, the academic program docs embed project made solid progress too!  
+Alex: Right, they added a collapsible chatbot widget that can be embedded anywhere with a single script.  
+Maya: That’s a big usability win—no separate CSS file, just one JS file that injects everything dynamically.  
+Alex: Exactly, the chatbot interface got restyled with purple headers and a nice clear chat feature.  
+Maya: And the chatbot window is now responsive, adjusting its height for different screen sizes, great for desktop and mobile users.  
+Alex: This makes embedding an academic document Q&A assistant really seamless and visually integrated.  
+Maya: Plus, the backend got enhanced logging in the Cloudflare worker, with clearly structured logs per request, tracking the search and answer generation steps.  
+Alex: That helps with observability and debugging, very important for production AI services.  
 Maya: The documentation also includes live demos and clear embed instructions, making it a breeze to add this to educational websites.
 
-Alex: Next, Anand updated many large language model projects from GPT-4 to GPT-5 mini and nano models.
-Maya: That upgrade means newer, faster, and more capable AI powering LLM workflows in projects like DataChat, API Agent, TopicTrends, Hypothesis Forge, and Rewriter.
-Alex: Yeah, it’s all about leveraging the latest LLM tech to deliver smarter conversations, hypothesis generation, API querying, and text rewriting.
-Maya: Did you notice the Hypothesis Forge also secured its settings UI—now the settings panel is collapsed by default and buttons are larger.
-Alex: Oh yes, UX improvements are always welcome and they keep the interface clean and easier to use.
-Maya: Plus, Hypothesis Forge now supports Excel XLSX uploads which is a big convenience for working with spreadsheet data.
-Alex: This opens up more use cases beyond just CSV, helping analysts load their data directly.
+Alex: Next, Anand updated many large language model projects from GPT-4 to GPT-5 mini and nano models.  
+Maya: That upgrade means newer, faster, and more capable AI powering LLM workflows in projects like DataChat, API Agent, TopicTrends, Hypothesis Forge, and Rewriter.  
+Alex: Yeah, it’s all about leveraging the latest LLM tech to deliver smarter conversations, hypothesis generation, API querying, and text rewriting.  
+Maya: Did you notice the Hypothesis Forge also secured its settings UI—now the settings panel is collapsed by default and buttons are larger.  
+Alex: Oh yes, UX improvements are always welcome and they keep the interface clean and easier to use.  
+Maya: Plus, Hypothesis Forge now supports Excel XLSX uploads which is a big convenience for working with spreadsheet data.  
+Alex: This opens up more use cases beyond just CSV, helping analysts load their data directly.  
 Maya: I also spotted significant test coverage improvements across various tools, ensuring reliability and smooth user experience.
 
-Alex: In the realm of UI libraries, the SmartArt project got a major overhaul!
-Maya: Right, they renamed the “Rows” component to “Stack” for better naming consistency and unified the theme API.
-Alex: They upgraded the docs site to Docsify v5, added a new script to render examples with modern libraries, and replaced inline example images with generated webp screenshots.
-Maya: The themes got a big refresh too, with ten professional themes like Office, Material, Okabe-Ito colorblind-safe, and even Neon for high contrast.
-Alex: These themes define carefully crafted color schemes that can be used to style data art consistently and beautifully.
-Maya: It’s powerful how pure CSS is doing all this with no JavaScript dependencies! Very lightweight and responsive.
-Alex: Plus, they introduced a themes demo page that allows you to select themes and adjust fade percentages, along with code previews highlighted nicely.
+Alex: In the realm of UI libraries, the SmartArt project got a major overhaul!  
+Maya: Right, they renamed the “Rows” component to “Stack” for better naming consistency and unified the theme API.  
+Alex: They upgraded the docs site to Docsify v5, added a new script to render examples with modern libraries, and replaced inline example images with generated webp screenshots.  
+Maya: The themes got a big refresh too, with ten professional themes like Office, Material, Okabe-Ito colorblind-safe, and even Neon for high contrast.  
+Alex: These themes define carefully crafted color schemes that can be used to style data art consistently and beautifully.  
+Maya: It’s powerful how pure CSS is doing all this with no JavaScript dependencies! Very lightweight and responsive.  
+Alex: Plus, they introduced a themes demo page that allows you to select themes and adjust fade percentages, along with code previews highlighted nicely.  
 Maya: A great toolkit for people who want professional-grade smart art for presentations and documents.
 
-Alex: Another new shiny tool added this week is the Data Extractor.
-Maya: This web app lets you upload images of charts or tables and convert them automatically into structured CSV data using AI vision!
-Alex: Yes, by sending the image and a crafted prompt to OpenAI-compatible endpoints, it extracts facts and presents them cleanly.
-Maya: You can tweak the prompt, customize column names, and choose which AI model to use, streaming results as they are generated.
-Alex: The UI supports showing a progress counter of facts extracted and lets you download the final CSV.
-Maya: This makes digitizing paper or slide charts so much easier—no tedious manual entry needed.
+Alex: Another new shiny tool added this week is the Data Extractor.  
+Maya: This web app lets you upload images of charts or tables and convert them automatically into structured CSV data using AI vision!  
+Alex: Yes, by sending the image and a crafted prompt to OpenAI-compatible endpoints, it extracts facts and presents them cleanly.  
+Maya: You can tweak the prompt, customize column names, and choose which AI model to use, streaming results as they are generated.  
+Alex: The UI supports showing a progress counter of facts extracted and lets you download the final CSV.  
+Maya: This makes digitizing paper or slide charts so much easier—no tedious manual entry needed.  
 Alex: And the tool’s integrated with the usual OpenAI configuration and supports multiple API endpoints for flexibility.
 
-Maya: Oh, and the Recall tool got a nice enhancement—fuzzy search for its markdown list items!
-Alex: That means instead of exact text matching, users get smart search results, showing the top 5 closest matches.
-Maya: Very handy when hunting for notes or questions without knowing exact phrases.
+Maya: Oh, and the Recall tool got a nice enhancement—fuzzy search for its markdown list items!  
+Alex: That means instead of exact text matching, users get smart search results, showing the top 5 closest matches.  
+Maya: Very handy when hunting for notes or questions without knowing exact phrases.  
 Alex: The UI also supports filtering starred items or searching normally, making recall quick and efficient.
 
-Maya: Wrapping up, I see the IIT Madras academic documents got a lot of content enhancements too.
-Alex: Yes, improved formatting in markdown academic aspects, policies, courses, admissions, student life, and more.
-Maya: These detailed docs are embedded and indexed for semantic search and now paired with the embeddable chatbot for highly interactive Q&A.
+Maya: Wrapping up, I see the IIT Madras academic documents got a lot of content enhancements too.  
+Alex: Yes, improved formatting in markdown academic aspects, policies, courses, admissions, student life, and more.  
+Maya: These detailed docs are embedded and indexed for semantic search and now paired with the embeddable chatbot for highly interactive Q&A.  
 Alex: It’s a great example of using AI tech to make dense academic info highly accessible for students and staff.
 
-Maya: Here’s a quick tip you can try today—Alex, how would you use that fuzzy search in Recall in your daily workflow?
+Maya: Here’s a quick tip you can try today—Alex, how would you use that fuzzy search in Recall in your daily workflow?  
 Alex: I’d definitely use fuzzy search to quickly find snippets in my notes, especially when I remember only part of a phrase or keyword. It turns static note browsing into a powerful, intuitive search experience!
 
-Alex: Remember, small twists in UI or API choices can hugely influence user experience and developer productivity.
-Maya: Don’t forget to explore your tooling options—they make your projects shine and your processes smoother.
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Alex: Remember, small twists in UI or API choices can hugely influence user experience and developer productivity.  
+Maya: Don’t forget to explore your tooling options—they make your projects shine and your processes smoother.  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -1683,63 +1797,63 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-07-06.mp3</guid>
     <pubDate>Sun, 06 Jul 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 06 Jul 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 06 Jul 2025!  
 Maya: We’re Alex and Maya, excited to dive into the highlights from Anand’s latest commits. Let’s get started!
 
-Alex: First up, a fascinating project that analyzes research papers to spot emerging trends across multiple scientific fields.
+Alex: First up, a fascinating project that analyzes research papers to spot emerging trends across multiple scientific fields.  
 Maya: This tool uses AI to categorize arXiv papers by topics and creates eye-catching visual charts showing how those topics evolve over time.
 
-Alex: What’s cool is how it harnesses semantic similarity models to classify papers, making it easier for researchers and publishers to track hot new areas.
+Alex: What’s cool is how it harnesses semantic similarity models to classify papers, making it easier for researchers and publishers to track hot new areas.  
 Maya: Exactly! Instead of manually sifting through thousands of papers, this AI-powered system highlights key topic trends, which saves so much time and uncovers fresh insights.
 
-Alex: And the update this week was all about polishing the documentation and licensing, which might seem small but is crucial for clarity and proper open-source use.
+Alex: And the update this week was all about polishing the documentation and licensing, which might seem small but is crucial for clarity and proper open-source use.  
 Maya: Right, having clear instructions and open licensing lets more people adopt and build on the tool confidently. It’s a foundation for collaboration and growth.
 
-Alex: Next, let’s switch to a chatbot assistant for databases. The latest improvements let users directly edit the system prompt, making it more flexible.
+Alex: Next, let’s switch to a chatbot assistant for databases. The latest improvements let users directly edit the system prompt, making it more flexible.  
 Maya: That’s a big win! It means people can customize how the AI interprets their questions or commands, tailoring the chatbot to their unique needs.
 
-Alex: Also, they optimized memory use by no longer creating tables entirely in memory. That improves efficiency, especially with large datasets.
+Alex: Also, they optimized memory use by no longer creating tables entirely in memory. That improves efficiency, especially with large datasets.  
 Maya: Efficiency matters a lot for users who run complex queries. Less memory overhead means the bot can handle more tasks smoothly.
 
-Alex: Moving on, there’s an update for a lightweight API proxy service that lets anyone access OpenAI or OpenRouter APIs with minimal cost.
+Alex: Moving on, there’s an update for a lightweight API proxy service that lets anyone access OpenAI or OpenRouter APIs with minimal cost.  
 Maya: Yes, this backend tool is great for front-end developers who want easy access to language models without managing keys or billing mess.
 
-Alex: The key update was adding a linter tool called OXLint and fixing request proxying details to make the code cleaner and more stable.
+Alex: The key update was adding a linter tool called OXLint and fixing request proxying details to make the code cleaner and more stable.  
 Maya: Keeping the proxy code robust is important because it affects so many users. Plus, small fixes like stripping unsafe headers ensure more secure API calls.
 
-Alex: Over at Anand’s generative AI group podcaster, the podcast script was updated with new dialogue from recent group chats.
+Alex: Over at Anand’s generative AI group podcaster, the podcast script was updated with new dialogue from recent group chats.  
 Maya: This project turns WhatsApp group transcripts into engaging two-host podcast scripts and audio, which is such a creative way to recycle conversations.
 
-Alex: The new commits added nearly 100 lines of conversation, reflecting fresh discussions around AI agents and automation tools.
+Alex: The new commits added nearly 100 lines of conversation, reflecting fresh discussions around AI agents and automation tools.  
 Maya: For the listeners, it means getting a vibrant weekly summary of emerging AI talks, packaged as a friendly back-and-forth discussion.
 
-Alex: Another update we saw was from Anand’s personal notes repository — weekly things learned.
+Alex: Another update we saw was from Anand’s personal notes repository — weekly things learned.  
 Maya: The notes are always a goldmine of interesting tech tips and reflections. This week’s batch included insights on vertical AI and GitHub’s container registry.
 
-Alex: Also, a practical highlight was updating screen recording scripts with FFmpeg, including commands for low-frame-rate captures and audio normalization.
+Alex: Also, a practical highlight was updating screen recording scripts with FFmpeg, including commands for low-frame-rate captures and audio normalization.  
 Maya: Those handy shortcuts make it easier for people to create quality screencasts without heavy CPU load—a win for productivity.
 
-Alex: Lastly, let’s talk about a major new feature in Anand’s ChatGPT conversation converter tool.
+Alex: Lastly, let’s talk about a major new feature in Anand’s ChatGPT conversation converter tool.  
 Maya: Oh yes, the newly added thinking time analysis! It’s a tool that looks at exported ChatGPT conversations and calculates how long the AI spends “thinking” or generating responses.
 
-Alex: This is a subtle but powerful feature. It digs into the metadata to measure actual model generation time, not just wall-clock time, giving a realistic picture of how long reasoning takes.
+Alex: This is a subtle but powerful feature. It digs into the metadata to measure actual model generation time, not just wall-clock time, giving a realistic picture of how long reasoning takes.  
 Maya: And that helps users or researchers understand the AI’s performance patterns, spotting slowdowns or long reasoning chains in their chats.
 
-Alex: They made it runnable via npx as a standalone executable, complete with detailed tests and documentation. Such polish really helps adoption.
+Alex: They made it runnable via npx as a standalone executable, complete with detailed tests and documentation. Such polish really helps adoption.  
 Maya: Plus, the stats it generates include total thinking time, frequency of thinking blocks, and even excerpts of the questions that triggered long responses—a deep dive for the curious.
 
-Alex: Wow, it’s amazing to see these projects blend data science, practical tooling, and AI to empower users and researchers alike.
+Alex: Wow, it’s amazing to see these projects blend data science, practical tooling, and AI to empower users and researchers alike.  
 Maya: Absolutely! It’s all about making complex AI workflows accessible and insightful.
 
-Maya: Here’s a quick tip you can try today: When working with large API proxy or chatbot services, always sanitize your headers and limit memory usage to keep things responsive.
+Maya: Here’s a quick tip you can try today: When working with large API proxy or chatbot services, always sanitize your headers and limit memory usage to keep things responsive.  
 Alex, how would you use that in your own projects?
 
 Alex: Great question! I’d prioritize these best practices early in development to avoid nasty performance bottlenecks and security risks. They save so much debugging time later.
 
-Alex: To wrap up, remember that thorough documentation and testing can turn good tools into great, trusted projects.
+Alex: To wrap up, remember that thorough documentation and testing can turn good tools into great, trusted projects.  
 Maya: And small, thoughtful improvements — like editable prompts or clever analysis tools — multiply their impact over time.
 
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -1836,80 +1950,80 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-22.mp3</guid>
     <pubDate>Sun, 22 Jun 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 22 Jun 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 22 Jun 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
-Alex: Let’s kick off with a deep dive into a fascinating data project—Indian High Courts judgment analysis.
-Maya: Yeah, Anand unpacked a massive dataset: 16 million judgments from 25 Indian High Courts, about 1TB of data. Can you imagine?
-Alex: That’s huge! What’s the goal here?
-Maya: To explore court efficiency differences, seasonal justice patterns, and political cases like the UAPA bail delays.
-Alex: That’s like bringing hard data to courtroom stories—how quickly cases are resolved, how courts seasonally slow down, and where bail is systematically delayed.
-Maya: Exactly, and the data is meticulously structured in Parquet files on S3, neatly partitioned by year, court, and bench, which is great for running efficient SQL queries directly on the cloud.
-Alex: Non-technical terms: Anand processes millions of legal decisions to find patterns—like which courts clear cases faster or how justice delivery changes during vacations.
-Maya: He also investigated constitutional case surges and how bench sizes impact case clearance rates.
-Alex: Oh! Like if more judges mean faster decisions and lower backlogs?
-Maya: Right, plus a special deep look into terror case bail hearings, showing repeated delays for accused under anti-terror laws with bail pushbacks stretching for months.
-Alex: That matters because it reveals justice bottlenecks and possible human rights concerns hidden in dense legal data.
-Maya: And Anand didn’t stop at analysis—he scripted full DuckDB queries and packages results into CSVs for journalistic insights, making it accessible for data reporters.
+Alex: Let’s kick off with a deep dive into a fascinating data project—Indian High Courts judgment analysis.  
+Maya: Yeah, Anand unpacked a massive dataset: 16 million judgments from 25 Indian High Courts, about 1TB of data. Can you imagine?  
+Alex: That’s huge! What’s the goal here?  
+Maya: To explore court efficiency differences, seasonal justice patterns, and political cases like the UAPA bail delays.  
+Alex: That’s like bringing hard data to courtroom stories—how quickly cases are resolved, how courts seasonally slow down, and where bail is systematically delayed.  
+Maya: Exactly, and the data is meticulously structured in Parquet files on S3, neatly partitioned by year, court, and bench, which is great for running efficient SQL queries directly on the cloud.  
+Alex: Non-technical terms: Anand processes millions of legal decisions to find patterns—like which courts clear cases faster or how justice delivery changes during vacations.  
+Maya: He also investigated constitutional case surges and how bench sizes impact case clearance rates.  
+Alex: Oh! Like if more judges mean faster decisions and lower backlogs?  
+Maya: Right, plus a special deep look into terror case bail hearings, showing repeated delays for accused under anti-terror laws with bail pushbacks stretching for months.  
+Alex: That matters because it reveals justice bottlenecks and possible human rights concerns hidden in dense legal data.  
+Maya: And Anand didn’t stop at analysis—he scripted full DuckDB queries and packages results into CSVs for journalistic insights, making it accessible for data reporters.  
 Alex: I love that—making such huge, complex data transparent and meaningful is no small feat.
 
-Maya: Next up, let’s talk about the revamped “Hypothesis Forge” — that smart app for hypothesis generation and data testing.
-Alex: Yes! This week’s update added CSV file upload support right in the browser interface.
-Maya: So now you can instantly preview your own CSV data in a scrollable table before generating hypotheses. No need to stick with canned datasets!
-Alex: Plus, users can now write or edit an “Analysis Context” — a short description of their problem or objective — that tailors how hypotheses are generated.
-Maya: That’s a neat way to move from a black box to interactive, guided analysis. You tell it what you want, and the system tries to find relevant hypotheses and test them.
-Alex: The UI got tighter too—replaced a bulky grid of demos with a compact dropdown, saving space and making it easier to pick datasets.
-Maya: I’m curious, Alex: how do you think previewing data prior to analysis changes the user experience?
-Alex: It builds trust—users know what the data looks like, so they’re less likely to get surprised by strange results. Plus, it confirms data loaded correctly. Data scientists will appreciate that!
+Maya: Next up, let’s talk about the revamped “Hypothesis Forge” — that smart app for hypothesis generation and data testing.  
+Alex: Yes! This week’s update added CSV file upload support right in the browser interface.  
+Maya: So now you can instantly preview your own CSV data in a scrollable table before generating hypotheses. No need to stick with canned datasets!  
+Alex: Plus, users can now write or edit an “Analysis Context” — a short description of their problem or objective — that tailors how hypotheses are generated.  
+Maya: That’s a neat way to move from a black box to interactive, guided analysis. You tell it what you want, and the system tries to find relevant hypotheses and test them.  
+Alex: The UI got tighter too—replaced a bulky grid of demos with a compact dropdown, saving space and making it easier to pick datasets.  
+Maya: I’m curious, Alex: how do you think previewing data prior to analysis changes the user experience?  
+Alex: It builds trust—users know what the data looks like, so they’re less likely to get surprised by strange results. Plus, it confirms data loaded correctly. Data scientists will appreciate that!  
 Maya: It’s like the difference between blindfolded guesswork and informed exploration.
 
-Alex: Shifting gears, the “LLM Demos” collection got a bunch of fresh interactive AI tools added this week.
-Maya: Oh yes, including the “AI Pipe” — a serverless LLM workflow builder using any OpenAI-compatible API.
-Alex: That’s huge because it lets devs craft AI pipelines without managing backend infrastructure.
-Maya: There’s also “BSToast,” a tiny library for stylish Bootstrap toast notifications replacing old alert popups—modern and sleek!
-Alex: Got to love neat UI improvements.
-Maya: Then some powerful AI-enhanced tools for building decision trees emerged: “Decision Tree Builder” and “DTGen.”
-Alex: Both help visualize and edit decision trees right in the browser, one with advanced AI assistance. This is great for understanding complex data splits without writing tons of code.
-Maya: Several other updates include LinkedIn automation, sentiment analysis, data quality evaluation via LLM-powered Python, and compliance document analysis with PDF uploads.
+Alex: Shifting gears, the “LLM Demos” collection got a bunch of fresh interactive AI tools added this week.  
+Maya: Oh yes, including the “AI Pipe” — a serverless LLM workflow builder using any OpenAI-compatible API.  
+Alex: That’s huge because it lets devs craft AI pipelines without managing backend infrastructure.  
+Maya: There’s also “BSToast,” a tiny library for stylish Bootstrap toast notifications replacing old alert popups—modern and sleek!  
+Alex: Got to love neat UI improvements.  
+Maya: Then some powerful AI-enhanced tools for building decision trees emerged: “Decision Tree Builder” and “DTGen.”  
+Alex: Both help visualize and edit decision trees right in the browser, one with advanced AI assistance. This is great for understanding complex data splits without writing tons of code.  
+Maya: Several other updates include LinkedIn automation, sentiment analysis, data quality evaluation via LLM-powered Python, and compliance document analysis with PDF uploads.  
 Alex: This demo list shows how AI is seeping into different niches—from data cleaning to HR to automated job applications.
 
-Maya: Speaking of dev tooling, there’s a cool new command into the “scripts” setup called `pyrun`.
-Alex: I heard! It’s amazing — you give it a natural language prompt, it uses an LLM to write a concise Python script, then runs it immediately.
-Maya: So it’s like telling your computer what to do in plain English and getting Python code executed right away.
-Alex: I’m thinking how handy this is for quick data transformations or scraping tasks without switching context or manually writing code.
-Maya: Definitely a productivity booster! And they also added a `record` command — it records mic and system audio to `.opus` with noise reduction. Superb for easy podcast prep or voice notes.
+Maya: Speaking of dev tooling, there’s a cool new command into the “scripts” setup called `pyrun`.  
+Alex: I heard! It’s amazing — you give it a natural language prompt, it uses an LLM to write a concise Python script, then runs it immediately.  
+Maya: So it’s like telling your computer what to do in plain English and getting Python code executed right away.  
+Alex: I’m thinking how handy this is for quick data transformations or scraping tasks without switching context or manually writing code.  
+Maya: Definitely a productivity booster! And they also added a `record` command — it records mic and system audio to `.opus` with noise reduction. Superb for easy podcast prep or voice notes.  
 Alex: That fits nicely with all the audio-driven tools Anand’s building.
 
-Maya: On the “Tools” repository, they enhanced the Google Suggest tool with something pretty neat—an editable system prompt for the AI explanations.
-Alex: So users can now personalize the AI’s tone and style when it interprets Google suggestions?
-Maya: Exactly! And they added a copy button to quickly copy the AI’s explanation output.
-Alex: That’s a small detail but makes a big difference in user workflow.
-Maya: Plus, there’s a split “Explain This” button — one regular and one “No Cache” option. That’s great to force fresh explanations instead of cached ones.
+Maya: On the “Tools” repository, they enhanced the Google Suggest tool with something pretty neat—an editable system prompt for the AI explanations.  
+Alex: So users can now personalize the AI’s tone and style when it interprets Google suggestions?  
+Maya: Exactly! And they added a copy button to quickly copy the AI’s explanation output.  
+Alex: That’s a small detail but makes a big difference in user workflow.  
+Maya: Plus, there’s a split “Explain This” button — one regular and one “No Cache” option. That’s great to force fresh explanations instead of cached ones.  
 Alex: User control and transparency all the way—our favorite kind of update.
 
-Alex: The “API Agent” project is also polishing up! The API selection UI moved into a sticky side accordion menu.
-Maya: Right, improving navigation with collapsible sections, highlighting active APIs for better clarity.
-Alex: Now instead of bulky cards, it’s a clean sidebar with easy expansion and token input.
-Maya: This aligns with how you’d want to quickly switch between API sets without losing place—pretty practical enhancement.
-Alex: Also, they added support for GitLab APIs along with detailed usage examples, expanding beyond just GitHub and StackOverflow.
-Maya: And Dropbox API support was introduced, perfect for managing files remotely through natural language queries.
+Alex: The “API Agent” project is also polishing up! The API selection UI moved into a sticky side accordion menu.  
+Maya: Right, improving navigation with collapsible sections, highlighting active APIs for better clarity.  
+Alex: Now instead of bulky cards, it’s a clean sidebar with easy expansion and token input.  
+Maya: This aligns with how you’d want to quickly switch between API sets without losing place—pretty practical enhancement.  
+Alex: Also, they added support for GitLab APIs along with detailed usage examples, expanding beyond just GitHub and StackOverflow.  
+Maya: And Dropbox API support was introduced, perfect for managing files remotely through natural language queries.  
 Alex: This suite is genuinely making multi-API querying more accessible and fluid for both devs and analysts.
 
-Maya: Finally, there was a big update to “Data Stories” with new entries for employment trends and horoscope contradictions.
-Alex: The horoscope story used deep research to gather and analyze contradictory predictions from multiple Indian media sources — an example of blending LLMs with journalistic curiosity.
-Maya: The employment trends story shows US sector growth changes since 1980—some sectors doubling, some shrinking.
-Alex: Plus, on the backend, the story links were refactored to be more flexible, supporting external or relative URLs.
-Maya: This means the site can easily blend internal and external data stories, improving navigation and content sharing.
+Maya: Finally, there was a big update to “Data Stories” with new entries for employment trends and horoscope contradictions.  
+Alex: The horoscope story used deep research to gather and analyze contradictory predictions from multiple Indian media sources — an example of blending LLMs with journalistic curiosity.  
+Maya: The employment trends story shows US sector growth changes since 1980—some sectors doubling, some shrinking.  
+Alex: Plus, on the backend, the story links were refactored to be more flexible, supporting external or relative URLs.  
+Maya: This means the site can easily blend internal and external data stories, improving navigation and content sharing.  
 Alex: A smooth user experience for exploring diverse data narratives is key for these modern data journalism sites.
 
-Maya: Here’s a quick tip you can try today: If you’re using any LLM-powered tool, customize the system prompt to fit your context or style.
-Alex: That’s great! Changing the system prompt lets you adjust the AI’s personality and focus, bringing more relevance and clarity.
-Maya: And since many tools are now letting you edit this directly, it’s never been easier to experiment.
+Maya: Here’s a quick tip you can try today: If you’re using any LLM-powered tool, customize the system prompt to fit your context or style.  
+Alex: That’s great! Changing the system prompt lets you adjust the AI’s personality and focus, bringing more relevance and clarity.  
+Maya: And since many tools are now letting you edit this directly, it’s never been easier to experiment.  
 Alex: I’ll totally start crafting my own prompt templates for different tasks. Makes the automation even smoother.
 
-Alex: To wrap up, I’ll say: Remember, small tweaks like enabling file uploads or adding context inputs can unlock huge usability gains.
-Maya: And I’ll add: Don’t hesitate to personalize your AI interactions with prompt editing and UI improvements—the better the input, the better the insight!
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Alex: To wrap up, I’ll say: Remember, small tweaks like enabling file uploads or adding context inputs can unlock huge usability gains.  
+Maya: And I’ll add: Don’t hesitate to personalize your AI interactions with prompt editing and UI improvements—the better the input, the better the insight!  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -1920,65 +2034,65 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-06-15.mp3</guid>
     <pubDate>Sun, 15 Jun 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 15 Jun 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of 15 Jun 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
-Alex: First up, let’s talk about the data science course materials Anand maintains.
-Maya: There was a big update to the official course, including a new tutorial on preparing data with DuckDB.
-Alex: DuckDB is becoming quite popular for handling large data files locally, right?
-Maya: Exactly! Anand added examples showing how to create sample datasets, handle messy CSV files, and do exploratory data analysis—all with DuckDB’s SQL CLI.
-Alex: That’s super practical. Having hands-on guides like this helps learners handle real-world data that’s often messy or huge.
-Maya: And they included advice on memory-efficient processing, converting data to multiple formats like JSON or Parquet, and working with corrupted CSV files without crashing.
+Alex: First up, let’s talk about the data science course materials Anand maintains.  
+Maya: There was a big update to the official course, including a new tutorial on preparing data with DuckDB.  
+Alex: DuckDB is becoming quite popular for handling large data files locally, right?  
+Maya: Exactly! Anand added examples showing how to create sample datasets, handle messy CSV files, and do exploratory data analysis—all with DuckDB’s SQL CLI.  
+Alex: That’s super practical. Having hands-on guides like this helps learners handle real-world data that’s often messy or huge.  
+Maya: And they included advice on memory-efficient processing, converting data to multiple formats like JSON or Parquet, and working with corrupted CSV files without crashing.  
 Alex: Great for students to grasp not just code, but practical challenges in data work.
 
-Maya: Alongside that, the course timelines were revised.
-Alex: Yes, they adjusted dates for projects and graded assignments, keeping everything clear for the students.
+Maya: Alongside that, the course timelines were revised.  
+Alex: Yes, they adjusted dates for projects and graded assignments, keeping everything clear for the students.  
 Maya: Keeping course info up to date helps everyone stay on track, especially with multiple moving parts like online exams and graded assignments.
 
-Alex: Next, in the data visualization realm, a new employment trends story was added.
-Maya: It’s a full interactive visualization with detailed insights.
-Alex: These data stories make complex data more engaging and understandable.
+Alex: Next, in the data visualization realm, a new employment trends story was added.  
+Maya: It’s a full interactive visualization with detailed insights.  
+Alex: These data stories make complex data more engaging and understandable.  
 Maya: It’s probably a great way for students or data enthusiasts to see real examples of telling stories with data.
 
-Alex: Turning to tools, several handy utilities saw improvements.
-Maya: The page-to-markdown tool was enhanced to better handle SVG images and clean up links from ChatGPT pages.
-Alex: That means users can now copy web content more reliably into Markdown for notes or blogs.
+Alex: Turning to tools, several handy utilities saw improvements.  
+Maya: The page-to-markdown tool was enhanced to better handle SVG images and clean up links from ChatGPT pages.  
+Alex: That means users can now copy web content more reliably into Markdown for notes or blogs.  
 Maya: Yes, especially for technical and rich-content pages, better SVG support is a subtle but impactful upgrade.
 
-Alex: A big new feature is in the API Agent—Anand upgraded it to handle multiple API tokens and support selecting multiple APIs.
-Maya: That sounds super useful for anyone querying multiple services in one place.
-Alex: Right, for instance, using both GitHub and StackOverflow tokens at once, and the interface now lets users toggle APIs on and off dynamically.
-Maya: Plus, they improved OAuth token input management and added robust error handling for live LLM responses.
+Alex: A big new feature is in the API Agent—Anand upgraded it to handle multiple API tokens and support selecting multiple APIs.  
+Maya: That sounds super useful for anyone querying multiple services in one place.  
+Alex: Right, for instance, using both GitHub and StackOverflow tokens at once, and the interface now lets users toggle APIs on and off dynamically.  
+Maya: Plus, they improved OAuth token input management and added robust error handling for live LLM responses.  
 Alex: All these changes make the API Agent smoother and more versatile for complex queries.
 
-Maya: Another cool new tool is the Google Tasks Exporter.
-Alex: It lets you sign in, fetch your Google Tasks, export them as CSV, copy to Excel or Markdown, and even delete completed tasks.
-Maya: Storing the access token locally means you don’t have to sign in repeatedly.
+Maya: Another cool new tool is the Google Tasks Exporter.  
+Alex: It lets you sign in, fetch your Google Tasks, export them as CSV, copy to Excel or Markdown, and even delete completed tasks.  
+Maya: Storing the access token locally means you don’t have to sign in repeatedly.  
 Alex: Handy for managing your to-do list data outside Google’s interfaces, especially if you want detailed reports.
 
-Maya: Also, in the Web Apps collection, a new “Join CSV Tables” tool was added.
-Alex: You can paste multiple CSVs separated by blank lines, pick your delimiter, and merge them on the first column—like a lightweight local database join.
-Maya: That’s perfect for quick merges or combining data from separate exports without complex software.
-Alex: And for Markdown users, a Markdown table to CSV converter was added.
-Maya: So you can extract a table from Markdown text, clean links and images, and download it as CSV for analysis.
+Maya: Also, in the Web Apps collection, a new “Join CSV Tables” tool was added.  
+Alex: You can paste multiple CSVs separated by blank lines, pick your delimiter, and merge them on the first column—like a lightweight local database join.  
+Maya: That’s perfect for quick merges or combining data from separate exports without complex software.  
+Alex: And for Markdown users, a Markdown table to CSV converter was added.  
+Maya: So you can extract a table from Markdown text, clean links and images, and download it as CSV for analysis.  
 Alex: All these tools simplify common data wrangling steps that many struggle with manually.
 
-Maya: Lastly, there’s an amazing ambition with the LLM Fill-in-the-Blank tool.
-Alex: You type a sentence, click on a word to blank it, and see how different language models predict the missing word with log-probability scores.
-Maya: It’s like peeking inside the model’s thought process, which is great for learning and understanding model behavior.
-Alex: The tool supports various models, with online API keys and live streaming responses.
+Maya: Lastly, there’s an amazing ambition with the LLM Fill-in-the-Blank tool.  
+Alex: You type a sentence, click on a word to blank it, and see how different language models predict the missing word with log-probability scores.  
+Maya: It’s like peeking inside the model’s thought process, which is great for learning and understanding model behavior.  
+Alex: The tool supports various models, with online API keys and live streaming responses.  
 Maya: It also recently got a comparison tab to see two sentences side by side, helping with nuanced evaluation.
 
-Alex: Wow, that was packed! What do you think makes these changes so meaningful for Anand’s audience?
+Alex: Wow, that was packed! What do you think makes these changes so meaningful for Anand’s audience?  
 Maya: I love how these updates bridge theory and practice—from teaching with real tools to building practical utilities and exploratory AI apps. They’re thoughtful and impactful.
 
-Maya: Here’s a quick tip you can try today: When merging tables or exporting data from complex sources, consider using simple web-based tools like the new CSV joiner or Markdown-to-CSV converter. It saves a lot of manual cleanup time.
+Maya: Here’s a quick tip you can try today: When merging tables or exporting data from complex sources, consider using simple web-based tools like the new CSV joiner or Markdown-to-CSV converter. It saves a lot of manual cleanup time.  
 Alex: Great tip! I’d add that for interactive data analysis, DuckDB’s CLI approach with practical tutorials can fast-track your ability to handle messy, large datasets. How would you use these in a project?
 
-Alex: My key takeaway this week is: small improvements in tooling can dramatically improve productivity and workflow.
+Alex: My key takeaway this week is: small improvements in tooling can dramatically improve productivity and workflow.  
 Maya: And I’d add: clear, up-to-date course materials with real-world context empower learners to build solid foundations.
 
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -2477,62 +2591,62 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-05-04.mp3</guid>
     <pubDate>Sun, 04 May 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of May 3rd, 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of May 3rd, 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
-Alex: First up, let's talk about the scripts that power a streamlined coding environment.
-Maya: Right! This week, the key change was decluttering the fish shell startup by avoiding the permanent `fish_add_path` and using a more straightforward `set -gx PATH` approach instead.
-Alex: That’s clever because it makes your PATH variable setup more stable and less error-prone every time you open a terminal.
-Maya: Plus, some new virtual environments got added to this PATH setup, like for a tool named “marimo” and “ruff.” More tools ready to go right from the command line!
-Alex: And did you notice they added a new shell abbreviation for quickly running Node.js using `fnm` without overhead on startup? That's a great speedup.
-Maya: Also, for Linux users, the editor “micro” was added in the setup – a lightweight but powerful terminal editor.
+Alex: First up, let's talk about the scripts that power a streamlined coding environment.  
+Maya: Right! This week, the key change was decluttering the fish shell startup by avoiding the permanent `fish_add_path` and using a more straightforward `set -gx PATH` approach instead.  
+Alex: That’s clever because it makes your PATH variable setup more stable and less error-prone every time you open a terminal.  
+Maya: Plus, some new virtual environments got added to this PATH setup, like for a tool named “marimo” and “ruff.” More tools ready to go right from the command line!  
+Alex: And did you notice they added a new shell abbreviation for quickly running Node.js using `fnm` without overhead on startup? That's a great speedup.  
+Maya: Also, for Linux users, the editor “micro” was added in the setup – a lightweight but powerful terminal editor.  
 Alex: These are such practical tweaks that save time and keep your development flow smooth.
 
-Maya: Moving on to the “Tools in Data Science” course content, Anand expanded the LLM-related material.
-Alex: Yeah, there’s a big refresh on image generation and text-to-speech APIs. The Gemini 2.0 Flash model’s image generation is now covered with clear REST examples.
-Maya: And OpenAI’s newest GPT Image 1 model for creating and editing high-fidelity images is also included with easy-to-use curl commands.
-Alex: This makes it much easier for students to experiment with state-of-the-art multimodal AI capabilities right from their APIs.
-Maya: The course also added a detailed guide on OpenAI’s Text-to-Speech API and Google Gemini’s advanced speech studio services.
-Alex: That’s huge for anyone wanting to add voice or audio features to their apps or projects!
-Maya: They even include cost details and tips for optimizing usage, which beginners often miss.
+Maya: Moving on to the “Tools in Data Science” course content, Anand expanded the LLM-related material.  
+Alex: Yeah, there’s a big refresh on image generation and text-to-speech APIs. The Gemini 2.0 Flash model’s image generation is now covered with clear REST examples.  
+Maya: And OpenAI’s newest GPT Image 1 model for creating and editing high-fidelity images is also included with easy-to-use curl commands.  
+Alex: This makes it much easier for students to experiment with state-of-the-art multimodal AI capabilities right from their APIs.  
+Maya: The course also added a detailed guide on OpenAI’s Text-to-Speech API and Google Gemini’s advanced speech studio services.  
+Alex: That’s huge for anyone wanting to add voice or audio features to their apps or projects!  
+Maya: They even include cost details and tips for optimizing usage, which beginners often miss.  
 Alex: Aside from the API deep dives, the course updated links and added easy access to graded assignments and discussion threads. Super useful for students to stay on track.
 
-Alex: There was also a general note that the course is open to anyone wanting to explore the materials and evaluations but with some participation restrictions.
-Maya: That's thoughtful—letting others audit the content while maintaining grading control for enrolled students.
-Alex: Plus, important new content was added around GitHub Codespaces and Google Authentication with FastAPI.
-Maya: Those help developers set up fast cloud-based coding environments and secure API logins using Google accounts.
+Alex: There was also a general note that the course is open to anyone wanting to explore the materials and evaluations but with some participation restrictions.  
+Maya: That's thoughtful—letting others audit the content while maintaining grading control for enrolled students.  
+Alex: Plus, important new content was added around GitHub Codespaces and Google Authentication with FastAPI.  
+Maya: Those help developers set up fast cloud-based coding environments and secure API logins using Google accounts.  
 Alex: Makes setting up your development workflow and apps smoother than ever.
 
-Maya: Now, about the LLM mental math evaluations—Anand added some new models called “Grok 3” into the mix and improved how results pop up with detailed explanations on hover.
-Alex: I love that! It’s like seeing the AI’s thought process, not just the final result.
-Maya: They showed that OpenAI’s reasoning models essentially cracked mental multiplication up to 7-digit numbers with impressive human-like strategies.
-Alex: So, the models aren’t just spitting answers but using math tricks to get there. Amazing!
+Maya: Now, about the LLM mental math evaluations—Anand added some new models called “Grok 3” into the mix and improved how results pop up with detailed explanations on hover.  
+Alex: I love that! It’s like seeing the AI’s thought process, not just the final result.  
+Maya: They showed that OpenAI’s reasoning models essentially cracked mental multiplication up to 7-digit numbers with impressive human-like strategies.  
+Alex: So, the models aren’t just spitting answers but using math tricks to get there. Amazing!  
 Maya: Plus, 16 models including Gemini, Anthropic, Grok, and Llama now get nearly half of the multiplication questions right. Watching this space is exciting.
 
-Alex: In the tooling repos, “asyncLLM” got enhanced with support for OpenAI’s new Responses API which streams outputs and function calls more fluidly.
-Maya: This means developers can now handle more complex AI interactions like multi-tool calls or detailed incremental responses with simple async iterations.
-Alex: It’s a big step toward building interactive and responsive AI-powered apps.
+Alex: In the tooling repos, “asyncLLM” got enhanced with support for OpenAI’s new Responses API which streams outputs and function calls more fluidly.  
+Maya: This means developers can now handle more complex AI interactions like multi-tool calls or detailed incremental responses with simple async iterations.  
+Alex: It’s a big step toward building interactive and responsive AI-powered apps.  
 Maya: Especially helpful for integrations where you want to see outputs as they come, rather than waiting for the whole response.
 
-Maya: Shifting gears, Anand also improved the document assessor tool—a browser-based LLM app to check clauses in uploaded files like PDFs and Word docs.
-Alex: The update modularized heavy libraries like PDF.js and Mammoth.js to load only when needed.
-Maya: Plus, they added input validation and sanitized user content to prevent errors and security holes.
-Alex: All solid engineering moves to keep the tool fast and safe, especially for real-world usage by legal or HR teams.
+Maya: Shifting gears, Anand also improved the document assessor tool—a browser-based LLM app to check clauses in uploaded files like PDFs and Word docs.  
+Alex: The update modularized heavy libraries like PDF.js and Mammoth.js to load only when needed.  
+Maya: Plus, they added input validation and sanitized user content to prevent errors and security holes.  
+Alex: All solid engineering moves to keep the tool fast and safe, especially for real-world usage by legal or HR teams.  
 Maya: And they even created a slick UI to show evaluations and let you deep-dive into results with citations.
 
-Alex: Last but not least, in the personal scripts repo, a new script named “git-uncommitted” was added.
-Maya: It scans your folders to flag which ones have uncommitted changes or need pushing to remote — helping keep your codebases clean and synced.
-Alex: Those little helper scripts are the unsung heroes that save headspace and avoid embarrassing code slip-ups.
-Maya: Definitely. There was also a fix to correctly show a 2-day agenda in gcalcli, more Linux setup notes, and an enhancement to generate a heavy PDF for stress-testing.
+Alex: Last but not least, in the personal scripts repo, a new script named “git-uncommitted” was added.  
+Maya: It scans your folders to flag which ones have uncommitted changes or need pushing to remote — helping keep your codebases clean and synced.  
+Alex: Those little helper scripts are the unsung heroes that save headspace and avoid embarrassing code slip-ups.  
+Maya: Definitely. There was also a fix to correctly show a 2-day agenda in gcalcli, more Linux setup notes, and an enhancement to generate a heavy PDF for stress-testing.  
 Alex: A week full of practical tweaks and rich AI content updates. Perfect!
 
-Maya: Here's a quick tip you can try today: When working with APIs posting large requests, lazy-load your heavy libraries only when you really need them, and validate inputs thoroughly.
-Alex: That’s smart. How would you use that in your own projects, Maya?
+Maya: Here's a quick tip you can try today: When working with APIs posting large requests, lazy-load your heavy libraries only when you really need them, and validate inputs thoroughly.  
+Alex: That’s smart. How would you use that in your own projects, Maya?  
 Maya: I'd implement on-demand dynamic imports for UI tools like PDF or image processors, so the app loads lightning fast initially and stays secure with strict file checks. It’s a solid usability and reliability win.
 
-Alex: What I take away this week is to never underestimate how small enhancements—like shell path tweaks or better input validation—can really smooth out a developer’s day.
-Maya: And I’m reminded to always look for ways to integrate the newest AI features thoughtfully, like streaming APIs and multi-tool calls that make interactions richer and apps more fun to build.
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Alex: What I take away this week is to never underestimate how small enhancements—like shell path tweaks or better input validation—can really smooth out a developer’s day.  
+Maya: And I’m reminded to always look for ways to integrate the newest AI features thoughtfully, like streaming APIs and multi-tool calls that make interactions richer and apps more fun to build.  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -2543,57 +2657,57 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-04-27.mp3</guid>
     <pubDate>Sun, 27 Apr 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of April 27, 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of April 27, 2025!  
 Maya: We’re Alex and Maya, here to guide you through some fascinating updates from Anand’s GitHub projects this week.
 
-Alex: Let’s start with Anand’s mental math evaluations using AI models.
-Maya: The big advancement here? Documenting how 50 different AI models handle multiplying large numbers.
-Alex: Who thought AI could try mental math at all? But this shows they’re not quite calculators yet.
-Maya: Exactly! What’s cool is that some of the best models, like OpenAI’s reasoning variants, got six of seven problems right.
-Alex: That’s huge! These models use human-like tricks to break down big calculations — kind of like doing math in steps.
-Maya: And the evaluation now includes setup tips for API keys, making it easier for others to try. Why do you think adding setup instructions matters?
+Alex: Let’s start with Anand’s mental math evaluations using AI models.  
+Maya: The big advancement here? Documenting how 50 different AI models handle multiplying large numbers.  
+Alex: Who thought AI could try mental math at all? But this shows they’re not quite calculators yet.  
+Maya: Exactly! What’s cool is that some of the best models, like OpenAI’s reasoning variants, got six of seven problems right.  
+Alex: That’s huge! These models use human-like tricks to break down big calculations — kind of like doing math in steps.  
+Maya: And the evaluation now includes setup tips for API keys, making it easier for others to try. Why do you think adding setup instructions matters?  
 Alex: It lowers the barrier for other developers to replicate or improve on the tests, which helps the whole AI community.
 
-Maya: Next up, Anand polished the homepage that features all his projects.
-Alex: Yep, the list now groups repos by topic and shows usage stats, stars, and updated dates.
-Maya: It also has handy filters so you can find projects by what you’re interested in or when they were updated—making discovery much smoother.
-Alex: This is like giving a well-organized portfolio to anyone visiting the site.
-Maya: And a fresh script handles the page’s HTML generation and keeps things tidy with Bootstrap styling.
-Alex: What kind of user benefits can you see from this?
+Maya: Next up, Anand polished the homepage that features all his projects.  
+Alex: Yep, the list now groups repos by topic and shows usage stats, stars, and updated dates.  
+Maya: It also has handy filters so you can find projects by what you’re interested in or when they were updated—making discovery much smoother.  
+Alex: This is like giving a well-organized portfolio to anyone visiting the site.  
+Maya: And a fresh script handles the page’s HTML generation and keeps things tidy with Bootstrap styling.  
+Alex: What kind of user benefits can you see from this?  
 Maya: Anyone can quickly spot active and relevant projects without sifting through heaps of info.
 
-Alex: Speaking of visuals, there’s a slick update to the Marp slide plugin for SmartArt diagrams.
-Maya: Anand made the plugin modular and modern — now it supports Pyramid, Chevron, and Venn diagrams all in one go.
-Alex: Plus, it’s compatible with the Marp CLI, so you can create stylish visuals right from Markdown files easily.
-Maya: There’s even a new frontend app that lets you input your content and see slides instantly in your browser!
-Alex: That definitely helps presenters make their slides look more engaging, without needing complex graphic design tools.
-Maya: Why do you think integrating with Markdown and CLI tools is important?
+Alex: Speaking of visuals, there’s a slick update to the Marp slide plugin for SmartArt diagrams.  
+Maya: Anand made the plugin modular and modern — now it supports Pyramid, Chevron, and Venn diagrams all in one go.  
+Alex: Plus, it’s compatible with the Marp CLI, so you can create stylish visuals right from Markdown files easily.  
+Maya: There’s even a new frontend app that lets you input your content and see slides instantly in your browser!  
+Alex: That definitely helps presenters make their slides look more engaging, without needing complex graphic design tools.  
+Maya: Why do you think integrating with Markdown and CLI tools is important?  
 Alex: It keeps the workflow fast and text-based, perfect for developers and tech-savvy users who like coding their presentations.
 
-Maya: Switching gears, the Rewriter app got a big refresh too.
-Alex: Yup, the app’s UI now relies on Bootstrap and Bootstrap Icons for a cleaner, responsive look.
-Maya: It includes handy preset rewriting scenarios like polishing emails or simplifying technical docs you can pick with a click.
-Alex: Plus, the bookmarklet generator is simplified and more modular, letting users create custom text-rewrite tools with their own API keys and instructions.
-Maya: This is brilliant for anyone wanting instant, AI-powered text improvements on any webpage.
-Alex: Adding use cases also inspires users on how to apply it in real life, like boosting customer support or global team communication.
-Maya: How does such a bookmarklet empower everyday users?
+Maya: Switching gears, the Rewriter app got a big refresh too.  
+Alex: Yup, the app’s UI now relies on Bootstrap and Bootstrap Icons for a cleaner, responsive look.  
+Maya: It includes handy preset rewriting scenarios like polishing emails or simplifying technical docs you can pick with a click.  
+Alex: Plus, the bookmarklet generator is simplified and more modular, letting users create custom text-rewrite tools with their own API keys and instructions.  
+Maya: This is brilliant for anyone wanting instant, AI-powered text improvements on any webpage.  
+Alex: Adding use cases also inspires users on how to apply it in real life, like boosting customer support or global team communication.  
+Maya: How does such a bookmarklet empower everyday users?  
 Alex: It puts powerful AI help just a bookmark click away, anywhere on the web—no need to switch apps or copy-paste.
 
-Maya: Finally, Anand’s scripts and system setup got nice usability and environment improvements.
-Alex: Fish shell setups are faster and cleaner, with better virtualenv path handling and fewer slow startup tasks.
-Maya: Command abbreviations like ‘codex’ and ‘clip’ make common tasks faster. Also, added useful tools like ‘lynx’, ‘ngrok’, and a handy ‘md2rtf’ script for Markdown conversions.
-Alex: And the Linux setup notes now reflect real-world tweaks, like switching back to X11 for compatibility and handling gesture controls better.
-Maya: Small system improvements like these often save tons of time and reduce frustration every day.
-Alex: What’s your favorite benefit of optimizing your dev environment?
+Maya: Finally, Anand’s scripts and system setup got nice usability and environment improvements.  
+Alex: Fish shell setups are faster and cleaner, with better virtualenv path handling and fewer slow startup tasks.  
+Maya: Command abbreviations like ‘codex’ and ‘clip’ make common tasks faster. Also, added useful tools like ‘lynx’, ‘ngrok’, and a handy ‘md2rtf’ script for Markdown conversions.  
+Alex: And the Linux setup notes now reflect real-world tweaks, like switching back to X11 for compatibility and handling gesture controls better.  
+Maya: Small system improvements like these often save tons of time and reduce frustration every day.  
+Alex: What’s your favorite benefit of optimizing your dev environment?  
 Maya: Peace of mind and smoother workflows—so you focus on coding, not fighting your tools.
 
-Maya: Here’s a quick tip you can try today — from the Rewriter updates, check out creating custom bookmarklets with tailored rewriting instructions.
-Alex: That’s clever! I’d use it to create a bookmarklet for quick tone adjustments before sending important emails. What about you?
+Maya: Here’s a quick tip you can try today — from the Rewriter updates, check out creating custom bookmarklets with tailored rewriting instructions.  
+Alex: That’s clever! I’d use it to create a bookmarklet for quick tone adjustments before sending important emails. What about you?  
 Maya: I’d make one for instant technical jargon simplification, helping me share clearer docs faster.
 
-Alex: Remember, small tweaks can have big impact.
-Maya: Don’t forget to explore your tooling options to boost productivity and ease.
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Alex: Remember, small tweaks can have big impact.  
+Maya: Don’t forget to explore your tooling options to boost productivity and ease.  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -2604,41 +2718,41 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-04-20.mp3</guid>
     <pubDate>Sun, 20 Apr 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of April 14th to 20th, 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of April 14th to 20th, 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through Anand’s coding highlights this week.
 
-Alex: First up, let’s talk about the project that creates an interactive visualization of what’s on the other side of the Earth.
-Maya: The big update was adding detailed learnings to the setup, emphasizing how to ask AI models for final outputs instead of code directly.
-Alex: That’s smart! It makes AI feel more like your programming environment than just a coder.
-Maya: Exactly, and there’s an important note about edge cases too—like countries straddling the prime meridian causing tricky bugs.
-Alex: Those are the kinds of things even some programmers underestimate, but real-world data always has these quirks.
-Maya: What I found interesting is the use of mature geospatial libraries that make complex geometry operations concise and reliable, like using `.difference()` for map shapes.
-Alex: It’s amazing how concise code becomes when you leverage the right tools, right?
+Alex: First up, let’s talk about the project that creates an interactive visualization of what’s on the other side of the Earth.  
+Maya: The big update was adding detailed learnings to the setup, emphasizing how to ask AI models for final outputs instead of code directly.  
+Alex: That’s smart! It makes AI feel more like your programming environment than just a coder.  
+Maya: Exactly, and there’s an important note about edge cases too—like countries straddling the prime meridian causing tricky bugs.  
+Alex: Those are the kinds of things even some programmers underestimate, but real-world data always has these quirks.  
+Maya: What I found interesting is the use of mature geospatial libraries that make complex geometry operations concise and reliable, like using `.difference()` for map shapes.  
+Alex: It’s amazing how concise code becomes when you leverage the right tools, right?  
 Maya: Plus, they fixed the links to cloud-based interactive maps, making it easier for folks to explore these data visualizations hands-on.
 
-Alex: Switching gears, let’s cover Anand’s AI Pipe project, which now got admin powers!
-Maya: Right! They added admin APIs for fetching usage of all users and generating tokens for any user — making backend management much smoother.
-Alex: That’s a powerful upgrade, especially combined with tests that confirm these features work well.
-Maya: And they also added the ability for admins to overwrite cost data for specific users on specific days. That helps correct billing or usage issues promptly.
-Alex: Sounds like they really ramped up the operational controls in this AI backend.
+Alex: Switching gears, let’s cover Anand’s AI Pipe project, which now got admin powers!  
+Maya: Right! They added admin APIs for fetching usage of all users and generating tokens for any user — making backend management much smoother.  
+Alex: That’s a powerful upgrade, especially combined with tests that confirm these features work well.  
+Maya: And they also added the ability for admins to overwrite cost data for specific users on specific days. That helps correct billing or usage issues promptly.  
+Alex: Sounds like they really ramped up the operational controls in this AI backend.  
 Maya: Yep! It’s a great reminder that managing usage and access can be as important as building the AI features themselves.
 
-Alex: Now, Anand’s “Auto Improve” project has some stunning work too!
-Maya: The standout is a series of progressive refinements for web apps, like an interactive circle drawer that now supports dragging, color picking, resizing, and smooth transitions.
-Alex: And they kept pushing it further—adding animated SVG designs that go from simple grids to dynamic cosmic explosions with vibrant gradients and pulsating sparks.
-Maya: That’s a perfect showcase of how repeated AI-powered improvements can create intricate, engaging visuals starting from basic sketches.
-Alex: Plus, their analog clock app went through multiple dramatic makeover stages—from simple tick marks to a futuristic neon glow with smoothly animated hands and a glowing pulsating core.
-Maya: I love the dashboard too! It evolved from basic static charts to a modern, animated data universe with real-time stats, slick fonts, and colorful charts.
-Alex: The fractal explorer also matured into a powerful tool with zoom, pan, smooth color maps, and advanced UI controls for color mode and iterations.
-Maya: And let’s not forget their particle system transforming into an adaptive particle explosion with color shifts, momentum, and interactive mouse repulsion. Pure animation magic!
+Alex: Now, Anand’s “Auto Improve” project has some stunning work too!  
+Maya: The standout is a series of progressive refinements for web apps, like an interactive circle drawer that now supports dragging, color picking, resizing, and smooth transitions.  
+Alex: And they kept pushing it further—adding animated SVG designs that go from simple grids to dynamic cosmic explosions with vibrant gradients and pulsating sparks.  
+Maya: That’s a perfect showcase of how repeated AI-powered improvements can create intricate, engaging visuals starting from basic sketches.  
+Alex: Plus, their analog clock app went through multiple dramatic makeover stages—from simple tick marks to a futuristic neon glow with smoothly animated hands and a glowing pulsating core.  
+Maya: I love the dashboard too! It evolved from basic static charts to a modern, animated data universe with real-time stats, slick fonts, and colorful charts.  
+Alex: The fractal explorer also matured into a powerful tool with zoom, pan, smooth color maps, and advanced UI controls for color mode and iterations.  
+Maya: And let’s not forget their particle system transforming into an adaptive particle explosion with color shifts, momentum, and interactive mouse repulsion. Pure animation magic!  
 Alex: Such thoughtful layering and features all thanks to incrementally pushing the AI’s output.
 
-Maya: Here’s a quick tip you can try today. When improving UI with AI, try to iterate in small steps. For example, starting from a simple shape, ask the model repeatedly to “improve the app dramatically,” adding features and styling gradually.
+Maya: Here’s a quick tip you can try today. When improving UI with AI, try to iterate in small steps. For example, starting from a simple shape, ask the model repeatedly to “improve the app dramatically,” adding features and styling gradually.  
 Alex: That’s cool! It’s like applying agile updates powered by AI. I’ll try that next time I need a quick UI boost.
 
-Alex: To wrap up, remember—small tweaks can have big impact.
-Maya: And don’t forget to check out your tooling options—they can dramatically simplify complex workflows.
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Alex: To wrap up, remember—small tweaks can have big impact.  
+Maya: And don’t forget to check out your tooling options—they can dramatically simplify complex workflows.  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
@@ -2649,60 +2763,60 @@ Alex: See you next time!
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-04-13.mp3</guid>
     <pubDate>Sun, 13 Apr 2025 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand’s Weekly Codecast for the week of April 7th, 2025!
+Alex: Hello and welcome to Anand’s Weekly Codecast for the week of April 7th, 2025!  
 Maya: We’re Alex and Maya, and today we’ll walk you through the highlights of Anand’s commits this week.
 
-Alex: First up, the eBook publishing journey...
-Maya: Anand wrapped up his quick guide on publishing an eBook on Amazon.
-Alex: What caught my eye is he added the actual Amazon sales link and included the ePub version right in the repo!
-Maya: That means readers can either buy directly or download to read right away. Nice touch for accessibility.
-Alex: Exactly! Plus, the steps remain super practical – from setting up Kindle Direct Publishing to using ChatGPT for cover art.
-Maya: It’s impressive how open-source tools and LLMs speed up what used to be a tedious process.
+Alex: First up, the eBook publishing journey...  
+Maya: Anand wrapped up his quick guide on publishing an eBook on Amazon.  
+Alex: What caught my eye is he added the actual Amazon sales link and included the ePub version right in the repo!  
+Maya: That means readers can either buy directly or download to read right away. Nice touch for accessibility.  
+Alex: Exactly! Plus, the steps remain super practical – from setting up Kindle Direct Publishing to using ChatGPT for cover art.  
+Maya: It’s impressive how open-source tools and LLMs speed up what used to be a tedious process.  
 Alex: Makes you realize publishing is really just a few scripting tricks away.
 
-Maya: Speaking of tricks, there’s also progress in the LLM pricing info.
-Alex: Yeah, a small fix to deploy on GitHub. The backend nitty-gritty that keeps things smooth.
-Maya: Reliability on details like these is why comparing LLM cost and quality stays up-to-date.
+Maya: Speaking of tricks, there’s also progress in the LLM pricing info.  
+Alex: Yeah, a small fix to deploy on GitHub. The backend nitty-gritty that keeps things smooth.  
+Maya: Reliability on details like these is why comparing LLM cost and quality stays up-to-date.  
 Alex: True, even the best models need a sturdy base.
 
-Alex: Shifting gears, the smart art diagrams now have a big upgrade!
-Maya: Yes, a new Marp plugin adds slick custom pyramid, chevron, and Venn diagrams.
-Alex: So no fuss creating professional diagrams inside markdown slides—just code blocks and you’re done.
-Maya: And each diagram is configurable with colors, sizes, and even fonts, making presentations so much richer.
-Alex: What’s your favorite? The chevrons for process flows?
-Maya: Definitely! Those arrow-shaped steps look so clean and intuitive.
-Alex: It’s great for anyone, even without graphic design skills, to communicate ideas clearly.
+Alex: Shifting gears, the smart art diagrams now have a big upgrade!  
+Maya: Yes, a new Marp plugin adds slick custom pyramid, chevron, and Venn diagrams.  
+Alex: So no fuss creating professional diagrams inside markdown slides—just code blocks and you’re done.  
+Maya: And each diagram is configurable with colors, sizes, and even fonts, making presentations so much richer.  
+Alex: What’s your favorite? The chevrons for process flows?  
+Maya: Definitely! Those arrow-shaped steps look so clean and intuitive.  
+Alex: It’s great for anyone, even without graphic design skills, to communicate ideas clearly.  
 Maya: The fact that it seamlessly coexists with Mermaid diagrams is a big win for flexibility too.
 
-Maya: In personal tools, Anand improved his setup scripts once more.
-Alex: He added the path to the Gramex virtual environment, so it runs smoothly on multiple shells — bash and fish across Linux and Windows.
-Maya: Plus, updated the Linux notes with some neat things — fixed Foliate eBook reader on Wayland, and some new keyboard shortcuts for Guake and Warp.
-Alex: That’s the kind of polish that makes daily work frictionless.
+Maya: In personal tools, Anand improved his setup scripts once more.  
+Alex: He added the path to the Gramex virtual environment, so it runs smoothly on multiple shells — bash and fish across Linux and Windows.  
+Maya: Plus, updated the Linux notes with some neat things — fixed Foliate eBook reader on Wayland, and some new keyboard shortcuts for Guake and Warp.  
+Alex: That’s the kind of polish that makes daily work frictionless.  
 Maya: Every little tweak compounds over time.
 
-Alex: Now, the most fun—Anand’s elimination game visualization.
-Maya: Right! He’s been working on showing how large language models play a Survivor-style game.
-Alex: This week, he added a detailed README with clear usage instructions and lots of screenshots to guide users.
-Maya: Also, navigation got smarter — you can click on alliances, votes, or chat messages to jump through game steps.
-Alex: And they even applied bug fixes to make the UI cleaner, like highlighting chat messages when hovered and improving the arrow styling.
-Maya: It really helps anyone explore the subtle “social” strategies LLMs use under the hood.
-Alex: What did you find fascinating about this?
+Alex: Now, the most fun—Anand’s elimination game visualization.  
+Maya: Right! He’s been working on showing how large language models play a Survivor-style game.  
+Alex: This week, he added a detailed README with clear usage instructions and lots of screenshots to guide users.  
+Maya: Also, navigation got smarter — you can click on alliances, votes, or chat messages to jump through game steps.  
+Alex: And they even applied bug fixes to make the UI cleaner, like highlighting chat messages when hovered and improving the arrow styling.  
+Maya: It really helps anyone explore the subtle “social” strategies LLMs use under the hood.  
+Alex: What did you find fascinating about this?  
 Maya: That the visualization turns complex model interactions into understandable stories—sort of like watching AI reality TV!
 
-Maya: And to top it off, there’s exciting progress in the auto-improve repo.
-Alex: This involves prompting an LLM repeatedly to improve code step-by-step.
-Maya: They added new demos, including more games, and smarter code folding – making the output easier to view and interact with.
-Alex: This collaborative LLM coding approach can really boost how quickly we prototype and refine ideas.
-Maya: Have you tried anything like this, Alex?
+Maya: And to top it off, there’s exciting progress in the auto-improve repo.  
+Alex: This involves prompting an LLM repeatedly to improve code step-by-step.  
+Maya: They added new demos, including more games, and smarter code folding – making the output easier to view and interact with.  
+Alex: This collaborative LLM coding approach can really boost how quickly we prototype and refine ideas.  
+Maya: Have you tried anything like this, Alex?  
 Alex: Absolutely! Having an AI iterate over my code saves hours, especially for UI tweaks.
 
-Maya: Here’s a quick tip for our listeners: use smart plugins or snippets to generate diagrams or UI components instead of doing it from scratch.
-Alex: Definitely. It’s a huge time saver—and makes your presentations and apps stand out. How do you use this, Maya?
+Maya: Here’s a quick tip for our listeners: use smart plugins or snippets to generate diagrams or UI components instead of doing it from scratch.  
+Alex: Definitely. It’s a huge time saver—and makes your presentations and apps stand out. How do you use this, Maya?  
 Maya: I often start with template generators and customize as I go. It sparks creativity and keeps our flow smooth.
 
-Alex: Well, remember, small tweaks can have big impact.
-Maya: Don’t forget to check out your tooling options—they constantly evolve and can transform your work!
-Maya: That’s all for this week on Anand’s Weekly Codecast.
+Alex: Well, remember, small tweaks can have big impact.  
+Maya: Don’t forget to check out your tooling options—they constantly evolve and can transform your work!  
+Maya: That’s all for this week on Anand’s Weekly Codecast.  
 Alex: See you next time!
 
 ]]></description>
