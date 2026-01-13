@@ -7,6 +7,7 @@
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [11 Jan 2026](week/2026-01-11/): Videos, data stories, and smarter tools — a week of polish, new content, and AI-powered rewrites. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-11.mp3)
 - [04 Jan 2026](week/2026-01-04/): A tidy January: content centralization, cleanup, and prettier pages [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-04.mp3)
 - [28 Dec 2025](week/2025-12-28/): A week of data stories, model pipelines, and handy tooling — ship the story, not just the chart. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-28.mp3)
 - [21 Dec 2025](week/2025-12-21/): A week of demos, safer scrapers, and prettier outputs [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2025-12-21.mp3)

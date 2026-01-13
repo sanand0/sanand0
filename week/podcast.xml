@@ -4,7 +4,63 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 04 Jan 2026 11:41:56 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 13 Jan 2026 11:22:05 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-01-11</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-11.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-11.mp3</guid>
+    <pubDate>Sun, 11 Jan 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 11 January 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Anand published a full data story called "The Invisible Infrastructure" — it's a deep dive into package dependency networks across PyPI and npm.
+Maya: Right — he added the analysis scripts, fetchers, CSV outputs, and a long, nicely designed web story with charts and narrative. Practically, it's a polished investigation that shows which packages quietly carry a huge portion of the ecosystem.
+Alex: Why that matters: people usually look at stars and forks to judge importance, but Anand shows the real risk comes from packages many other packages depend on — sometimes with almost no visible app usage or very stale maintenance.
+Maya: Non-obvious takeaway: the gap metric he uses — comparing "dependents_count" to "dependent_repos_count" in log space — surfaces those hidden champions and surprising vendor- or auto-generated ecosystems. That "random-job-selector" example — extremely high reported dependents but only a handful of repos — is the sort of oddball that makes you pause.
+Alex: Practical ideas: if you run services or build libraries, add a dependency health audit step. Look for packages with many dependents but few maintainers, and either monitor them, sponsor maintenance, or replace them proactively.
+Maya: Also useful — he included robustness checks and CSVs you can download. So if you're doing any supply-chain risk work, those artifacts make it easy to reproduce or adapt.
+
+Alex: Switching gears: Anand reworked a small collection of web tools — one headline change is a complete rewrite of an "Ideator" web app, now integrated with Claude and pulling notes automatically from his "things I learned" collection.
+Maya: The Ideator rewrite is substantial: a modern UI using lit-html, marked for Markdown, new note sources, pre-populated goals, better prompt templates, and a friendlier first-run experience. It reads curated notes and seeds the AI prompt so users get useful ideas fast.
+Alex: Why that matters: prepopulating goals and picking random notes is a tiny UX trick that massively increases the chance users actually try the tool and get an actionable idea. Technically, switching to Claude and adding note sources means the tool can be more focused and personalized.
+Maya: Non-obvious point: when you build ideation tools, the framing around the prompt and the provenance of the source notes matter a lot. Clear source URLs and a visible prompt template make outputs easier to trust and reuse.
+Alex: Quick idea: if you brainstorm at work, wire a small Ideator-like page to your internal wiki notes and use it to sprint potential product ideas or experiments.
+
+Maya: Also in that tools repo, Anand bumped Playwright and updated some agent instructions so tools share a consistent navbar and dark theme. Those are maintenance and polish moves — small but helpful for contributors and consistency across tools.
+Alex: Yep — dependency updates are boring but important. Keeping Playwright current avoids flaky tests and security quirks.
+
+Maya: Next up: Anand updated his talks site. He added videos, icons, slide links, and migrated a webinar into the talks collection so everything is in one place.
+Alex: Practical effect: if you follow his talks, the pages are richer — video badges, clearer legends, and better layout. He also redirected a standalone webinar page into the talks hub so the content isn't duplicated across repos.
+Maya: Why it matters: consolidating resources reduces confusion and improves discoverability. Extra nice touch — adding a legend for emoji icons so first-time visitors understand the badges for video, slides, screencasts, and transcripts.
+Alex: And he updated transcripts and Q&A for a social-code-analysis talk, so the learning materials are more complete for viewers.
+
+Maya: His personal blog got a big content push too — new lists, a quotes section, several posts about migrating his blog, and fixes to the Hugo build and RSS logic.
+Alex: Those build fixes are the quiet hero: he tightened date parsing in the build script, limited RSS to actual posts, and added CSS tweaks so code blocks wrap better. That prevents broken feeds and weird last-build dates.
+Maya: Non-obvious takeaway: content work isn't just writing — small build and template fixes keep the site reliable for RSS subscribers and search engines. If you publish, pay attention to edge cases like nil dates and generated pages.
+
+Alex: On the productivity side, Anand added a terminal Markdown slide viewer and updated setup scripts and shortcuts.
+Maya: The new slide tool renders Markdown as terminal slides using rich and markdown2. It stores state, supports simple navigation shortcuts, and is useful for quick, laptop-based presentations or demos without a browser.
+Alex: He also tweaked shell abbreviations and a "livesync" workflow that uses a squash merge from a live branch into a target branch, regenerates commits with an LLM, and recreates the live branch. It's an opinionated workflow but neat for iterative content publishing.
+Maya: Practical idea: if you teach or demo from terminals, try the slide tool for fast turnarounds. And if you run a live branch, the livesync pattern can make it easier to keep a clean main branch while iterating publicly.
+
+Alex: Anand refreshed his "things I learned" notes — added January LLM notes and a big list of CLI tools he likes, plus an updated trending repos TSV.
+Maya: Those LLM notes have a crisp nugget: when handling large context, pass compacted conversation history as a file to the agent. It's a practical technique to keep context intact without hitting token limits.
+Alex: Also, the trending repos refresh rearranges his shortlist — he added notes about which projects he prefers and why. That kind of curated signal is helpful if you follow his tooling picks.
+
+Maya: A couple of smaller maintenance items: he ran an npm audit fix on a linting plugin — bumped the version — and updated an old webinar repo to redirect to the talks hub.
+Alex: Those are the tiny upkeep tasks that keep a multi-repo site healthy. They don't make headlines but prevent rot.
+
+Maya: Before we go, two quick listener tips from this week's work. I'll start: if you manage code or services, run a "dependency gap" check — compare dependents_count to dependent_repos_count (or download Anand's CSVs) and flag packages with many dependents but few maintainers. Then pick one small action: open an issue, donate, or add monitoring for that package.
+Alex: How would you apply that in your projects? I could add a step to our CI that runs a lightweight script against our dependencies and emails the team if any critical-but-fragile packages show up.
+
+Alex: My tip: when you build a brainstorming or ideation tool, pre-seed it — a few well-chosen goals, a couple of curated note cards, and a visible prompt template. That lowers the friction for new users and produces better outputs.
+Maya: How would you use that? I'd wire an ideation page to our project notes and make a "one-click brainstorm" button for the next sprint planning meeting. We could prefill the goal as "user onboarding experiment" and randomize notes to spark ideas.
+
+Maya: That's all for this week. Thanks for listening!
+Alex: Goodbye — see you next week with another roundup of Anand's commits and the little ideas inside them.
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-01-04</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-04.mp3" length="0" type="audio/mpeg"/>
