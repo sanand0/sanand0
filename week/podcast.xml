@@ -4,7 +4,64 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Tue, 13 Jan 2026 11:22:05 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 18 Jan 2026 15:18:36 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-01-18</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-18.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-18.mp3</guid>
+    <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 18 January 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week — lots to cover. Let's start with the biggest: Anand expanded his talks site with a full workshop story.
+Maya: Right — he added a polished single-page article for that NPTEL workshop, complete with a video embed, a full transcript, chat logs, attendee list and even a sketchnote placeholder. What stood out to you?
+Alex: I loved that he included the raw chat messages and the attendance TSV. That means anyone can see what participants asked, who joined, and reproduce or follow up on specific moments in the talk.
+Maya: Practically, that turns a one-off webinar into a resource people can search, cite, and use for exercises. The transcript plus chat gives context — you can pull the Q&A, extract common confusions, or make a short FAQ.
+Alex: Also interesting: the page was produced with LLM help and is clearly styled like a longform piece — so it's both human-friendly and reproducible. Why does that matter?
+Maya: Because it lowers the barrier to reusing workshop material. Instead of a fleeting recorded event, you get structured artifacts: video, transcript, chat history, and attendance data. Teachers, students, and community members can re-run exercises, check who attended, or make follow-ups.
+Alex: Non-obvious takeaway: keeping chat logs and attendance as first-class content is a goldmine. You can compute engagement by timestamps, find high-value questions, and even build micro-tutorials from short segments of the talk.
+Maya: Practical idea: extract the top five unanswered questions from the chat and turn those into a follow-up mini-lesson or short video clips highlighting the timestamped answers.
+
+Alex: Next up — Anand added a new data story about AI reviewing papers.
+Maya: Yes, he scraped reviews, wrote analysis prompts, and built a long interactive page that explains what happens when AIs do peer review. The writeup shows that AI reviewers disagree a lot and even behave like distinct "personalities".
+Alex: From a tooling perspective, he added a scraping script to pull reviews from OpenReview, a prompts file documenting the analysis approach, and a big story page that summarizes the findings and recommendations.
+Maya: Why this matters: it’s a reproducible investigation into a practical question — can AI reliably replace human reviewers? The answer is nuanced: AIs can help, especially for consistent checks and critique generation, but they disagree and need normalization and human oversight.
+Alex: Non-obvious point: the AIs often "act" like different reviewers — one harsh, one permissive, one balanced — which suggests you shouldn't treat an AI's score as a single ground truth. Instead, use AIs to surface critiques, flag big disagreements, and demand evidence.
+Maya: Practical idea: use the same pattern to audit automated evaluations in your org — scrape outputs, cluster reviewer behaviour, and build rule-based gates that escalate high-disagreement cases to humans.
+
+Alex: Another neat addition this week — Anand shipped a conversation exporter for a popular chat model interface.
+Maya: He created a small console script and an elegant little web UI that helps you copy a live conversation into well-structured Markdown with YAML frontmatter. The script preserves formatting, code blocks, and even labels “thought” or “internal” sections as blockquotes.
+Alex: That’s handy because some chat sites block bookmarklets or external scripts. This approach uses a console script you paste into the browser console, so it sidesteps bookmarklet restrictions while still letting you archive chats cleanly.
+Maya: Why it matters: it makes it much easier to save, share, and version your prompts and AI replies. The YAML header with title, date, and source URL means these archives are ready for publication or for feeding into reproducible workflows.
+Alex: Non-obvious takeaway: preserving metadata and the "thinking" sections enables later analysis — you can run diffs, track prompt evolution, or reproduce the exact context that produced an answer.
+Maya: Practical idea: include these exports in your research notebooks so every conclusion links back to the exact chat text and metadata.
+
+Alex: Anand also updated his tutorials area with a short, focused guide on using LLMFoundry API keys.
+Maya: Exactly — a step-by-step how-to for plugging an OpenAI-compatible app into an LLM provider, with screenshots and the right API base URL. Small but very practical for people swapping providers.
+Alex: The broader pattern here is helpful: make small, focused onboarding docs for concrete tasks. They’re quick wins for people trying a new backend.
+Maya: Non-obvious tip: those small config screenshots are disproportionately helpful — they remove the last mile of friction for users.
+
+Alex: Finally, Anand refreshed his weekly notes — the "things I learned" repo — adding lots of Jan notes and ideas.
+Maya: There are new course ideas, a note about a CLI proxy for inspecting agent prompts, TODOs like live transcription + Q&A for meetings, and a plan to evaluate how well different models reproduce images using perceptual metrics.
+Alex: It’s a reminder that project planning and documenting experiments pays off: the notes include concrete next steps and measurement plans, not just ideas.
+Maya: Non-obvious takeaway: recording evaluation plans (which metrics to try, what "success" looks like) upfront makes later experiments faster and more meaningful.
+
+Alex: Listener tip time. My tip: if you run workshops or webinars, save chat logs and attendance as structured files, then run a simple script to extract the top unanswered questions and turn them into a short follow-up. Maya — how would you apply that?
+Maya: I’d take those top questions and feed them into a short LLM prompt that drafts micro-lessons or slides for each question, then publish them as a "Part 2" blog post. That way the workshop lives on and learners get quick wins.
+
+Maya: My tip: if you use interactive chat tools, use the console-export approach Anand added — capture chats as Markdown with YAML metadata immediately after the session. How would you use that, Alex?
+Alex: I’d store those exports alongside code and data in a repo, so every experiment has a human- and machine-readable record. Then I can run diffs to see how prompts changed and what produced the best outputs.
+
+Alex: Any other quick tips from you?
+Maya: One more: when evaluating generative outputs like images, pick multiple perceptual metrics up front — MS-SSIM, LPIPS, FLIP — and capture which metric aligns best with human judgment. That saves time later when you need to choose a "best" model.
+Alex: Nice — tie that back to the notes: set up a small human evaluation panel and correlate their rankings with each metric. That gives you a defensible scoring rule.
+
+Maya: That’s all from us this week. Thanks for listening to the roundup of Anand’s work — lots of reproducible artifacts and some useful tools to borrow.
+Alex: Bye for now — we'll be back next week with more highlights. Take care!
+Maya: See you next week!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-01-11</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-11.mp3" length="0" type="audio/mpeg"/>
