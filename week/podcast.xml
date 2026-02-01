@@ -4,7 +4,79 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 25 Jan 2026 15:12:39 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 01 Feb 2026 12:56:30 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-02-01</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-01.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-01.mp3</guid>
+    <pubDate>Sun, 01 Feb 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: "Hello and welcome to Anand's Weekly Codecast for the week of 01 February 2026!"
+Maya: "We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week."
+
+Alex: First up — Anand updated the public course materials for his Tools in Data Science class. This isn't just a minor README tweak: he refreshed the course homepage for Jan 2026, added a grading document link, reorganized the sidebar, and expanded the course pitch to stress how the class prepares students for working with AI.
+
+Maya: Right — practically, that means students and auditors visiting the course will see clearer expectations: the course now explicitly says "AI will teach you" and "AI will evaluate you," and there are links and new pages so people can find assignments, marks dashboards, and the grading rubric more easily.
+
+Alex: Why it matters: when a course that teaches tools and AI clearly documents evaluation and tooling, students can focus on the right workflows from day one. The grading doc addition is especially useful — it removes ambiguity about how assignments are scored.
+
+Maya: Non-obvious takeaway: he also simplified navigation and removed an old term-based sidebar in favour of a single, Jan‑2026-focused landing. That helps newcomers avoid digging through past term structure. If you teach or run a public course, keeping one canonical, up-to-date landing page plus a linked archive reduces confusion and support questions.
+
+Alex: Good point. Also, the course added an "Instrumentation" checklist — things like tracking "Ask AI" button clicks and engagement metrics. That turns guesswork about how students use AI into measurable signals.
+
+Maya: And that leads neatly to our first practical idea: if you run a course or publish interactive exercises, add a tiny, privacy-friendly counter (even an open-source option) to measure feature use. It’s low effort and gives real data on what parts of the course people actually use.
+
+Alex: Next story: Anand improved a web scraper/parser used to convert interactive chat content into Markdown. He added real table parsing — so HTML tables become proper Markdown tables — and he made block detection smarter so things like headings, tables, and table footers don't get merged incorrectly.
+
+Maya: That’s a small change with outsized benefits. When you scrape pages that include exported tables or "Export to Sheets" footers, you want the footer kept separate, not swallowed by the table. He also trimmed trailing spaces and normalized multi-paragraph user input so the output Markdown is neat and predictable.
+
+Alex: He didn't stop at code — he added test fixtures for tables and user paragraphs. That means future changes are less likely to break table conversion. Tests make the scraper reliable for downstream tooling that expects clean Markdown.
+
+Maya: Non-obvious takeaway: when converting rich HTML to text formats, detect block elements explicitly and normalize whitespace intentionally. Small differences in spacing can cascade into broken downstream parsers or chats.
+
+Alex: Third item: Anand updated his weekly notes repository — the "things I learned" collection. Lots of new short notes: app ideas like local image‑generation use cases, animated scrollytelling map biographies, notes on LLM signals like external-memory work, a practical git-filter-repo tip for removing large or sensitive files from history, AVIF email compatibility warnings, and a snapshot of trending repos for the week.
+
+Maya: For listeners, that means Anand is capturing practical leads and references: where to look for LLM memory systems, why DuckDB-related formats like Vortex are interesting, and caution about using AVIF images in email because some clients still mangle them.
+
+Alex: Also, he added a dated snapshot of trending GitHub projects — that’s a neat way to preserve a time-stamped view of what's catching attention each week. It makes it easy to revisit the tech zeitgeist later.
+
+Maya: Non-obvious takeaway: keep a short, dated note for each idea and link it. It pays off when you search months later for an idea or a tool you half-remember.
+
+Alex: Fourth: Anand added a bunch of new demos to his LLM demos site. Things like a Textbook Fact-Checker, Price Elasticity Modeling, Market Prediction Analyzer, token-tree visualizations for language models, and more. He also fixed a small URL formatting issue for an SVG demo.
+
+Maya: The practical effect is that his demo gallery gets more diverse, covering education use-cases, economic modeling, and interactive visualizations. For folks exploring LLM applications, the updated index gives fresh demos to try and learn from.
+
+Alex: Non-obvious takeaway: curate demos that show both a story and a concrete datapoint — combining narrative and code helps others grok a pattern faster than a raw repo link.
+
+Maya: Last technical item: a small but important fix in Anand's PowerPoint image compressor script. The compressor now handles failures more gracefully — it passes the file size into the compression routine and catches exceptions during compression so one bad image doesn't crash the whole run. It also fixed how sizes are reported in kilobytes.
+
+Alex: That's the kind of robustness change that makes a CLI tool usable in the real world. If you're batch-processing a bunch of slides, you don't want a single corrupt image to halt everything.
+
+Maya: Non-obvious takeaway: when writing file-processing scripts, pass expensive-to-compute metadata (like size) once and reuse it, and always catch and report errors per item so you can complete the job and investigate failures later.
+
+Alex: Listener tip time. My tip: if you convert HTML to Markdown for any automation or notes, make a small fixture of the worst-case HTML you expect — tables, footers, headings, multi-paragraph user input — and write one test that verifies the Markdown output. That test will save hours of puzzling over spacing bugs later. Maya, how would you apply that?
+
+Maya: I’d add a tiny CI job that runs those fixtures whenever the scraper changes. Even a single test run on push prevents regressions. For the course content, I'd also include a generated preview so non-technical contributors can see how content renders before it goes live.
+
+Maya: My tip: instrument one UI action you care about — for Anand's class that "Ask AI" click is perfect — using a privacy-friendly analytics endpoint like GoatCounter or a simple server log. Start with count and click timestamps; later you can add context. Alex, how would you use that data?
+
+Alex: I'd pair the click counts with assignment scores or follow-up surveys to see whether students who click "Ask AI" more learn differently. Even basic correlations help you decide whether to tweak prompts, give more scaffolding, or add a short micro-lesson on how to ask the model better.
+
+Maya: Anything else you'd add?
+
+Alex: Maybe a quick note: if you ever need to remove a big or sensitive file from a repo, try git-filter-repo — it's usually faster and preserves messages and timestamps, compared to ad-hoc history surgery.
+
+Maya: Nice. That pairs with the slidecompress fix: keep your repo lean, and make tools resilient.
+
+Alex: That’s it for this week. Thanks for tuning in.
+
+Maya: Thanks from both of us — Alex and Maya — and thanks to Anand for the updates. We'll see you next week.
+
+Alex: Goodbye, and happy coding!
+
+Maya: Bye, everyone — take care!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-01-25</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-25.mp3" length="0" type="audio/mpeg"/>
@@ -84,6 +156,7 @@ Maya: Great notes. That’s it for this week.
 
 Alex: Thanks for listening. See you next week for another round of Anand’s commits.
 Maya: Bye for now — happy hacking and safe publishing!
+
 ]]></description>
   </item>
   <item>

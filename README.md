@@ -7,6 +7,7 @@
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [01 Feb 2026](week/2026-02-01/): Notes, demos, course updates, and sturdier parsers — a week of tidy documentation and safer tooling. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-01.mp3)
 - [25 Jan 2026](week/2026-01-25/): A week of small, useful tools and tidy content—scrapers got sturdier and the site got smarter. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-25.mp3)
 - [18 Jan 2026](week/2026-01-18/): A week of better archives, new tools, and clearer notes [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-18.mp3)
 - [11 Jan 2026](week/2026-01-11/): Videos, data stories, and smarter tools — a week of polish, new content, and AI-powered rewrites. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-01-11.mp3)
