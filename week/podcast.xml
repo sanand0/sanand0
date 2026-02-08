@@ -4,7 +4,55 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 01 Feb 2026 12:56:30 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 08 Feb 2026 12:33:19 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-02-08</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-08.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-08.mp3</guid>
+    <pubDate>Sun, 08 Feb 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 08 February 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Let's start with the biggest change: Anand migrated his course site for the Tools in Data Science course from a lightweight docs system to a full static site generator and rewired the build and navigation.
+Maya: Right — the course site now builds with Hugo and includes a new setup script, automatic course discovery, better sidebar behavior, and a deploy workflow. Why does this matter to someone who just wants course pages to work?
+Alex: Several practical wins. First, the build script automates transforming the old docs layout into a Hugo site and duplicates shared pages into each course-term folder so links like /2025-09/whatever actually resolve. That means adding a new term no longer requires a bunch of manual file copying.
+Maya: And the site navigation became smarter too. Anand added a small client-side script that highlights the active sidebar link (so you can see where you are), and he rewrote the prev/next templates so they work whether the sidebar entries are plain paths or objects with titles. In plain terms: the footer and sidebar now match what you expect even if the sidebar data is structured differently.
+Alex: That reduces maintenance friction. He also added a GitHub Actions workflow that runs the build script and publishes the generated site to Pages, so deployment is one push away.
+Maya: One non-obvious takeaway is the value of normalizing the path format early — he uses a regex to detect the course prefix and then scopes sidebars and prev/next logic to that prefix. That small design makes supporting many course releases clean and future-proof.
+Alex: Practical idea: if you maintain documentation for repeating releases (courses, product versions, etc.), automate detection of release folders and duplicate the small shared pages into each release so relative links don't break. Also, test prev/next rendering with both simple and map-style sidebar entries.
+Maya: Also worth pointing out: Anand did lots of lint and content cleanup across the course materials — everything from code string quoting and spacing to fixing exam links and aligning an exam date in the README. Keeping docs tidy like that reduces accidental confusion for students and prevents broken links from propagating into the built site.
+
+Maya: Next up — Anand's personal blog. He added new posts and refined how he asks for transcripts.
+Alex: Two pieces stood out: a long writeup documenting the Docsify→Hugo migration, and a couple of essays about AI's impact on jobs — notably one arguing that data engineers are at risk and another about how to teach with AI in the classroom.
+Maya: The migration writeup is useful because it captures the exact steps, the reasoning, the gotchas, and the automation snippets — so other people can repeat the migration without guesswork. The essays are useful for readers who want to understand practical implications of AI on workflows and roles.
+Alex: He also tightened transcription guidance. The prompt now asks for logical paragraphs that include speaker and timestamps, e.g. "Anand: [00:13] ...". That's a tiny change but hugely practical: timestamps make it easy to find the original audio, and grouping turns into paragraphs keeps transcripts readable.
+Maya: Two non-obvious takeaways here: first, record provenance — Anand added source attribution when posts were helped by models, which is good transparency practice. Second, small frontmatter flags like robotsNoIndex let you render a page but prevent it from being indexed — handy for demo pages or things you want visible but not discoverable by search engines.
+Alex: Practical idea: when you have audio to transcribe, request speaker-labeled paragraphs with timestamps rather than raw line-by-line dumps. You'll save time when clipping or referencing segments.
+
+Alex: Switching gears to the "things learned" notes — Anand updated his weekly notes and project backlog.
+Maya: He added a Feb 2026 LLM section, HAR-to-automation notes (that's saving browser network captures and turning them into automation scripts), project assignments — a Dilbert transcription task assigned to Pavan, SQL query analysis for Pavan, embroidery-style image experiments, and so on.
+Alex: The important part is turning ephemeral observations into owned, dated backlog items. Rather than a pile of ideas, these now have names attached — which increases the chance they'll get done.
+Maya: Non-obvious takeaway: HAR files (the browser's recorded HTTP traffic) are a great way to capture an interaction you want to automate — then pass that HAR to an agent or script generator to reproduce the steps programmatically.
+Alex: Practical idea: whenever you have a repetitive UI task, record a HAR, sanitize it, and prompt an agent to produce a small automation script. It’s often faster than hand-coding click sequences.
+
+Maya: Last major change this week was to one of Anand's small web apps — the table colorizer tool. He added row and column coloring modes.
+Alex: Previously the tool used a single table-wide range to map numbers to colors. Now you can pick table mode (single range), rows (each row scaled independently), or columns (each column scaled independently). There's a UI selector, updated rendering logic, and tests that cover the new modes.
+Maya: Why care? If your data columns have very different scales, column-wise coloring uncovers patterns without one column dominating the color scale. And row mode is useful when each row is an independent entity you want to compare internally.
+Alex: Non-obvious takeaway: small utility apps benefit a lot from a one-line option that toggles a different scaling logic — it's low effort, high value. Also, Anand updated tests to exercise the new behavior, which is critical to keep regressions out.
+Maya: Practical idea: when building small data-visualization widgets, add a mode toggle for “global vs per-row vs per-column” scaling and write a couple of focused tests to lock in the semantics.
+
+Alex: Quick listener tips — short, actionable things you can use this week.
+Maya: Tip from me: If you manage versioned docs (courses or releases), add a short script that discovers release folders by pattern and duplicates shared pages into each release folder. That prevents broken relative links and keeps the sidebar context correct. Alex, how would you apply that?
+Alex: I’d implement it as part of the site build step, run it locally whenever I add a release, and also add a small CI check that verifies that redirects / previous-next links resolve. That way new release branches won't fail the site build on merge.
+Alex: My tip: When you transcribe calls or lectures, require speaker-labeled paragraphs with timestamps in the transcription prompt. It makes clipping, quoting, and QA far easier than a raw speaker-each-line output. Maya, how would you use that?
+Maya: I'd use those timestamps to generate short clips for social media and to create time-stamped show notes — and I'd keep the same format in a searchable archive so students or listeners can jump straight to the moment they need.
+
+Maya: That’s all for this week. Thanks for listening.
+Alex: See you next week — keep building, keep documenting, and don’t forget to timestamp your transcripts!
+Maya: Goodbye from Alex and Maya — catch you on the next Weekly Codecast.
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-02-01</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-01.mp3" length="0" type="audio/mpeg"/>
@@ -75,6 +123,7 @@ Maya: Thanks from both of us — Alex and Maya — and thanks to Anand for the u
 Alex: Goodbye, and happy coding!
 
 Maya: Bye, everyone — take care!
+
 ]]></description>
   </item>
   <item>
