@@ -7,6 +7,7 @@
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [01 Mar 2026](week/2026-03-01/): A week of turning messy student code into stories, demos, and deployable analysis [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-01.mp3)
 - [22 Feb 2026](week/2026-02-22/): A week of polishing skills, docs, and tiny tools that actually get used [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-22.mp3)
 - [15 Feb 2026](week/2026-02-15/): A week of sharable slides, cleaner course pages, and new data stories [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-15.mp3)
 - [08 Feb 2026](week/2026-02-08/): Docs-to-Hugo, cleaner course UX, and lots of tiny fixes — a week of polishing infra and notes. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-08.mp3)
