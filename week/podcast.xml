@@ -4,7 +4,248 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 01 Mar 2026 13:56:22 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 23 Mar 2026 04:56:08 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-03-22</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-22.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-22.mp3</guid>
+    <pubDate>Sun, 22 Mar 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 22 March 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week — let's start with the thing that ate most of Anand's time: his talks site. He rebuilt and published a bunch of talk pages, full transcripts, sketchnotes, audio, videos, interactive critique pages, and even an ideas catalog for institutional audiences.
+Maya: Right — the practical bit is that a lot of live presentations were turned into rich, linkable web artifacts: full transcripts that pop up in-page, embeddable critique iframes, downloadable audio, and slide/video integrations. Anand also produced structured "ideas" pages for different audiences like faculty, funding teams, and academic councils.
+Alex: Why that matters: talks usually disappear as slides or a YouTube clip. Anand's approach makes the content searchable, reusable, and auditable — anyone can open the transcript, see the prompts that generated supplemental material, or follow the evidence trail behind an idea.
+Maya: Non-obvious takeaway: he's treating talks like reproducible research — prompts, sketchnotes, generated images, prompts.md and follow-up playbooks all live next to each talk. That makes it easy to re-run the process, update examples, or embed follow-up exercises. Practical idea: if you give a talk, publish the transcript + an "action list" page (what to try next) so attendees can immediately act.
+
+Alex: Next biggest: the education analysis work — real heavy lifting on student exam logs and TA support. Anand added a v2 analysis pipeline that ingests parquet exports, builds TA-ready outputs, and creates a "learning-support" pack: priority queues, ready-to-submit lists, hidden-test watchlists, thrashing reports.
+Maya: That's the repo that turns raw event logs into things TAs can actually use. He added scripts to generate CSVs, an HTML playbook for TAs, and code to compute segments like "no traction", "thrashing", and "false confidence / hidden-test risk."
+Alex: Why it matters: raw logs are useless unless transformed into prioritized, actionable tasks. This pipeline surfaces which learners need quick nudges, which units have misleading public tests, and where a simple prompt/test tweak would fix a large chunk of failures.
+Maya: Non-obvious takeaway: he also focused on operational details — thresholds, reproducible SQL queries, DuckDB/parquet for resumable analysis, and concrete output formats the operations team can sweep into morning routines. Practical idea: if you run courses, start with a simple "ready to finish" rule and a "hidden-test watchlist" — it buys a lot of credibility with minimal work.
+
+Alex: Closely related: the replay material and PyConf prep. He generated replay exemplars — short student replays that show different problem-solving styles — and scripts to render them for talks. That makes teaching moments concrete on stage.
+Maya: Those replays are gold for instructors because you can show a clean correct approach, a productive struggle, and a thrashing example for the same question. Practical: use one short correct replay to build mental models, then the messy ones to teach debugging protocol.
+
+Alex: On the blog side, Anand built an embeddings pipeline and a blog-map. He embedded posts with Gemini Embedding 2, cached models, ran PCA→UMAP→clustering, and produced an interactive blogmap + related-posts outputs.
+Maya: In plain terms: every post got turned into a numeric fingerprint (an embedding), then projected into 2D for a map you can explore. He also exported related-post candidates, cluster summaries, and diagnostics.
+Alex: Why it matters: this makes related-post suggestions, search, and the "what changed over time" story far more reliable. Non-obvious: he cached PCA/UMAP and model artifacts so coordinates are stable across runs — important for permalinks and reproducibility. Practical idea: if you add embeddings to a site, persist fitted transforms and only project new items so readers don't see a shifting map every time you re-run the pipeline.
+
+Maya: Anand also added a new data-stories piece: three novel data visualizations packaged as an interactive slide deck with synthetic data and a full design appendix. He didn't just make charts — he documented the search, failures, design iterations, and why each visualization is novel.
+Alex: That's useful for two reasons: first, it demonstrates a repeatable creative process for visualization; second, the three new charts solve specific analysis problems (where typical charts fail). Non-obvious takeaway: he validated novelty by searching first, so the "novel" claim is supported by process, not just assertion. Practical idea: when inventing a chart, produce a short appendix that shows the synthetic data and why standard choices fail.
+
+Alex: Over in the demo tooling space, Anand expanded his "API agent" demo to include the FRED economic-data API. He added config prompts, a validator prompt, and a UI toggle that simulates a "cheap" model that fails first then recovers — perfect for teaching robustness.
+Maya: Two neat bits there: the FRED integration gives live economic data in demos; the "cheap vs good model" toggle is a demo pattern that shows how an agent can recover from a first-pass error. Non-obvious takeaway: when you demo agents, intentionally include a recoverable failure so you can demonstrate validation and remediation. Practical idea: add a tiny "simulate failure" mode to demos to show end-to-end error handling.
+
+Alex: He also improved the slide editor tool: independent log-scale title/subtitle sizing, a favicon, and tests to assert the sizing behavior. Small but meaningful quality-of-life work.
+Maya: Yes — independent controls for title and subtitle sizes are a thoughtful UX lift, and automated tests mean those design controls won't regress. Practical idea: when you expose scale sliders, keep them logarithmic (10% steps) and test the rendering behavior programmatically.
+
+Alex: A few housekeeping items: he updated TIL notes, switched CLI examples to a current backend, refreshed trending-repos snapshots, and added a Google Search Console verification tag to his site template so the site is verified.
+Maya: Those are the little maintenance things that keep everything working. The trending repos update is useful if you follow his "things I learned" feed; switching to current backends avoids confusing examples.
+
+Alex: Before we go, quick listener tips. I'll go first: if you run a course or workshop, build one automated artifact that the TA uses each morning — even a single CSV with "top 20 learners to check" — and wire that into a 10-minute routine. How would you apply that, Maya?
+Maya: Love that. I'd take Anand's pattern and start with "ready_to_finish.csv" for one unit next week, run it once, and use it to prioritize hot fixes for 30 minutes. My tip: when you add embeddings to a site, persist the dimensionality-reduction and clustering models and only reproject new items — it keeps visualizations stable and shareable. Alex, how would you apply that?
+Alex: I'll take it to my newsletter: generate a small, cached UMAP for posts and use it as a static interactive image we can link to — no surprise shifts when I add new posts.
+
+Maya: One more quick tip from me: when you demo an LLM or agent, add a controlled "cheap model" mode that intentionally fails first then recovers on retry. It reveals your validation strategy and builds trust. Alex, how will you use that?
+Alex: I'll add the same pattern to one of my client demos: show the agent catching and fixing an API parameter bug on the second attempt so stakeholders see the full verification loop.
+
+Maya: That's it for this week. Thanks for joining our tour of Anand's week: rich talks, operational education analytics, site intelligence via embeddings, fresh visualizations, and thoughtful demos.
+Alex: See you next week — keep shipping notes, stories, and experiments. Goodbye!
+Maya: Bye everyone — happy building!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-03-15</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-15.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-15.mp3</guid>
+    <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 15 March 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Where do we start?
+Maya: Let's start with the giant overhaul to Anand's journalism tooling and graphics work — the project that makes short newsy “cards” and SVG social graphics. That one got a massive rewrite this week.
+
+Alex: Right — what happened there?
+Maya: Anand rebuilt the whole card pipeline: new native SVG templates, Poynter Agate fonts added, a QR generator and more robust layout logic, and a nicer gallery UI. He also added a data workspace for India’s 2024 labour survey and produced a set of little social-card SVGs driven by that analysis. Practically, editors get clean, vector-first graphics that open in Illustrator, the web, and even on desktop image viewers — and the gallery can export consistent SVG or HTML cards with proper metadata and QR codes.
+
+Alex: Why does that matter?
+Maya: Two reasons. First, native SVG templates avoid brittle HTML-to-image conversions, so the visuals are much more reliable across tools designers actually use. Second, the metadata and indexed card system make editorial workflows and publishing reproducible — you can name, sort, and audit every card. That helps when you need to regenerate or correct assets later without hunting down which file was used.
+
+Alex: Any non-obvious takeaways?
+Maya: If you make data-driven graphics, treat SVG as first-class output. Also, version your editorial artifacts with small, stable IDs and created/reviewed timestamps — it makes downloads, audits, and rollbacks way easier than ad‑hoc filenames. Anand also added lazy QR contrast fixes and shadows, small details that prevent cards from looking wrong in print or dark themes.
+
+Alex: Practical idea: if you publish any small data-card, keep a canonical JSON + template pipeline so you can regenerate different sizes and languages without redesigning.
+Maya: Agreed. And if I were doing this, I’d add a quick smoke-test that renders each template and compares pixel differences to catch regressions early.
+
+Alex: Next up: the replay and assessment analysis repo — the one Anand uses for classroom OPPE traces. Huge activity there too.
+Maya: Yeah — Anand promoted a new narrated replay slideshow and rewrote seven student replay narratives to be educator-focused. He replaced the old asciinema player slides with an animated, slide-based walkthrough that highlights buggy lines, shows mental-model notes, and offers educator takeaways. He also added cluster revision analysis for new test-case updates, documenting which changes aligned with prior findings and which missed opportunities remain.
+
+Alex: In plain terms?
+Maya: He turned raw coding-session logs into readable, teachable stories. Instead of dumping console replays, faculty now get a guided walkthrough: what the student did, where they likely misunderstood, and how to intervene. For assessment engineers, the cluster review tells you which auto-tests got stronger and where private tests still hide failures.
+
+Alex: Why should teachers and course designers care?
+Maya: Because you can actually point to exact lines of student confusion, not just an aggregate score. That lowers the friction for designing targeted remediation and for improving tests so they measure the skill you care about, not accidental artifacts of a private test-suite.
+
+Alex: Non-obvious takeaway: when assessing code, show the mental model — a one-line statement of what the student likely thought — it helps instructors choose the right intervention.
+Maya: Yeah. And for test authors: make at least one “public, clearly discriminating” case for every private edge you add. Anand's cluster review named those missed opportunites — like whitespace-stressed parser cases — that are cheap to add but high impact.
+
+Alex: Shifting gears: Anand's personal blog saw a flurry of posts. Tell us about the highlights.
+Maya: He added several practical, teacher- and practitioner-focused posts. Notably: a piece on “directional feedback for AI” — how to give AI critique that preserves human learning; a write-up on using game-playing agents as teaching labs; an essay on how to prototype the prototype with AI; and a deep dive called “Cracking online exams with coding agents,” which is part reflection, part caution. He also refined prompt guidance for single-panel comics and added an LLM comic-styles post with an art-gallery workflow.
+
+Alex: Why are these useful beyond the blog?
+Maya: They’re operational: “directional feedback” is a concrete workflow for teachers who want students to learn while still getting expert AI help — do the work, ask AI to critique with your taste and audience in mind. The game-playing labs are a ready-made course exercise that seeds verifiable, agent-friendly problems. And the exam-post is a model for how to think about assessments when coding agents exist.
+
+Alex: Non-obvious tip: when using agents in class, ask students to submit both their work and a short “what feeling should a reader have?” note — that’s exactly the directional feedback pattern Anand recommends.
+Maya: I’d pair that with a rubric for the agent to follow so the critique becomes teachable and repeatable.
+
+Alex: Another big piece: Anand’s portfolio site got a major visual redesign — new layout, topic-colour system, animated counters.
+Maya: Yep. He moved to a responsive auto-fill grid, introduced a hue-per-topic system so cards visually group by theme, and added a handful of UI niceties: animated counts, a sticky filter bar, and accessible sort/filter hash state. It’s a nicer way to browse projects, and it now preserves filter state in the URL so you can share exactly what you’re looking at.
+
+Alex: Why does that matter?
+Maya: It’s a small UX win that pays daily: people can share a filtered view with a recruiter or a colleague and the page loads the same view. Also, consistent visual cues (topic hues) help with quick scanning of a large portfolio.
+
+Alex: Practical idea: apply the same URL-state approach to any small internal dashboard — it makes collaborative triage much simpler.
+Maya: I’d add one more: keep an accessible legend for the color mapping so newcomers aren’t guessing what each hue means.
+
+Alex: On the data storytelling front, Anand added a “Crack the Prompt” set of writeups — conference experiment & security notes.
+Maya: He documented the PyConf challenge, session logs, and a few stylized writeups in different author voices. The key lesson: even a well-intentioned system prompt can be extracted if the model is not explicitly told to refuse requests to repeat instructions. Anand’s writeups show how a coding agent quickly found hidden prompts — and the project records the process so others can learn.
+
+Alex: Quick takeaway: assume system prompts are discoverable unless you explicitly design refusal handling and verification.
+Maya: Right — and treat prompt-secrecy as a security requirement, not an afterthought.
+
+Alex: There were also several developer tooling and skill updates — a big scripts repo change, right?
+Maya: Exactly. Anand added an “openai-docs” skill — a small local knowledge/skill bundle that prioritizes official OpenAI docs for model selection and upgrade guidance — plus a ton of dev-container and tooling improvements, and a robust codextags tool for session tagging and downstream recommendations. That’s aimed at making agent-driven development more reproducible and safer.
+
+Alex: In plain words?
+Maya: He’s making it easier for teams to ask “what’s the correct model to use?” and to validate upgrades — and he built tools to automatically tag and summarize past agent sessions so you can learn from them en masse.
+
+Alex: Non-obvious: keeping an on-disk curated snapshot of vendor docs and a verification flow saves time during model upgrades and prevents confident-but-wrong recommendations.
+Maya: I’d use that when planning a migration: inventory model calls, pair them with the docs, and run a tiny forward-test on a representative sample.
+
+Alex: A few other notes: Anand added a PyConf talk page and new talk materials — and updated the LLM pricing chart with a scrollytelling narrative and ELO annotations.
+Maya: The talk page is the conference deliverable for “How Students Learn Python.” The pricing chart got a scrolly narrative: an executive story that maps cost vs quality over time and now includes ELO-to-analogy annotations like “college junior” or “tenured professor” so the chart is more intuitive.
+
+Alex: That ELO mapping is a great example of translating opaque metrics into something humans can relate to quickly.
+Maya: Yes — use analogies sparingly but with clear caveats. Anand added those caveats: the leaderboard ELO range is compressed, so a 50-point gap is meaningful.
+
+Alex: Finally, some creative and deployment updates: the LLM art style gallery gained new comic styles and lazy-loading of thumbnails; the demos site got updated demos and a removed CNAME; and a few repos got LICENSE files added.
+Maya: All practical housekeeping and feature work — images, prompts, deploy tweaks, and clearer licenses. Small things that improve reuse and deployment.
+
+Alex: Okay — listener tip time. Quick, sharp: one tip each, actionable from our discussion.
+Maya: Tip from the replays and assessment work: when you build feedback for students, add an explicit “mental-model” field — a one-sentence guess about what the student thought. It makes teacher remediation faster. Alex, how would you apply that in your class?
+
+Alex: I’d add that field to our grading spreadsheet and have TAs write a one-line mental-model note during code review — two minutes per submission but huge for targeted office hours. My tip: for graphics and reports, always keep a canonical JSON + template pipeline for assets so you can regenerate variants quickly. Maya, how would you use that?
+
+Maya: I’d use it to export both print and web variants from a single source of truth — e.g., generate a social card and a blog header automatically from the same JSON. Also, for the OpenAI docs skill: tip — keep authoritative doc lookups as your first-line reference when giving model advice; only fall back to general web search with explicit citation. Alex, how would that change your upgrade checklist?
+
+Alex: I’d make the first step “query the official docs via the MCP/document tool” before any prompt edits. If the docs disagree, pause and flag for manual review.
+
+Maya: Two tips is perfect. Anything else to call out?
+Alex: Just a quick encouragement: if you teach with agents, keep some exercises agent-native and some agent-free — they teach different skills, and Anand’s posts are full of examples for both.
+
+Maya: Agreed. Thanks for listening and for trying the tips this week.
+
+Alex: That’s our show. Have a great week — we’ll see you next time on Anand's Weekly Codecast!
+Maya: Bye everyone — happy coding and happy teaching!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-03-08</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-08.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-08.mp3</guid>
+    <pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 08 March 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Where do you want to start?
+Maya: Let's start with the big engineering playground — the Rust creative project Anand's been building. It's a whole suite now: a procedural terminal cosmos, a cinematic path tracer, a procedural music composer, and an ultra-fast TUI operations dashboard.
+
+Alex: Right — the headline there is multiple new command-line apps. There's a terminal "aurora" renderer that makes seeded ASCII+color animations, a path tracer for cinematic stills that now supports threaded workers, a music engine that writes WAV files plus an option to export composition metadata as JSON, and a new TUI dashboard binary with high-frame-rate visuals and keyboard controls.
+
+Maya: Why does that matter beyond "neat demos"? Practical effect: the path tracer now uses thread workers, so big renders can actually finish faster on multi-core machines. The music tool emitting arrangement JSON means you can programmatically inspect or reuse the composition — hook it into other tools or a DAW. And the dashboard is not just eye candy: it's a playable example of high-performance terminal UIs — useful when you want rich monitoring without a browser.
+
+Alex: Non-obvious takeaway: Anand added a short "prompts log" for the session — he actually saved the sequence of prompts used when building these things. That makes the creative process reproducible and teaches you how to iterate with LLMs. Also, small but important doc fixes: cargo run examples now include --bin so newcomers don't get tripped up.
+
+Maya: Practical idea: if you tinker with novel visualization or tooling, add an arrangement or metadata export (like SonicLoom's JSON). It makes programmatic reuse and automated validation far easier. Alex, how would you use the TUI dashboard locally?
+Alex: I'd run the prismdash binary in a VM or spare terminal, play with frame rate and theme keys, and study its event/render loop for building my own small monitoring tools.
+
+Maya: Nice. Next up: the education analysis work — the student-replay and analysis repository got massive additions.
+
+Alex: This is the reproducible student exam analysis project. Anand added a full pipeline to generate asciinema casts from student event logs, an interactive replay gallery with synchronized narrative commentary, a set of curated replay JSONs + recordings for interesting student archetypes, and a bunch of analytic modules: a teachable-student classifier, thrashers-language analysis, and a buddy-program evaluation written in plain English.
+
+Maya: The practical effect is big: instead of just charts, instructors and course teams can literally "watch" a student's process — saves a thousand words. He also fixed replay timing issues and switched the asciicast output to CRLF so players and Windows tools handle them reliably.
+
+Alex: Why this matters: watching replays turns aggregate signals into concrete coaching opportunities. The teachable segmentation is notable — it selects students who are fixable right now by process-focused coaching rather than by scores. The thrashers analysis tests whether prompt language correlates with "thrashing" behavior and concludes there's no strong evidence; that's a careful, data-driven pushback against simple narratives.
+
+Maya: Non-obvious takeaway: Anand added an AGENTS.md with reproducibility rules — generators should be the source of truth, and generated CSVs should be committed only when a story depends on them. That's a good data-engineering discipline.
+
+Alex: Practical idea: use the replay gallery to create a short training playlist for mentors — show three clips: a clean incremental debugger, a thrashing loop, and a hidden-test regression. Maya, how would you use the teachable CSV in real advising?
+Maya: I'd export it to the advisors' dashboard and show the "process-first" flags at triage so mentors prioritize students who are likely to improve quickly.
+
+Alex: Great. Another big one: the SchoolAI demo portal got a huge content and data push, especially the financial-aid demo.
+
+Maya: This repo now includes a large synthetic applicant dataset, generator scripts, an interactive financial-aid UI with multilingual chat transcripts, document previews, a replay simulator, and URL-state deep links — basically a full demo of how an AI-first intake + human handoff could work.
+
+Alex: Practical effect: teams can demo multilingual intake, auto-fill assistance, document intake and advisor escalation in one place, without real student data. Non-obvious takeaway: the dataset includes conversation transcripts in original language plus translations, so you can test both UX and audit workflows for non-English users — very useful when evaluating fairness and hand-off fidelity.
+
+Maya: Practical idea: schools can run the demo with their own templates to see how much manual work an AI prefill would save. Alex, what would you show first in a stakeholder walkthrough?
+Alex: The "auto-fill + escalate" flow: show the AI populate the form, mention which fields it was confident about, then demonstrate the instant advisor handoff for one flagged item.
+
+Maya: Moving to tooling: Anand modernized his personal scripts and added two rofi helpers — a clipboard transformation menu and a prompt-fragment picker.
+
+Alex: Yep. The rofi clipboard tool can clean or transform clipboard content (Markdown fixes, URL cleaning, datetime utilities, even pandoc conversions). The prompts picker lets you select prompt fragments from Markdown fragments and paste or type them straight into your prompt box.
+
+Maya: Why it matters: when you iterate with LLMs dozens of times a day, a tiny keybinding that pastes a well-crafted prompt fragment is a huge productivity multiplier. Non-obvious tip: these scripts cache and offer idempotent behavior, so you get speed without losing reproducibility.
+
+Alex: Practical idea: bind rofi-clip to Ctrl+Alt+M and rofi-prompts to Ctrl+Alt+P and you'll recover minutes every session. Maya, are you tempted to try the prompt picker?
+Maya: Absolutely — I'd use it for consistent "expert lens" prompts across experiments.
+
+Alex: Anand also improved his LLM image style site and generation flow — the art-style explorer got Gemini support, a new nano-banana-2 model entry, better thumbnails and a selective release upload script.
+
+Maya: In plain words: he upgraded image generation to include newer Gemini models (nano-banana-2 / gemini-3.1 preview), added client-side UX like hover-preview and modal keyboard navigation, and wrote a helper to upload only new images to a release. Practical effect: faster experiments with new models, cleaner assets on releases, and smoother browsing.
+
+Alex: Non-obvious takeaway: adding a small selective upload script avoids repeatedly re-uploading thousands of images and keeps releases tidy — a tiny ops win that scales.
+
+Maya: He also modernized the LLM demos site template and added a script to produce demos.csv during the Pages build. That tightens the build pipeline and keeps the showcase data-driven.
+
+Alex: Right. And elsewhere, Anand added an "image release upload" helper and README notes — good hygiene for content-heavy projects.
+
+Maya: There are two more story-focused pieces worth calling out. First, the data-stories repo got a new "deck generator" — it turns an interview recording into a slide deck with an executive brief and visual slides. Second, there's a deep Codex-session analysis that scanned hundreds of Codex sessions to find adoption gaps and practical recommendations.
+
+Alex: Those two matter because they show two connected ideas: (1) you can automate board-ready summaries from raw interviews, and (2) you can analyze how people actually use coding AIs and then fix workflow gaps (the report recommends things like parallel reads, spawn_agents_on_csv for row work, and update_plan). Non-obvious takeaway: analyzing your own agents' usage reveals low-friction wins that improve throughput more than model selection alone.
+
+Maya: Finally, Anand kept publishing: blog posts, a long "Nano Banana Paradox" art write-up, a post on which LLMs associate with better grades, and a pile of talk pages and transcripts. Those changes are content-forward but useful — examples, experimental notes and teaching materials.
+
+Alex: Why that matters: these posts capture experiments, critique, and recommended prompt changes so readers can reproduce or learn from them; the grades post is an empirical caution about model-choice correlations versus causation.
+
+Maya: Okay — quick, actionable listener tip time. I'll go first.
+
+Alex: Go ahead.
+
+Maya: Tip: If you work with student code or learning platforms, record short asciinema casts of interesting student sessions and pair them with a short narrative JSON (timestamped notes). Watching even five of these will change how you design feedback. Alex: how would you apply that in your teaching or mentoring?
+
+Alex: I'd pick three recurring failure patterns from my course and create a 10–15 minute playlist of replays demonstrating each pattern, then use those as role-play training for TAs. Great tip. My turn.
+
+Maya: Shoot.
+
+Alex: Tip: Bind two small helpers in your shell: one to paste curated prompt fragments (the "expert lens") and one to run quick clipboard cleanups (strip images to alt text, normalize Markdown). They cut prompt-writing friction drastically. Maya: how would you use them?
+
+Maya: I'd build a small prompt library for common tasks (code-review, test-case generation, image style notes), then use the prompt picker during live demos or rapid experiments to keep prompts consistent. Also, I'd use the clipboard cleaner to prepare snippets to paste into classroom slides.
+
+Alex: Love it. Any closing thoughts?
+
+Maya: Two quick wrap-ups: (1) Anand is combining reproducibility + storytelling + interactive demos — watch for that pattern: generate artifacts (JSON, asciinema, JSONL), document the prompt history, and then build an interactive surface for stakeholders. (2) Small infra wins — selective uploads, threaded rendering, CLI helpers — make experimentation far more sustainable.
+
+Alex: Agreed. That's a wrap for this week's Codecast. Thanks for listening. We'll see you next week — keep experimenting, document what you tried, and share it with the world.
+
+Maya: Goodbye from Maya.
+
+Alex: Goodbye from Alex.
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-03-01</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-01.mp3" length="0" type="audio/mpeg"/>

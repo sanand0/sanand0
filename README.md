@@ -7,6 +7,9 @@
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [22 Mar 2026](week/2026-03-22/): A week of talks, teachable analytics, and site-level machine smarts [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-22.mp3)
+- [15 Mar 2026](week/2026-03-15/): A week of teachable traces, safer prompts, and prettier SVGs [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-15.mp3)
+- [08 Mar 2026](week/2026-03-08/): A week of building show-and-tell: demos, replays, and practical AI tooling that teachers and devs can actually use. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-08.mp3)
 - [01 Mar 2026](week/2026-03-01/): A week of turning messy student code into stories, demos, and deployable analysis [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-01.mp3)
 - [22 Feb 2026](week/2026-02-22/): A week of polishing skills, docs, and tiny tools that actually get used [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-22.mp3)
 - [15 Feb 2026](week/2026-02-15/): A week of sharable slides, cleaner course pages, and new data stories [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-02-15.mp3)

@@ -39,6 +39,9 @@ Examples:
 # Get last week's summary. Generates from previous Sunday till latest Saturday EOD, UTC
 uv run summary.py -u sanand0 -n "Anand"
 
+# Get for a specific, UTC
+uv run summary.py -u sanand0 -n "Anand" -e 2024-01-07
+
 # Get specific date range, UTC
 uv run summary.py -u sanand0 -n "Anand" -s 2024-01-01 -e 2024-01-07
 ```
