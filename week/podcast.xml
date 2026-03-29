@@ -4,7 +4,71 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Mon, 23 Mar 2026 04:56:08 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 29 Mar 2026 12:30:58 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-03-29</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-29.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-29.mp3</guid>
+    <pubDate>Sun, 29 Mar 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 29 March 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Let’s start with the research work — Anand pushed a huge experimental stack exploring Polya’s heuristics for math problems, plus a bunch of Lean tooling and datasets. What happened here, Maya?
+Maya: Anand turned an idea — "which classical problem‑solving heuristics actually help modern LLMs?" — into a reproducible experiment. He added a Python harness, a large set of problems drawn from math benchmarks, heuristic definitions, model runs, and results saved as summarized JSON and visual pages.
+Alex: So it’s not just a one-off notebook. We’re talking sampling, chunking, running many model/heuristic combinations, storing tokens and costs, and producing heatmaps and an interactive report.
+Maya: Exactly. Practical effect: you can now measure whether a prompt like "work backwards" or "try a simpler case" helps a specific model on specific problem types, instead of guessing. The code includes resumption, rate-limit handling, and result formats for later analysis.
+Alex: Why that matters: we often tell LLMs what humans do, but nobody measured systematically whether those instructions help. This lets you pick the right heuristics for a given model and task, instead of spray-and-pray prompting.
+Maya: Non-obvious takeaway: small, well-designed experiments beat intuition. If you build a cheap harness that records "which prompt variant ran, tokens used, and whether the answer matched," you get actionable data fast. Practical idea: before changing production prompts, run a 100-problem pilot across two heuristics and compare success rates.
+
+Alex: Next up: Anand’s talk automation and the new "talk-story" skill he added to his talks toolkit. Big additions there — automation, PDF-to-image helpers, and a whole generation guide.
+Maya: He added a Claude Code-style skill that automates converting a talk’s assets — transcript, slides, audio — into a polished Malcolm‑Gladwell‑style HTML narrative. There’s a PDF-to-AVIF script, chunked HTML generation guidelines, accessibility checks, and a context template so each talk carries its own metadata.
+Alex: Practical effect: turning a raw transcript + slides into a magazine-style story is now repeatable and much less manual. He also generated a new story for a conference talk and produced multiple model versions for comparison.
+Maya: Why it matters: this is the kind of automation that scales content creation while keeping editorial control. The generation guide’s emphasis on chunking and post‑edit checks reduces broken HTML and layout bugs—a real time-saver.
+Alex: Non-obvious takeaway: when automating creative output, enforce a deterministic pipeline — context file, slide images, chunked output, then validation — and keep the data next to the talk so the skill can be rerun reliably.
+
+Alex: On the tools-for-podcasts and chat threads front, Anand did a tidy of the WhatsApp-to-podcast workflow — a split/merge script and safer podcast generation flow with a dry‑run mode.
+Maya: Right. He added a CLI that merges one or more WhatsApp JSON exports, applies WhatsApp-aware merge rules, and writes weekly shards labeled by Sunday into messages/YYYY-MM-DD/messages.json. That fixes the messy "one huge file" workflow and lets the podcast script work on weekly chunks.
+Alex: He also changed the podcast script to support a dry run that verifies weeks and avoids hitting LLM/TTS APIs during checks.
+Maya: Why this matters: small preprocessors dramatically reduce editing and accidental private data commits. Practical idea: always shard noisy exports before generating public artifacts — it gives you per-week diffs, smaller commits, and easy re-runs. The dry-run was a nice safety net to avoid accidental API calls or publishing.
+
+Alex: Anand also updated his blog and site deploy policy — new posts, prompt fragments, and a change to only deploy from main.
+Maya: He added several posts and experimental writeups — newsroom automation, OCR-on-TV experiments, and the Polya audit writeup — and clarified the CI: GitHub Pages will now deploy only from main, with WIP on a live branch and prod for rollbacks.
+Alex: Practical effect: clearer deploy rules make accidental builds less likely and help contributors know what triggers the public site. Non-obvious takeaway: keep a small, explicit deploy policy in repo README — it saves time and cost in CI.
+
+Alex: Related to content, he published a new data story — the Polya Audit visual report — and updated the GitHub activity investigation with a full analysis. That ties back to the research code we discussed.
+Maya: Yes — the data story wraps the experimental results in an interactive narrative and visualizations. The GitHub analysis project tested whether the so-called "vibe coding" release caused a surge in developer activity and concluded there wasn't a broad surge — just a handful of large individual increases.
+Alex: Takeaway: pairing reproducible experiments with readable data stories helps prevent hype from turning into headlines. If you want to claim a trend, ship the code and the sampling story.
+
+Alex: He touched several infra and scripting areas too. In his personal scripts repo he added a LinkedIn CDP skill, an interactive storytelling skill, and a major transcription utility called transcribe_calls.py.
+Maya: The transcription tool is thorough: chunking rules, dry‑run support, pricing reporting, transcript-section detection to avoid duplicates, and integration with a TTS/LLM pipeline. He also added tests and fake‑service hooks so you can run CI without calling paid APIs.
+Alex: Practical effect: you can transcribe long calls reliably, avoid partial-chunk issues, and detect whether a transcript was already incorporated into notes. Non-obvious takeaway: build a dry-run and a minimal offline "fake API" mode for tests. It makes iterating safe and cheap.
+
+Alex: On the little web tools front, Anand added two neat bookmarklets: one to capture Google Meet captions as Markdown, and one to open page text or selected Markdown in a syntax-highlighted popup.
+Maya: These are exactly the kind of polishing hacks that make day-to-day work smoother. The Meet captions script finds the captions DOM, extracts speaker labels and text, normalizes into Markdown, and copies to the clipboard. The Markdown viewer opens a popup with marked.js and highlight.js so you can preview or save selected text.
+Alex: Why it matters: tiny tools with good UX remove friction — you can capture a snippet from a meeting to your notes in one click. Tip: build small utilities where the value is time saved per day, not features shipped.
+
+Alex: He also improved the demo catalog tooling — scripts to discover GitHub Pages demos, build CSVs of reviewed demos, and an uploader path to Google Sheets. That’s useful if you curate a directory.
+Maya: Yes — better discovery, de‑dup logic, brand detection, and a pipeline to export open/Reviewed demos to spreadsheets. Practical effect: maintain a clean demo catalog that’s easy to share with collaborators or sponsors.
+
+Alex: A few smaller but practical changes: model pricing updated in the gateway pricing file, a small Rust bugfix in the datasaurus implementation to create nested log directories, and a deploy change to run site CI only from main.
+Maya: Those are the kind of ops details that quietly cut a day of debugging later. Create directories recursively, track pricing in a single JSON, and reduce accidental deploys — small wins.
+
+Alex: Non-obvious thread through all of this — a lot of the work is about safe automation: dry runs, shard-before-processing, local fake services for tests, and per-talk context files so automated generations are repeatable.
+Maya: Agreed. Practical pattern: write one small file that describes the job (context.md, or a weekly JSON shard) and make everything else read it. That turns fragile demos into reproducible builds.
+
+Alex: All right — listener tips. My tip: when you build an automation that calls models or external APIs, add a dry-run that validates inputs, writes the expected outputs locally, and fails fast before any network call. Maya, how would you apply that this week?
+Maya: I’d add a dry-run to any transcription or podcast pipeline I run: verify the weekly shards, check the transcripts exist, and only then flip the switch for TTS. It saves accidental charges and keeps secrets safe.
+
+Maya: My tip: when coordinating agents or long-running automation, shard and version your inputs early — weekly JSON shards for chat logs, per-talk context files for content generation, and a tiny README that documents the canonical workflow. Alex, how would you apply that?
+Alex: I’d start sharding chat exports immediately and add a small script that converts one big export into per-week directories with a consistent filename layout. Then every downstream job reads only those directories. It makes re-runs and audits trivial.
+
+Alex: That’s our wrap for the week.
+Maya: Thanks for listening to Anand's Weekly Codecast. Have a great week, and see you next Monday for another roundup.
+Alex: Goodbye for the week!
+Maya: Bye everyone — see you next time.
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-03-22</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-22.mp3" length="0" type="audio/mpeg"/>
