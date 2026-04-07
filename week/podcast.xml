@@ -4,7 +4,72 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 29 Mar 2026 12:30:58 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 07 Apr 2026 00:35:16 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-04-05</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-05.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-05.mp3</guid>
+    <pubDate>Sun, 05 Apr 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 05 April 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: First up — the big one: a new interactive tool that builds a standalone UMAP scatterplot from a CSV. It grew from a prototype into a full-featured CLI and single-file HTML exporter.
+Maya: Right — Anand landed a whole pipeline: CSV loader, embedding step, UMAP reduction, clustering, and a polished browser UI. Practically speaking you can point it at a spreadsheet and get a shareable interactive map that runs in any browser.
+Alex: And there are several quality-of-life upgrades. He added a resumable embedding cache next to the output HTML so repeated runs are fast, audio column support so rows can include playable clips, and LLM-based cluster naming so clusters get short, human-friendly labels automatically.
+Maya: He also made the UI state shareable — filters, timeline range, and even which points are highlighted are encoded in the URL — so you can send a link and someone else sees the same view. There's a little overlay bar chart you can position in any corner, more robust brushing and selection, and timeline controls with drag and play.
+Alex: One tiny but delightful detail: the axes can be interpreted by an LLM instead of being called "UMAP 1 / UMAP 2". That means the page can show axis labels like "People → Products" instead of opaque math names, which is huge for non-technical audiences.
+Maya: Why this matters: it turns a technical exploratory tool into a presentation-ready artifact. You can iterate locally, reuse cached embeddings, name clusters automatically, and hand a stakeholder a link that opens exactly the view you want them to see.
+Alex: Non-obvious takeaway: put the embedding cache next to the output HTML — it's a small pattern that dramatically shortens iteration loops without introducing heavyweight infrastructure.
+Maya: Practical idea: when you demo clustered text or images to stakeholders, enable the axis interpretation and cluster names — they immediately understand the map. And use the 300-row smoke test Anand included to sanity-check on a small dataset before scaling up.
+
+Alex: Moving on to the collection of small web tools Anand maintains — two big additions this week: a Technology Radar app and a Scroller bookmarklet.
+Maya: The Technology Radar is an interactive single-page app that visualizes items across four quadrants and four rings, and Anand added data generators, a 100-node and 2,000-node mock data pipeline, and a polished UI for filtering and opening detail panels.
+Alex: It's useful for tracking opinions, projects, or technology candidates over time and sharing that view with a team. The radars also include config-driven UI scaling and tag filters — nice for workshops or retros.
+Maya: The Scroller bookmarklet is a compact autoscroll widget you can drag into your bookmarks bar. It runs in a Shadow DOM so it won't clash with page styles, has play/pause, speed and direction controls, a delayed start, and unit tests — so it works reliably across sites.
+Alex: Non-obvious takeaway: putting interactive widgets into a bookmarklet with a Shadow DOM keeps them portable and reduces site conflicts. And the radar generator shows how a single self-contained HTML can be a useful team artifact.
+
+Maya: Another small but practical improvement — the JSON-to-CSV tool now flattens nested structures and expands arrays into repeated rows with dot-notation headers. That makes messy JSON much easier to inspect in spreadsheets.
+Alex: That one saves time whenever you need to pivot API JSON into a table for analysis or quick sharing. If your JSON has arrays of objects, the tool now repeats the parent fields and emits columns like parent.child.field.
+
+Alex: On the storytelling side, Anand added a new data story about university AI policies and expanded his student-project analysis.
+Maya: The university piece collects and analyzes 25 public AI governance documents — the headline is instructive: every university says students may use AI, but they mean different things. That "three yeses" narrative helps researchers and educators interpret policy at a glance.
+Alex: For anyone doing policy work, the practical effect is a single, browsable artifact and a structured dataset you can query. For the teaching research, he also folded a real student WhatsApp message into the narrative about social infrastructure — a good reminder that results sometimes live in the social outcomes, not just the metrics.
+Maya: Non-obvious takeaway: publishing the underlying JSON and a screenshot alongside the story makes critique and follow-up much easier for readers.
+
+Maya: The blog got a subtle but important plumbing change: generated pages now include a <link rel="alternate" type="text/markdown"> header pointing to the raw Markdown source on GitHub when available.
+Alex: That makes it straightforward for anyone — readers, tools, even other sites — to find the original source file. It's a small step for transparency and reproducibility of posts and pages.
+Maya: He also added a few posts — a walkthrough of voice cloning work and the AI policies post you just heard about.
+
+Alex: Over in the tooling and agent skills area, Anand added a first-class image-generation skill and a plugin-scaffolding skill.
+Maya: The image skill bundles a documented fallback CLI for explicit image generation and editing, lots of sample prompts, prompt guidance, and an Apache-2.0 license for the assets. The idea is: use the built-in tool where possible; if you really need the CLI, it's there with clear safety notes.
+Alex: The plugin-creator script scaffolds a plugin directory and optionally updates a marketplace manifest. Great for anyone building local plugin extensions or trying to standardize plugin metadata.
+Maya: Practical effect: less ceremony when you want to iterate on new plugins or run image generation in controlled environments. Non-obvious takeaway: separate the interactive built-in tool path from the explicit CLI fallback, and make the latter clearly documented so users don't accidentally enable unsafe defaults.
+
+Alex: On the data side, Anand simplified maintaining his LLM comparison sheet. He added a script to update ELO scores from leaderboard dumps and to look up costs, plus the usual README tweaks.
+Maya: So if you scrape a new column of model scores, you can run the script to patch the CSV, attempt to update cost-per-million-tokens from a provider listing, and regenerate the site. It automates a repetitive, error-prone step.
+Alex: Tip: whenever you're maintaining a model- or benchmark CSV, script the update step — it saves time and avoids copy-paste mistakes.
+
+Maya: A few engineering hygiene wins too: a tiny repo used to prove "run from GitHub with uvx" was simplified to the smallest possible proof, showing how to ship a static asset with data-files. That note is great for folks packaging demos or tiny CLI tools.
+Alex: And the WhatsApp-to-podcast pipeline got better integrity checks: splitting messages now verifies there are no silently lost messages and prints only modified file paths one per line — nice for CI scripts. The podcast tool also prints API error bodies on failure so debugging is faster.
+Maya: Those are the kind of ops improvements that prevent silent data loss and make automation predictable.
+
+Alex: Quick mentions: the art-style site added a map category with historical map styles and per-category model lists so releases can be split by style; the demos list was refreshed with new candidate GitHub pages; and the journalists project added a set of short “flap” briefs for newspaper-style micro-features.
+Maya: And the personal notes (TIL) and trend lists got updates too — nothing flashy but lots of useful, incremental capture of ideas.
+
+Maya: Listener Tip time — quick, actionable tips from what we just covered. I’ll go first: if you share data visualizations with non-technical stakeholders, label axes and clusters with plain language. Try an LLM to interpret axes or summarize what a cluster contains, then use that as your legend. Alex, how would you apply that this week?
+Alex: I’d run the new UMAP exporter on our project notes CSV, enable cluster naming and axis labels, then email a single link to the team so non-technical folks can explore without needing me to explain the math.
+
+Alex: My tip — treat embedding caches as first-class artifacts. Store an embedding cache beside your exported visualization and reuse it between runs; it will speed up iterations dramatically and keep your work reproducible. Maya, how would you try that?
+Maya: I’ll run a small test: generate embeddings for a 300-row sample, save the cache, tweak some UI rendering, and rebuild without re-embedding. If it’s fast, I’ll add cache reuse to our demo pipeline.
+
+Maya: One more quick tip about tooling: when you automate transforms (like splitting messages or updating CSVs), make your CLI print only machine-parseable lines for downstream scripts and fail loudly when integrity checks fail. It avoids hidden errors. Alex, will you adopt that for any of your scripts?
+Alex: Yes — I’ll update my sync scripts to emit one path per modified file and to assert no records were dropped. That helps CI and makes rollbacks safer.
+
+Alex: That’s all for this week. Thanks for listening and thanks to Anand for all these thoughtful commits.
+Maya: We’re Alex and Maya. See you next week — same time, more code stories. Goodbye!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-03-29</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-29.mp3" length="0" type="audio/mpeg"/>
