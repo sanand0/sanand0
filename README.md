@@ -7,7 +7,7 @@
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
-
+- [12 Apr 2026](week/2026-04-12/): A week of dashboards, data cards, and production-ready AI toys [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-12.mp3)
 - [05 Apr 2026](week/2026-04-05/): Maps, radars, and smaller but useful tooling wins this week [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-05.mp3)
 - [29 Mar 2026](week/2026-03-29/): A week of better pipelines, richer stories, and more agent-friendly tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-29.mp3)
 - [22 Mar 2026](week/2026-03-22/): A week of talks, teachable analytics, and site-level machine smarts [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-22.mp3)
