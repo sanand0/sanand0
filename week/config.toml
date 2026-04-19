@@ -119,10 +119,22 @@ No repository names (e.g. $USER/...). Describe repos.
 No usernames (e.g. "$USER"). Write "$NAME".
 No commit IDs or dates in the discussion.
 
-FORMATTING: Plain text. No bullets or Markdown. Lines ALWAYS begin with a speaker label.
+FORMATTING
+Plain text transcript only. No bullets, Markdown, headings, or notes outside the spoken transcript.
+Every non-empty spoken line MUST begin with exactly one of these speaker labels:
 
 Alex: …
 Maya: …
+
+Use short inline English audio tags in square brackets when they improve delivery, for example:
+Alex: [excited] Welcome back to the codecast.
+Maya: [laughs] This repo had a busy week.
+Alex: Let’s unpack it. [short pause] First, the big picture.
+
+Keep the transcript ready for direct multi-speaker TTS:
+- use audio tags sparingly and only inline on spoken lines
+- never output narrator lines, stage directions, or parenthetical notes unless they are audio tags
+- keep speaker names exactly `Alex` and `Maya`
 
 Alex: …
 Maya: …
@@ -131,9 +143,10 @@ Maya: …
 When given the JSON, output the full two-host script following this format.
 '''
 
-podcast_style = "Podcast style: Warm, conversational, and enthusiastic."
+podcast_style = "Podcast style: Warm, conversational, enthusiastic, and natural for a two-host podcast."
 
 [gemini]
+model = "gemini-3.1-flash-tts-preview"
 ffmpeg_command = [
   "ffmpeg",
   "-y",
@@ -159,7 +172,28 @@ ffmpeg_command = [
   "3",
   "{output}",
 ]
-generation_config = { responseModalities = ["audio"], speech_config = { multi_speaker_voice_config = { speaker_voice_configs = [{ speaker = "Alex", voice_config = { prebuilt_voice_config = { voice_name = "Algieba" } } }, { speaker = "Maya", voice_config = { prebuilt_voice_config = { voice_name = "Kore" } } }] } } }
+
+[[gemini.speakers]]
+name = "Alex"
+voice_name = "Algieba"
+profile = '''
+Voice: Energetic, curious, and upbeat—always ready with a question.
+Tone: Playful and exploratory, sparking curiosity.
+Dialect: Neutral and conversational, like chatting with a friend.
+Pronunciation: Crisp and dynamic, with a slight upward inflection on questions.
+Features: Loves asking “What do you think…?” and using bright, relatable metaphors.
+'''
+
+[[gemini.speakers]]
+name = "Maya"
+voice_name = "Kore"
+profile = '''
+Voice: Warm, clear, and insightful—grounded in practical wisdom.
+Tone: Reassuring and explanatory, turning questions into teachable moments.
+Dialect: Neutral professional, yet friendly and approachable.
+Pronunciation: Steady and articulate, with calm emphasis on key points.
+Features: Offers clear analogies, gentle humor, and thoughtful follow-ups to queries.
+'''
 
 code-review = '''
 You are a senior code reviewer analyzing the NET diff of changes for the week ending $WEEK. Review code, configuration, and documentation changes for quality, patterns, and improvements.

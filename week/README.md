@@ -25,6 +25,19 @@ Basic usage:
 uv run summary.py -u <github-username> -n <name>
 ```
 
+To synthesize audio directly from a script file without fetching GitHub activity:
+
+```bash
+uv run summary.py tts-script --script-file samples/quick-start.md
+```
+
+For agent callers, inspect the interface and prefer JSON output:
+
+```bash
+uv run summary.py --describe
+uv run summary.py tts-script --script-file samples/quick-start.md --format json
+```
+
 Options:
 
 - `-u, --user`: GitHub username (required)
@@ -32,6 +45,7 @@ Options:
 - `-e, --end`: End date in YYYY-MM-DD format (default: most recent Sunday)
 - `-s, --start`: Start date in YYYY-MM-DD format (default: end date - 7 days)
 - `-t, --token`: GitHub token (default: $GITHUB_TOKEN)
+- `--dry-run`: Validate inputs and planned outputs without making API calls
 
 Examples:
 
@@ -52,11 +66,14 @@ For each run, the script creates a directory named after the end date (e.g., `20
 
 - `${week}/README.md`: Written summary of GitHub activity
 - `${week}/podcast.md`: Script for the podcast
-- `${week}/*.opus`: Individual audio files for each line in the podcast. Not committed
-- `${week}/podcast.mp3`: Final concatenated podcast. Not committed, uploaded to GitHub releases
+- `${week}/podcast.mp3`: Final Gemini multi-speaker audio. Not committed, uploaded to GitHub releases
+
+The repo also supports local listening samples in `samples/`, with `.md` scripts and generated `.mp3` files ignored by Git.
 
 When re-running, only missing files are re-generated.
 This allows for incremental updates and prevents unnecessary API calls when files already exist.
+
+The podcast prompt in [`config.toml`](config.toml) now asks OpenAI for direct-TTS-ready `Alex:` / `Maya:` lines with inline audio tags, and Gemini voice settings live under `[[gemini.speakers]]`.
 
 The files are released on GitHub releases at <https://github.com/sanand0/sanand0/releases/tag/main> created via:
 
