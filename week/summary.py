@@ -577,12 +577,25 @@ def normalize_script(script: str, allowed_speakers: Sequence[str]) -> Tuple[str,
     return "\n".join(normalized_lines), used_speakers
 
 
-def build_tts_prompt(script: str, speakers: Sequence[SpeakerConfig], config: Dict[str, Any]) -> str:
-    """Build a Gemini TTS prompt that keeps directions out of the spoken transcript."""
+def split_script_segments(
+    script: str, config: Dict[str, Any]
+) -> Tuple[List[Tuple[SpeakerConfig, str]], str, List[SpeakerConfig]]:
+    """Split a validated script into one normalized Gemini request per spoken line."""
+    all_speakers = load_gemini_speakers(config)
+    speaker_by_name = {speaker.name: speaker for speaker in all_speakers}
+    normalized_script, used_speakers = normalize_script(script, list(speaker_by_name))
+    segments = []
+    for line in normalized_script.splitlines():
+        speaker_name, text = line.split(":", 1)
+        segments.append((speaker_by_name[speaker_name], text.strip()))
+    return segments, normalized_script, [speaker_by_name[name] for name in used_speakers]
+
+
+def build_tts_prompt(text: str, speaker: SpeakerConfig, config: Dict[str, Any]) -> str:
+    """Build a Gemini TTS prompt for one speaker line."""
     sections = [
-        "Synthesize speech for the following podcast conversation.",
+        "Synthesize speech for the following podcast line.",
         "Do not read these instructions aloud.",
-        "Respect the speaker labels exactly as written.",
         "Honor inline audio tags such as [excited], [laughs], [whispers], and [short pause].",
         "Only speak the transcript under the TRANSCRIPT heading.",
     ]
@@ -591,57 +604,35 @@ def build_tts_prompt(script: str, speakers: Sequence[SpeakerConfig], config: Dic
     if podcast_style:
         sections.append(podcast_style)
 
-    speaker_profiles = [
-        f"{speaker.name}: {collapse_whitespace(speaker.profile)}"
-        for speaker in speakers
-        if speaker.profile.strip()
-    ]
-    if speaker_profiles:
-        sections.append("Speaker guidance:")
-        sections.extend(speaker_profiles)
+    if speaker.profile.strip():
+        sections.append(f"Speaker guidance: {collapse_whitespace(speaker.profile)}")
 
     sections.append("TRANSCRIPT")
-    sections.append(script.strip())
+    sections.append(text.strip())
     return "\n".join(sections)
 
 
-def build_gemini_request(
-    script: str, config: Dict[str, Any]
-) -> Tuple[Dict[str, Any], str, List[SpeakerConfig]]:
-    """Build the Gemini TTS request payload for a validated speaker script."""
-    all_speakers = load_gemini_speakers(config)
-    normalized_script, used_speakers = normalize_script(
-        script,
-        [speaker.name for speaker in all_speakers],
-    )
-    active_speakers = [speaker for speaker in all_speakers if speaker.name in used_speakers]
-
-    payload = {
+def build_gemini_request(text: str, speaker: SpeakerConfig, config: Dict[str, Any]) -> Dict[str, Any]:
+    """Build a single-speaker Gemini TTS request payload for one line."""
+    return {
         "model": config.get("gemini", {}).get("model", DEFAULT_GEMINI_MODEL),
         "contents": [
             {
                 "role": "user",
-                "parts": [{"text": build_tts_prompt(normalized_script, active_speakers, config)}],
+                "parts": [{"text": build_tts_prompt(text, speaker, config)}],
             }
         ],
         "generationConfig": {
             "responseModalities": ["AUDIO"],
             "speechConfig": {
-                "multiSpeakerVoiceConfig": {
-                    "speakerVoiceConfigs": [
-                        {
-                            "speaker": speaker.name,
-                            "voiceConfig": {
-                                "prebuiltVoiceConfig": {"voiceName": speaker.voice_name}
-                            },
-                        }
-                        for speaker in active_speakers
-                    ]
+                "voiceConfig": {
+                    "prebuiltVoiceConfig": {
+                        "voiceName": speaker.voice_name,
+                    }
                 }
             },
         },
     }
-    return payload, normalized_script, active_speakers
 
 
 def request_gemini_audio(payload: Dict[str, Any]) -> bytes:
@@ -695,6 +686,55 @@ def render_pcm_as_mp3(audio_pcm: bytes, output_path: Path, config: Dict[str, Any
     return output_path
 
 
+def concatenate_audio_files(segment_paths: Sequence[Path], output_path: Path) -> Path:
+    """Concatenate per-line MP3 clips into the final podcast output."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    list_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            delete=False,
+            suffix=".txt",
+            dir=output_path.parent,
+            encoding="utf-8",
+        ) as temp_file:
+            temp_file.write(
+                "\n".join(f"file '{segment_path.resolve()}'" for segment_path in segment_paths)
+            )
+            list_path = Path(temp_file.name)
+
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-f",
+                "concat",
+                "-safe",
+                "0",
+                "-i",
+                str(list_path),
+                "-c:a",
+                "libmp3lame",
+                "-qscale:a",
+                "5",
+                "-ar",
+                "44100",
+                "-ac",
+                "1",
+                "-id3v2_version",
+                "3",
+                str(output_path),
+            ],
+            check=True,
+        )
+    finally:
+        if list_path and list_path.exists():
+            list_path.unlink()
+
+    return output_path
+
+
 def generate_audio_from_script(
     script: str,
     output_path: Path,
@@ -703,12 +743,13 @@ def generate_audio_from_script(
     dry_run: bool = False,
 ) -> Dict[str, Any]:
     """Generate audio for a speaker-labeled podcast script."""
-    payload, normalized_script, speakers = build_gemini_request(script, config)
+    segments, normalized_script, speakers = split_script_segments(script, config)
     result = {
         "command": COMMAND_TTS_SCRIPT,
         "audio_path": str(output_path.resolve()),
         "speaker_names": [speaker.name for speaker in speakers],
-        "model": payload["model"],
+        "segment_count": len(segments),
+        "model": config.get("gemini", {}).get("model", DEFAULT_GEMINI_MODEL),
         "normalized_script": normalized_script,
     }
 
@@ -716,8 +757,17 @@ def generate_audio_from_script(
         result["status"] = "dry-run"
         return result
 
-    audio_pcm = request_gemini_audio(payload)
-    render_pcm_as_mp3(audio_pcm, output_path, config)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=output_path.parent) as temp_dir_name:
+        temp_dir = Path(temp_dir_name)
+        segment_paths = []
+        for index, (speaker, text) in enumerate(segments, start=1):
+            segment_path = temp_dir / f"{index:03d}.mp3"
+            audio_pcm = request_gemini_audio(build_gemini_request(text, speaker, config))
+            render_pcm_as_mp3(audio_pcm, segment_path, config)
+            segment_paths.append(segment_path)
+        concatenate_audio_files(segment_paths, output_path)
+
     result["status"] = "ok"
     return result
 
@@ -822,7 +872,7 @@ def describe_cli() -> Dict[str, Any]:
     """Return a machine-readable description of the CLI interface."""
     return {
         "name": "summary.py",
-        "description": "Generate weekly GitHub summaries, podcast scripts, and Gemini TTS audio.",
+        "description": "Generate weekly GitHub summaries, podcast scripts, and segmented Gemini TTS audio.",
         "env": ["GITHUB_TOKEN", "OPENAI_API_KEY", "GEMINI_API_KEY"],
         "commands": {
             COMMAND_WEEKLY: {
@@ -838,7 +888,7 @@ def describe_cli() -> Dict[str, Any]:
                 },
             },
             COMMAND_TTS_SCRIPT: {
-                "description": "Generate audio directly from a speaker-labeled script file or inline script text.",
+                "description": "Generate audio from a speaker-labeled script using per-line Gemini synthesis and concatenation.",
                 "params": {
                     "script_file": {"type": "string", "optional": True},
                     "script": {"type": "string", "optional": True},
@@ -1058,7 +1108,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Generate weekly GitHub summaries and podcast audio, or synthesize "
-            "audio directly from a speaker-labeled script."
+            "audio from a speaker-labeled script using line-by-line Gemini TTS."
         )
     )
     parser.add_argument(
@@ -1066,7 +1116,7 @@ def build_parser() -> argparse.ArgumentParser:
         nargs="?",
         choices=[COMMAND_WEEKLY, COMMAND_TTS_SCRIPT],
         default=COMMAND_WEEKLY,
-        help="`weekly` fetches GitHub activity; `tts-script` turns a script into audio",
+        help="`weekly` fetches GitHub activity; `tts-script` renders a script line by line",
     )
     parser.add_argument("-u", "--user", help="GitHub username for `weekly`")
     parser.add_argument("-n", "--name", help="Display name for `weekly` prompts")

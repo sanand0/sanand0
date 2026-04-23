@@ -29,30 +29,24 @@ def make_gemini_config() -> dict:
     }
 
 
-def test_build_gemini_request_uses_new_model_and_multispeaker_payload():
+def test_build_gemini_request_uses_new_model_and_single_speaker_payload():
     config = make_gemini_config()
 
-    payload, normalized_script, speakers = summary.build_gemini_request(
+    segments, normalized_script, speakers = summary.split_script_segments(
         "Alex: [excited] Welcome back!\nMaya: Good to be here.\nAnd we have updates.",
         config,
     )
 
-    assert payload["model"] == "gemini-3.1-flash-tts-preview"
     assert normalized_script == (
         "Alex: [excited] Welcome back!\nMaya: Good to be here. And we have updates."
     )
     assert [speaker.name for speaker in speakers] == ["Alex", "Maya"]
-    assert payload["generationConfig"]["speechConfig"]["multiSpeakerVoiceConfig"] == {
-        "speakerVoiceConfigs": [
-            {
-                "speaker": "Alex",
-                "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": "Algieba"}},
-            },
-            {
-                "speaker": "Maya",
-                "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": "Kore"}},
-            },
-        ]
+
+    payload = summary.build_gemini_request(segments[0][1], segments[0][0], config)
+
+    assert payload["model"] == "gemini-3.1-flash-tts-preview"
+    assert payload["generationConfig"]["speechConfig"]["voiceConfig"] == {
+        "prebuiltVoiceConfig": {"voiceName": "Algieba"}
     }
     assert "TRANSCRIPT" in payload["contents"][0]["parts"][0]["text"]
 

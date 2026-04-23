@@ -66,7 +66,7 @@ For each run, the script creates a directory named after the end date (e.g., `20
 
 - `${week}/README.md`: Written summary of GitHub activity
 - `${week}/podcast.md`: Script for the podcast
-- `${week}/podcast.mp3`: Final Gemini multi-speaker audio. Not committed, uploaded to GitHub releases
+- `${week}/podcast.mp3`: Final podcast audio assembled from per-line Gemini clips. Not committed, uploaded to GitHub releases
 
 The repo also supports local listening samples in `samples/`, with `.md` scripts and generated `.mp3` files ignored by Git.
 
