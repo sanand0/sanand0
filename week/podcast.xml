@@ -4,7 +4,103 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Fri, 24 Apr 2026 00:52:55 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 04:09:32 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-05-03</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-03.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-03.mp3</guid>
+    <pubDate>Sun, 03 May 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 03 May 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: First up — Anand's toolbox and personal scripts got a big batch of upgrades. This is the repo that holds his productivity scripts, dotfiles, and little one‑file CLIs.
+Maya: Yeah, this week he added two new utilities worth noting: one to safely archive Google Meet recordings, and another to auto-generate YAML metadata for content using AI.
+
+Alex: Tell me about the Meet archiver — what does it actually do?
+Maya: It automates copying meeting recordings and transcripts from a configured Google Drive account into a local folder, renames files to start with the meeting date, extracts lightweight audio (.mp4 → .opus) for quick review, and optionally deletes the Drive originals — but only after explicit confirmation. It also supports dry‑run and date filters so you can test safely first.
+
+Alex: That practical safety stuff matters. Why is that a helpful change?
+Maya: Two reasons: one, video files pile up and are bulky; extracting short audio makes review and downstream processing faster. Two, built‑in dry‑run and explicit confirmation reduce the risk of accidental deletions — which is the common scary part of any automation that touches user data.
+
+Alex: And the summarize tool — what's new there?
+Maya: Anand combined a couple of scripts into a generic summarize utility. It runs over content sets — like transcripts or blog posts — and uses an LLM to add structured YAML metadata: summaries, keywords, people mentioned, action items, etc. It supports globs, parallel workers, dry‑run and cost reporting, and it's designed to be extensible so you can add new content sets and fields.
+
+Alex: So it turns messy text into searchable structured data. Any neat design decisions?
+Maya: Yes — idempotence by default (skip already-processed files), dry-run modes so you can see cost and outcomes before committing, and a documented extension point so adding new tags is straightforward. Anand also added prompts and helper docs so agents can call it predictably.
+
+Alex: I like that he thought about cost reporting — LLM calls aren't free.
+Maya: Exactly. Expose token/cost estimates and make runs reversible or safe to re-run. Those small choices make automation trustworthy.
+
+Alex: He also revised a bunch of agent guidance and SKILL docs in the same repo, right?
+Maya: He did. The agent guidance now emphasizes practical rules: ask clarifying questions when success criteria are unclear, prefer DOM+screenshots for web testing, log progress for long tasks, make scripts restartable, and prefer icon libraries over emoji. These are small behavioral changes that make agent-driven workflows far more robust.
+
+Alex: Practical takeaway: when you build automation that uses LLMs, design for idempotence, dry‑runs, and clear failure messages. If you’re automating archives, always give an explicit interactive confirmation or --yes flag.
+
+Maya: Exactly.
+
+Alex: Next, Anand upgraded an API token and billing proxy he maintains — the small service that gives people a low-cost, limited key to LLM APIs.
+Maya: Right — he tightened authentication and added budget protections. Tokens now include issuer, audience, and a 7‑day expiry. He introduced a salt-per-email/domain mechanism so tokens can be revoked en masse by changing a salt. And on the billing side, he added pre‑flight cost estimation for OpenRouter requests and rejects requests that would exceed a user's remaining budget.
+
+Alex: Breaking that down: issuer/audience are small pieces of the token that say “who issued this” and “who should accept it,” and expiry is obvious. The salt trick sounds neat — how does that help?
+Maya: Salts let you revoke tokens without rotating the whole signing secret. If a user's tokens are compromised, you change their per-email salt and any token signed with the old salt is invalidated. Using domain salts lets you revoke everyone at @example.com in one go.
+
+Alex: And the budget checks?
+Maya: Before forwarding a request to OpenRouter, the service estimates how much that request will cost and refuses it if it would blow the user's budget. That prevents surprise charges when you're running a shared, low‑budget token proxy.
+
+Alex: Non-obvious takeaway: if you run a proxy to third‑party ML APIs, do pre‑flight cost estimation and enforce budgets — it converts a liability into a predictable service.
+
+Maya: And add tests that reject legacy or malformed tokens. He did that too.
+
+Alex: Great. The talks site also saw a big addition this week.
+Maya: Yes — Anand published a full Harvard panel page: a carefully styled HTML page, the transcript, sketchnote assets, and a full‑width embedded YouTube video. He also included the exact prompts and a share link to the live LLM conversation that was run on stage.
+
+Alex: Why does including the prompt and LLM conversation matter?
+Maya: It makes the event reproducible. Anyone who reads the page can see the exact prompt that produced the insight and follow the LLM conversation. That transparency is useful for folks trying to understand what the model actually produced versus the human narration.
+
+Alex: UX-wise, he also added a responsive, full-width YouTube embed with a caption and quick-links — small polish but big effect for accessibility.
+Maya: Right — and the transcript is available as a downloadable document and linked clearly. If you're publishing talks, embedding the video prominently and shipping transcripts + prompts is the reproducible‑science playbook.
+
+Alex: Moving on to visualization tools — Anand updated the tiny UMAP scatterplot generator to add trails.
+Maya: This tool turns CSV rows into an interactive HTML scatterplot using embeddings and UMAP. The new trails feature computes time‑bucket centroids for groups and draws “trails” showing how clusters or groups move over time. It also adds playback controls, trail opacity/inactive opacity sliders, and the option to persist those UI settings in shareable URLs.
+
+Alex: That's a neat way to visualize evolution across time.
+Maya: Exactly. Instead of just a static scatter, trails show movement: how topics shift, how clusters drift. The CLI accepts a --trails flag and a --trail-period to control bucket sizes. There are tests and CLI helpers to normalize arguments, so it's more robust for reproducible builds.
+
+Alex: Non-obvious point: trails can be noisy if buckets are too small; Anand exposed bucket period controls so users can tune granularity. And caching embeddings means you can change visuals without recomputing heavy embeddings.
+
+Maya: Good call. He also added batch controls so you can increase row batching when your embedding quota allows it.
+
+Alex: Now, for Anand's blog — there were a few new posts and prompt improvements.
+Maya: He added a short how‑to for deploying a static site entirely from mobile — GitHub Pages plus Cloudflare Registrar — and a couple of data/food posts: a writeup on classifying sambar styles using decision trees, and a fun note about a puzzle in Panchayat that mislabels an answer. He also hardened his “fake data” prompt to produce more realistic synthetic datasets: over‑sample rare segments, simulate causal processes, and enumerate “tells” that betray synthetic data so they can be fixed.
+
+Alex: That fake‑data prompt upgrade is important for anyone using synthetic datasets — you need to think about realistic quirks, not just nice statistical distributions.
+
+Maya: Right. Anand's workflow explicitly asks for a cynical data scientist review step so generated data avoids the obvious synthetic artifacts. That pattern is helpful: generate, then critique and fix.
+
+Alex: A few smaller things: model‑pricing docs got an update to the “last updated” date and the ELO CSV was refreshed, and Anand updated his weekly notes and trending repos snapshot.
+
+Maya: And his Generative AI Group podcast repo had its weekly digest updated, keeping the community summary fresh.
+
+Alex: Alright — listener tips. Maya, you go first. What's one quick, actionable tip people can use this week from these changes?
+Maya: Tip: When you automate anything that deletes or moves user files, always implement a dry‑run mode, an explicit confirmation (--yes), and clear failure messages that include the remote path. That saves painful mistakes. Alex, how would you apply that to your own work this week?
+
+Alex: I'll add a dry‑run flag to my nightly sync script and test deletions with a simulated run before letting it remove anything for real. My tip: if you provide shared proxy tokens to others, scope tokens with issuer/audience and set a short expiry, and add a per‑user salt for fast revocation. Maya — how would you use revocable salts?
+
+Maya: I'd add domain-level salts for contractors and rotate them if there’s any suspicion of leakage, so I can invalidate many tokens at once without changing the signing secret.
+
+Alex: One more quick tip that ties to the talks & visualization work: when you publish video talks, upload a transcript and include the exact prompts or scripts you used to get any model‑generated output. It makes your content far easier to verify and reuse.
+
+Maya: Good one. I'd apply that by adding a short “reproducibility” section to every talk I publish with the raw prompts and links.
+
+Alex: That's it for this week — lots of practical, safety-minded engineering from Anand: safer archives, structured metadata, permissioned token handling, reproducible talks, and richer visualizations.
+
+Maya: Thanks for listening. We'll be back next week with more highlights from Anand's repos.
+
+Alex: We’re Alex and Maya.
+Maya: Bye for now!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-04-19</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-19.mp3" length="0" type="audio/mpeg"/>

@@ -11,6 +11,8 @@ Personal site, activity feed, and profile links for Anand S.
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [03 May 2026](week/2026-05-03/): A week of publishing, safer tokens, and smarter tooling [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-03.mp3)
+- [19 Apr 2026](week/2026-04-19/): A week of data stories, agent plumbing, and safer observability [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-19.mp3)
 - [12 Apr 2026](week/2026-04-12/): A week of dashboards, data cards, and production-ready AI toys [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-12.mp3)
 - [05 Apr 2026](week/2026-04-05/): Maps, radars, and smaller but useful tooling wins this week [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-04-05.mp3)
 - [29 Mar 2026](week/2026-03-29/): A week of better pipelines, richer stories, and more agent-friendly tools [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-03-29.mp3)
