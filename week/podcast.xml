@@ -4,7 +4,120 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 10 May 2026 10:12:42 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 17 May 2026 14:09:46 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-05-17</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-17.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-17.mp3</guid>
+    <pubDate>Sun, 17 May 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 17 May 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week — Anand was extremely busy. Let's start with his toolbox of small web apps and bookmarklets — the place he keeps quick browser utilities and AI helpers.
+Maya: Right — I saw a lot of changes there. What actually landed?
+
+Alex: Three big things. First, he added scrapers that can copy full AI conversations from ChatGPT and Anthropic Claude into Markdown with YAML front matter, and consolidated the older Gemini tool into a new "AI scrapers" collection. Practically, that means you can drag a bookmarklet or paste a tiny script into a page and extract the whole chat — including hidden "show more" segments, code blocks, and thinking traces — as a tidy Markdown file.
+Maya: That sounds useful. Why is having that in Markdown important?
+
+Alex: Markdown is portable and easy for agents to read. Instead of screenshots or copy-pasting fragments, you get structured text with clear speaker turns and metadata (like title and source). That makes it trivial to store, search, or feed into another tool — say, an agent that summarizes a conversation or produces meeting notes.
+
+Maya: And he added tests too, right? Good sign.
+
+Alex: Yup — unit tests for parsing tables, quoted blocks, and robustness when CSS classes change. The tests show he focused on resilience: prefer ARIA labels or structural selectors over brittle class names, expand hidden content programmatically, and normalize whitespace so outputs are clean.
+
+Maya: Nice. What was the other big addition in that tools area?
+
+Alex: The Google Meet captions recorder. Anand turned a bookmarklet into a small in-page panel that can both copy visible captions and stream-record live captions to a local Markdown file via the File System Access API. It stabilizes partially-updated captions — polling plus MutationObserver and a "stability" heuristic — and even updates a recording in-place if the caption gets corrected.
+Maya: Wait — so the bookmarklet can continuously write to a local .md file while the meeting runs?
+
+Alex: Exactly. Start Recording opens a save dialog and writes captions as they stabilize. Stop Recording finalizes the file. He also documented why browser swap files appear while recording and why you must stop the recorder to trust the final file. The tests simulate streaming, file-writing, and in-place overwrites, so it’s not just a demo — it's tested behavior.
+
+Maya: That's brilliant for making meetings agent-readable immediately. Any privacy notes?
+
+Alex: Yes — all runs locally in the browser, nothing goes to a server. But since it writes local files and reads page content, Anand documents selector strategies and stresses user judgement. He also adds UI cues so users know when recording is active.
+
+Maya: Practical takeaway for listeners?
+
+Alex: If you join lots of remote calls, grabbing captions to a local Markdown file turns those meetings into searchable, actionable data you can feed into your workflows. And always stop the recorder before relying on the file — Chrome sometimes leaves a swap file until finalization.
+
+Maya: On a final note for this tools collection: LinkedIn and WhatsApp scrapers got serious updates. LinkedIn now has both an invite scraper and a profile scraper; invitation timestamps were turned into a more robust "invitation month" heuristic, and tests cover missing ages. WhatsApp parsing was hardened too, with fixtures for recent message DOM quirks. All of these changes make the bookmarklets dependable across UI changes.
+
+Alex: Exactly — think "robust, test-driven bookmarklets" instead of brittle one-off scripts. Small, high-impact utilities that make data portable.
+
+Maya: Okay — next big repo: Anand's personal scripts — the toolset he runs on his laptops.
+
+Alex: This is huge. He added three user-facing CLIs: activities.py to generate daily activity TSVs from calendar, email, commits, browser history, and prompts; backupgoogle.py to archive Gmail, Calendar and Chat into per-account JSONL; and a podcast rendering pipeline that turns speaker-labeled Markdown into cached TTS segments and stitches them with ffmpeg.
+Maya: That podcast tool surprised me. What changed specifically?
+
+Alex: A few practical things: he switched the default output to MP3 to target compact files, kept Opus as an option, and added format-specific ffmpeg settings to keep voice files small. He also added parallel generation for missing TTS segments (a thread pool), and made cache keys include format so mp3/opus artifacts don't collide. And importantly, both the podcast tool and the call-transcription tool now load GEMINI_API_KEY from the current directory first, then fall back to the script directory .env — making the tools more reliable when invoked from different working directories.
+Maya: Those are good operational details. Why default to MP3?
+
+Alex: MP3 is widely compatible and, with tuned ffmpeg parameters, small enough for voice podcasts. Opus is efficient too, but mp3 as default reduces friction for listeners who drop episodes into players that may not handle Opus automatically.
+
+Maya: And activities.py — what does that do for a typical day?
+
+Alex: It generates a daily TSV with time, activity type, and short descriptions collected from multiple sources. That makes it easy to build a searchable timeline, hand it to an agent, or keep a lightweight "activity ledger" — very useful for weekly reviews or feeding context into Local MCP workflows.
+
+Maya: Practical idea: run activities.py for a week and feed the TSV into your personal agent to produce weekly summaries or meeting prep.
+
+Alex: Exactly. And backupgoogle.py helps you archive email, calendar, and chat into machine-readable JSONL — great for audits or feeding offline agents.
+
+Maya: One more highlight: tests were updated to assert the new defaults and environment fallback behavior, so this isn't just code — it's verified.
+
+Alex: Right. Tests now check parallel options, default formats, and env fallback — which keeps regressions at bay.
+
+Maya: Next up: Anand published his editorial intelligence site — the impact reports.
+
+Alex: He transformed an analysis repo into a small static site with a landing page, themed reports for five publishers, a license, and per-publisher pages with recommendations and methodology. The content is data-driven: OpenAlex-derived analyses, clear caveats, and action items for publishers about format mix, review commissioning, and portfolio hygiene.
+Maya: So it's both a report and a demo of a reproducible pipeline?
+
+Alex: Exactly. The value is pragmatic: it demonstrates how open bibliometric data can surface concrete editorial moves — like commissioning reviews or pruning off-topic proceedings — that actually lift citation density. He also added a dark/light theme and improved style for readability.
+
+Maya: Why does this matter for listeners who aren't publishers?
+
+Alex: Two reasons. One, the methodology is reusable: if you work with domain datasets, you can replicate the pattern — data -> taxonomy -> actionable recommendations. Two, it's a good example of turning analysis into a sharable web report with clear caveats and reproducible links.
+
+Maya: Great. What else? Blog and talks?
+
+Alex: Anand added two posts: one explaining Local MCP — a tiny command-line MCP that exposes local files and tools as a supervised context hub for agents — and a write-up of the Google Meet captions recorder with implementation notes and selector strategy. He also published the Gramener all-hands talk page with a sketchnote, transcript, and embedded prompts and references.
+Maya: That ties back to the tools — Local MCP plus local transcripts is a workflow: make local context readable, then let agents do higher-value reasoning.
+
+Alex: Exactly. He frames transcripts as raw material — not the final output — and documents how to make them reliable and safe.
+
+Maya: Any notable research or datasets?
+
+Alex: Yes — he added an outcomes measurement dataset for a FOSS grants program: projects.tsv, evidence files, a methodology write-up, and a gap inventory. The emphasis is conservative, public-evidence-first, and the work is structured to surface what needs further internal verification. That’s a good pattern for funders and evaluators.
+
+Maya: And housekeeping?
+
+Alex: He pruned stale notes from his weekly learnings repo and updated LLMS notes and trending repos — little but important maintenance to keep the living notes useful.
+
+Maya: Okay — listener tips time. Alex, your quick actionable tip?
+
+Alex: Tip: Drag one of those bookmarklet buttons (the AI conversation scraper or the Google Meet Captions tool) to your bookmarks bar and try it on a test conversation. Use the copy button first to see the Markdown output, then try Start Recording in a Meet to capture a short 5‑minute session. How would you apply that, Maya?
+
+Maya: I’d use the Meet recorder to capture client calls and then feed the Markdown to an agent that extracts action items and creates a follow-up draft email. That saves manual note-taking and makes decisions auditable.
+
+Maya: My tip: run activities.py for one recent day with --dry-run and inspect the generated TSV. It’s a small step that reveals where your time actually went and creates a neat input for weekly summaries. Alex — how would you use that output?
+
+Alex: I’d pipe it into a small agent prompt that produces a one-paragraph weekly highlight and a 3-item prioritized task list. It’s an efficient reflection loop.
+
+Maya: Quick bonus tip: if you use the podcast tool, run it with --dry-run --format json first to verify the speaker mapping and segment count before generating audio. That avoids wasting TTS calls.
+
+Alex: Good call. I’d set parallel to 4 or 8 when I have many short segments to speed things up, but always keep the cache directory checked so you don't generate duplicates.
+
+Maya: Anything else we should flag?
+
+Alex: Just remember the privacy and security implications: these tools read pages and write local files. Keep credentials safe, and review what you record before sharing.
+
+Maya: Agreed. That’s it for this week.
+
+Alex: Thanks for listening. We’ll be back next week with more commits and more stories. Goodbye for now!
+
+Maya: Bye! See you next week.
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-05-10</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-10.mp3" length="0" type="audio/mpeg"/>
