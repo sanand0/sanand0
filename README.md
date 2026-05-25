@@ -11,6 +11,7 @@ Personal site, activity feed, and profile links for Anand S.
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [24 May 2026](week/2026-05-24/): A week of making AI content honest, local data useful, and backups reliably boring [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-24.mp3)
 - [17 May 2026](week/2026-05-17/): A week of making web scraps polite, meetings readable, and podcasts smaller. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-17.mp3)
 - [10 May 2026](week/2026-05-10/): A week of demos, data grabs, and cleaner docs — small tooling that makes big reproducible wins. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-10.mp3)
 - [03 May 2026](week/2026-05-03/): A week of publishing, safer tokens, and smarter tooling [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-03.mp3)

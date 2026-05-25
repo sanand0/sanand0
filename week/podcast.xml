@@ -4,7 +4,64 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 17 May 2026 14:09:46 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 25 May 2026 00:42:49 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-05-24</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-24.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-24.mp3</guid>
+    <pubDate>Sun, 24 May 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 24 May 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Let’s start with Anand's personal blog and website — lots of frontend polish and new writing.
+Maya: Right — the core change is an explicit AI-content disclosure system. Anand added a tiny JavaScript + CSS treatment so any section marked as AI-generated gets a subtle badge, a hover tooltip showing the model and provider, and a small footer attribution.
+Alex: Practically, that means readers will see clearly labelled AI passages, and the labels are machine-readable because they come from data-ai-* attributes. Why does that matter?
+Maya: Two reasons. One, it’s honest and improves trust — readers can tell what was assisted by models. Two, it’s future-proof: the site now exposes the model/provider in a structured way so scripts or agents can automatically gather provenance. Anand also made sure the style works with light and dark modes and uses opacity rather than big color shifts so it won’t clash with future themes.
+Alex: He also tightened his prompting and publishing workflow — a revised podcast prompt that asks for more action-oriented takeaways, moved a meeting-prep system prompt to its own page, and sprinkled better metadata across posts so search and agent tools can find things more easily.
+Maya: Oh, and several new posts went live: an enterprise-AI piece grounded in transcript research, an article about model deprecations and pricing, a write-up on making content agent-consumable, and a short piece about the risks of over-anthropomorphizing chatbots.
+Alex: The practical effect is twofold: readers get clearer signals about AI authorship, and Anand’s site becomes more agent-friendly — useful both for human readers and for tools that summarize or ingest his content.
+Maya: Non-obvious takeaway: add structured, minimal provenance where it’s easiest to add it — tiny data attributes and a small JS/CSS layer buy a lot of downstream automation and auditing power without much UX friction.
+
+Alex: Next up: Anand’s toolbox — his collection of personal scripts and automation utilities got a huge round of features.
+Maya: This is dense. He added new scrapers and helpers: a tool to list apps connected to a Google account via a Chrome DevTools session, a LinkedIn backup scraper that saves posts and comments, and a calendar "free slots" suggester that reads Google Calendar and returns DST-aware, multi-time-zone candidates.
+Alex: He also hardened a bunch of backup and summarize workflows: WhatsApp backup became more incremental and timestamp-accurate, the summarizer now processes newest files first and skips tiny transcripts, and the daily-activities runner defaults to filling pending days through yesterday so it doesn’t touch the current, incomplete day.
+Maya: Another practical improvement: the podcast generator now chooses output filenames derived from the input Markdown basename (easy for automation) and logs full remote responses when TTS calls fail — which makes debugging much faster.
+Alex: Why does this matter for someone building workflows? Small operational investments like deterministic filenames, clearer logs, and skipping low-value inputs save both money and developer time — fewer reruns, fewer surprise API bills, and easier CI.
+Maya: Non-obvious idea: treat your personal data pipeline like a production system — add dry-run options, sensible defaults (don’t process today's in-progress files), and explicit gating for metered networks. Anand added those patterns across multiple scripts.
+Alex: One more practical note — he added tests around podcast output naming and error logging. Tests for infra and UX glue are underrated but pay off.
+
+Maya: The project that turns group chat into a weekly podcast also got updates — Anand refreshed a weekly digest script.
+Alex: He committed a polished two-host transcript for a week’s digest. That’s the kind of input the podcast tool consumes to generate scripts and eventually voice tracks.
+Maya: In practice, better transcripts and curated scripts mean the TTS pipeline will produce higher-quality episodes with less manual editing. It’s the content-first approach: make the script great, then synthesize audio.
+Alex: Takeaway: if you want an automated show, invest in tidy, structured scripts and small editorial edits before calling TTS — it reduces weirdness in the final audio.
+
+Maya: Anand also published a new talk and a boatload of workshop material — transcripts, prep chats, audience profiles, prompts, the works.
+Alex: He uploaded full workshop artifacts for a context-engineering session: transcripts, chat histories, prompt fragments, design notes, even background assets. That’s raw material for blog posts, demos, and reuse in future workshops.
+Maya: Practically, this makes the session reproducible and re-usable — others can see the slide content, the exact prompts used, and the post-workshop narrative. For organizers, publishing the prep notes and transcripts means you can iterate faster the next time.
+Alex: Non-obvious point: publishing detailed internal artifacts (prompts, chat logs, transcripts) demystifies the process and creates a knowledge asset you can program against — think search, automated briefing cards, or repurposed micro-content.
+
+Maya: He also updated the LLM pricing/quality project: new model entries and the readme timestamp were refreshed, and the Elo CSV was updated.
+Alex: That keeps the cost-vs-quality frontier current — useful if you benchmark models or route requests by capability. The practical effect is everyone using that dataset sees the evolving frontier and can make routing or procurement decisions informed by current numbers.
+Maya: Lastly, his weekly-notes and trending tools got tougher: the trending-repos job was rewritten to detect tools reliably, use temporary workspaces, and fail fast with clearer errors. He also updated the weekly trending TSV and added notes to the shared "things I learned" files.
+Alex: That improves reliability for scheduled jobs and makes the weekly list less fragile. Small ops fixes like that reduce the chance of silent failures.
+
+Maya: Okay, listener-tip time. I’ll go first: if you publish AI-assisted content, add a small, machine-readable disclosure tag — a data attribute with model and provider — and a tiny, consistent visual treatment. That makes provenance visible to users and easy to index for tools.
+Alex: Good one. How would you apply that to a long-lived site with many themes?
+Maya: I’d start with a theme-agnostic CSS approach — use opacity and neutral color mixes instead of bold hues — and write a tiny JS shim that reads data attributes and injects the badge. Deploy it behind a feature flag and roll it out gradually. What about you — what’s your tip?
+
+Alex: My tip is about automation hygiene: choose deterministic, content-derived filenames for generated artifacts (like audio files named from the source basename plus a timestamp) and log full responses on unexpected remote failures. That saves debugging time and avoids naming collisions in pipelines.
+Maya: How would you apply that if your CI already produces tens of thousands of artifacts?
+Alex: Enforce a naming convention that includes the logical source, a short hash of the content or job id, and an ISO timestamp. Combine that with a retention policy and local index to map generated artifacts back to source inputs. Also add a "dry-run" mode to every step so you can test end-to-end without producing heavy outputs.
+
+Maya: Love it. Small habits, big wins.
+
+Alex: That’s everything we have time for this week. Thanks for listening to our tour of Anand's work — it was a dense but practical set of changes.
+Maya: If you enjoyed this episode, try one of the tips: add a tiny provenance tag or make one output name deterministic today.
+Alex: We’ll be back next week. Goodbye for now!
+Maya: Bye!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-05-17</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-17.mp3" length="0" type="audio/mpeg"/>
