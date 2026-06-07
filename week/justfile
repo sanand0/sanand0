@@ -1,0 +1,9 @@
+build:
+  uv run summary.py -u sanand0 -n Anand
+  uv run update_readme.py
+
+week := `date +%F`
+
+deploy:
+  gh release upload main {{week}}/podcast-{{week}}.mp3
+  gh release upload main --clobber podcast.xml
