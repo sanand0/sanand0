@@ -4,7 +4,73 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 07 Jun 2026 05:19:52 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 15 Jun 2026 03:20:48 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-06-14</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-14.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-14.mp3</guid>
+    <pubDate>Sun, 14 Jun 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 14 June 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Where do you want to start?
+Maya: Let's start with Anand's blog — his personal site and weekly notes. He made a bunch of changes that are small individually but add up to a big improvement in discoverability and publishing workflow.
+
+Alex: Right. He added descriptive front matter to lots of posts — short descriptions and keyword lists in the Markdown files. That's the metadata at the top of posts that search engines and social sites read.
+Maya: He also added a build task that scans posts and pages for summary, description and keywords and writes a description index. So instead of metadata scattered across files, the site can consume a single, reusable index.
+Alex: Practically, that means better link previews, clearer summaries in RSS, and easier internal features like topic pages or a metadata search. If someone shares a workshop link on social media, the page will now show a concise summary instead of an unhelpful snippet.
+Maya: He also published new content: a graduation address called “Make 5 new friends today,” workshop pages announcing “Let AI Take Your Exams” and “Data Stories with AI,” and a curated link roundup of “Oh Shit moments” with GenAI examples. Plus a post about editing images with code and AI.
+Alex: So more fresh content plus better SEO and an index to run site features off. He even styled descriptions as secondary text so metadata looks intentional.
+Maya: Non-obvious takeaway: think of metadata as first-class content. It’s not just for search engines — it powers social previews, feeds, and site features. And creating a single description file makes programmatic features and cross-posts far simpler.
+Alex: Practical idea: add a small description and 5–8 keywords to every new post, and wire up a build step that extracts them into an index. It’s low effort but high impact.
+
+Maya: Next up — the liveform project that serves editable workshop forms from a laptop. This one had a big set of additions.
+Alex: Yeah, Anand added two full forms for workshops: a “Data Stories with AI” form and a “Let AI Take Your Exams” experiment, ready for in-room and remote students.
+Maya: The UX work is notable. He made the server show the latest form at the root URL, and he serves the same content at /index.html so deployed hosts and local servers behave consistently. That fixes a common sharing problem where the root returned "Form not found."
+Alex: He also improved form ergonomics: question numbers now appear beside each question so instructors can ask people to fill out "question three" out loud, and YAML forms got smarter defaults — if choices are present the field defaults to single choice, otherwise it defaults to text.
+Maya: And he hardened behavior for real deployments: QR codes and links use the forwarded origin header so tunnels and proxies produce correct HTTPS links, plus there are unit tests and browser smoke tests to lock the behavior in.
+Alex: The practical effect is lower friction during workshops. Less YAML boilerplate for form authors, clearer instructions for students, and fewer layout or link surprises when you share the root URL or use a tunnel.
+Maya: Non-obvious takeaway: small defaults and a predictable home route massively reduce setup friction in live teaching. Tests that assert identical rendering for / and /index.html avoid an embarrassing day-of-workshop regression.
+Alex: Idea to try: when you run a one-off workshop, put a tiny index at root and add question numbering — it's a tiny UI tweak that makes coordination much easier.
+
+Maya: Let’s talk about the talks and events materials. Anand pushed a big batch of assets and transcripts from recent workshops.
+Alex: He added a full workshop page and supporting files for an engineering-design talk — slides, transcripts, generated chats with LLMs, a visual test harness for moving-boundary methods, and interactive pages.
+Maya: That’s great for reproducibility. There are prompts, transcripts for different model runs, experiment code, and a careful notes file for fixing misattributed quotes. He asked the system to fact-check and list quotation errors — that level of care matters when you publish a transcript.
+Alex: Why it matters: publishing the prompts, transcripts and data lets others reproduce demos and learn from the exact experiments. The fact-check step reduces errors that creep in when automated transcripts are used as source material.
+Maya: Tip: always bundle the prompts and raw transcripts with a talk so later readers can see not just the conclusions but how they were produced.
+
+Alex: On the research front, Anand added a 3D-mesh experimental suite.
+Maya: Yes — two prototypes that generate synthetic bone-like meshes and a head CT skull patch experiment. The code creates watertight meshes, computes clearance metrics, and emits interactive HTML viewers and fit reports.
+Alex: He included dependency metadata so the scripts can be run with his uv toolchain and produced clear outputs like STL files and JSON fit reports. He also explicitly marks them as research prototypes and not medical devices.
+Maya: The practical effect: a fast way to iterate on mesh-fitting experiments and capture provenance and metrics. Non-obvious lesson: when doing geometry experiments, include clear fit diagnostics and a README warning so others can't mistake a prototype for a clinical tool.
+Alex: If you explore similar demos, keep the fit numbers and the provenance — that helps debug algorithmic choices and avoids misuse.
+
+Maya: Anand also improved the ChatGPT-to-Markdown converter.
+Alex: It’s now archive-aware. Instead of only reading a single conversations.json, it accepts an exported archive directory, reads the export manifest, follows sharded conversation files, and maps attachments via the archive.
+Maya: The Markdown output is richer: it collapses internal reasoning into details blocks, converts awkward citation markers into normal links, links exported attachments, and records model, starred, and archive flags in metadata.
+Alex: That makes the output both readable and faithful. If you’re archiving or publishing chat transcripts, these improvements are huge — fewer manual edits, and better context for readers.
+Maya: Non-obvious takeaway: when exporting many conversations, preserve the active conversation branch, and convert internal reasoning into optional collapsed sections so readers aren’t overwhelmed.
+
+Alex: There were a couple other updates worth noting.
+Maya: The podcast automation repo got a simple justfile to build and deploy weekly podcast artifacts, and the episode script itself was updated. Small automation like date-based release names reduces manual mistakes when uploading audio and updating RSS.
+Alex: The “Things I Learned” notes got monthly updates and a refreshed trending repos snapshot. Small, frequent updates keep the TIL archive useful.
+
+Maya: Before we go, listener tips. I’ll go first. From the liveform work: if you run small in-person workshops, add sequential question numbers to your form UI and default your YAML question fields. It takes five minutes and saves a ton of coordination time. How would you apply that, Alex?
+Alex: I’d add numbers to the workshop forms I use and update my form generator to infer field types from presence of choices. That way the forms I hand to helpers are shorter and easier to maintain.
+
+Alex: My tip: treat metadata as first-class content. Add a one-line description and a short list of keywords to every post you publish, and run a small build step that extracts those into an index file. It improves discovery, social previews, and lets you power small site features without manual scraping. Maya, how would you use that?
+Maya: I’d retro-fit descriptions into the last five posts, regenerate previews, and add the description index to my site so newsletters and feed generators can use consistent summaries.
+
+Alex: That’s perfect. Any last quick tips?
+Maya: One more: when you publish experimental code or demos, include a short machine-readable fit or verification report. It helps future you and others understand whether results are reasonable without running everything again.
+Alex: Agreed. Clear outputs and a README save hours.
+
+Maya: That’s all from us for this week.
+Alex: Thanks for listening to Anand's Weekly Codecast. See you next week.
+Maya: Bye for now!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-06-07</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-07.mp3" length="0" type="audio/mpeg"/>
