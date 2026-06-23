@@ -11,6 +11,7 @@ Personal site, activity feed, and profile links for Anand S.
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [21 Jun 2026](week/2026-06-21/): A week of polishing forms, talks, prompts, and scrapers — making workshops, writing, and experiments more reliable and useful. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-21.mp3)
 - [14 Jun 2026](week/2026-06-14/): A week of making things findable, usable, and runnable—on the web and in class. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-14.mp3)
 - [07 Jun 2026](week/2026-06-07/): A week of writing, safety, and tooling: tighten defaults, test parsers, and document runtime state. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-07.mp3)
 - [31 May 2026](week/2026-05-31/): A week of tightening prompts, adding checks, and rescuing fragile data [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-05-31.mp3)
