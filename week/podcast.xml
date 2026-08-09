@@ -4,7 +4,493 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Tue, 23 Jun 2026 00:11:51 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 09 Aug 2026 02:59:24 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-08-09</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-09.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-09.mp3</guid>
+    <pubDate>Sun, 09 Aug 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 09 August 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week on the blog — new posts, a pile of prompt and skill tweaks, and a faster LinkedIn↔blog mapper. Tell me what landed and why it matters.
+Maya: Anand added several essays and experiments — a write-up about using AI to double-check tax returns, a hands-on report comparing letting agents run code versus calling CLIs, and a careful experiment showing that forcing a model to write in ultra-simple language harms its reasoning. Practically, that’s two things: more public stories and a set of workflow lessons you can copy.
+Alex: Walk me through the tax one in plain language.
+Maya: He let ChatGPT calculate his Indian tax independently from raw sources — AIS, bank statements, Form 26AS — then used the auditor as the final decision maker. The model found a discrepancy; the auditor verified and filed. The useful pattern is Expert + AI: let the model crunch raw data, then present precise evidence to the human expert and get the final sign-off.
+Alex: And the MCP vs Shell post — that’s the code-as-mode idea?
+Maya: Yes. He experimented with exposing his local CLI through a tiny MCP server so a chat agent can run his tools. The agent that could run code and loop did much more thorough work than the one constrained to narrow plugin calls. The takeaway: agents that can run code iterate like a developer — they can loop, re-fetch, re-check — so design your integrations to let them do safe, auditable loops.
+Alex: I noticed the prompts and SKILL files changed too.
+Maya: He tightened several “skills” — short, reusable instructions the site uses when it asks agents to act for Anand. The edits push toward making outputs asset-focused and reusable: prefer building something that can be reused automatically, include verification evidence, and pick where to store the result. That’s useful if you design agents that should produce deliverables, not just chat text.
+Alex: And the LinkedIn-blog mapper?
+Maya: Big refactor: it now prefers explicit overrides and front-matter links, strips HTML before scoring, and only does corpus-wide scoring for unresolved posts. That preserves earlier manual decisions, runs much faster, and sends a small review file for ambiguous matches. Practically: less time waiting, fewer false positives, and an auditable override path.
+Alex: Non-obvious takeaway?
+Maya: Treat manual editorial decisions as first-class: preserve them as overrides so automation only helps where you want it to, instead of silently undoing human judgment.
+
+Alex: Onto Anand’s developer scripts — there were huge changes to his MCP server and a bunch of agent-facing tweaks. What’s new there?
+Maya: The MCP server got a major refactor and feature lift: better structured logging, event JSONL for observability, explicit input/output schemas, safer save_file/download_file handling, and improved test coverage. He also ensured tool annotations are ChatGPT-compatible and added more robust compatibility for different clients.
+Alex: Why does that matter for someone building agent integrations?
+Maya: Two big things. First, clearer observability — every tool call is now logged with structured metadata so you can trace what the agent did and diagnose failures. Second, correctness and safety — limits for uploads, path traversal protection, explicit schemas and annotations help downstream callers validate arguments and avoid subtle security bugs when agents control local tools.
+Alex: He also nudged devtools skill to try APIs before DOM scraping, right?
+Maya: Yup — the skill now suggests inspecting fetch/XHR and replaying stable API calls before resorting to fragile DOM scraping. That’s a small change with outsized payoff: replayable API calls are deterministic and cheaper for repeated runs.
+Alex: Any other notable changes in the scripts repo?
+Maya: He added GPU-aware ffmpeg shortcuts, installed an agent CLI, and updated docs and migration guides about moving to the newer codex/gpt runtimes — all pragmatic developer ergonomics to make experiments faster and more repeatable.
+Alex: Non-obvious takeaway?
+Maya: When agents operate your environment, treat tools as first-class APIs: annotate them, log them, and keep outputs structured. That turns debugging from guesswork into inspection.
+
+Alex: Liveform — the survey tool for workshops — got feature updates too. What landed there?
+Maya: The two big user-facing features: respondents can now edit their answers (an editable flag per question) and the results UI got theming and brushing improvements. Under the hood, the server loads environment variables from .env on startup, and embedding settings were made smarter to prefer Gemini when present and warn cleanly if credentials are missing.
+Alex: So for a teacher running a live workshop, what’s the practical effect?
+Maya: Now participants can correct mistakes without creating multiple counts, and presenters can toggle light/dark themes on the results page and use brushing to select points on maps. For organizers, .env loading and clearer embedding warnings make local setup less error-prone and the UI more pleasant and accessible.
+Alex: Any testing or safety angles?
+Maya: Yes — they added tests for preflight checks, response write access, and ensured the map interactions and selection keyboard controls are robust. Also, embeddings only run when keys are present and the code warns otherwise — important to avoid silent failures in semantic maps.
+Alex: Non-obvious takeaway?
+Maya: Design surveys so the human is always in control: permit edits where sensible, count only the latest per respondent, and make UI affordances (themes, keyboard navigation) part of accessibility, not an afterthought.
+
+Alex: Tools — there’s a major new app, LiveGrid, styling tweaks for slides, and fixes for the older WhatNext app. Summarize.
+Maya: LiveGrid is a new, static, browser-only live multi-user prioritization grid that syncs via Cloud Firestore. It fits the whole grid to the viewport, supports import from tab-delimited rows, QR code sharing, offline editing, and simple deletion semantics. Slides got a nicer subtitle handling — subtitles now make it into the window title (cleaned), a modal closes on Escape, and body/table styling improved. WhatNext had drag fixes and some modernized DOM code.
+Alex: For workshop facilitators, LiveGrid sounds useful.
+Maya: It’s perfect for remote or in-room prioritization sessions: generate a room UUID, share via QR, invite everyone to move items, and import a spreadsheet of notes. But watch Firestore quotas — the README warns about write-volume and last-write-wins semantics.
+Alex: Non-obvious takeaway?
+Maya: When you build live collaborative tools, prioritize graceful offline behavior and a clear ownership model for deletes. Also, small UI touches — Escape to close, title normalization — drastically improve polish.
+
+Alex: Talks and media — anything notable?
+Maya: Anand added a full Data Hack Summit page: transcript, prompts, a comic panel concept and a recorded audio release. He also updated several other talk pages and embedded assets. So more reproducible public materials for his workshops and talks.
+Alex: Why is publishing like this useful beyond sharing slides?
+Maya: It preserves the exact narrative, prompts, and conversation context. That makes it easier for others to reproduce the demos, reuse the prompts, and teach from the same materials. It’s verification plus reuse.
+
+Alex: A few smaller but neat items: the art styles project and pricing tool updates.
+Maya: He re-ordered and expanded art styles, especially adding a big set of black-and-white and comic-flavored styles to explore unusual illustration aesthetics. That makes prompt-driven image generation richer. The LLM pricing tool got updated ELO and frontier data — the README timestamp changed — so the cost-vs-quality frontier graphs are fresher.
+Alex: Practical idea there?
+Maya: If you generate images, keep a curated style bank and re-order it by what you actually like. For model selection, keep an eye on the frontier chart so you pick models that aren’t dominated on cost and quality.
+
+Alex: And finally, Things I Learned got refreshed.
+Maya: Yes — new notes about efficient video compression (WEBM can be tiny), transcription costs across providers, package install tips, and toolchain notes. Little reminders but ones that save time and money in practice.
+
+Alex: Listener tips time. Quick, actionable: one from you, one from me, and ask how the other would use it.
+Maya: Tip: If you let a model audit or calculate something important, always feed it raw sources, not summaries, then ask your expert to confirm in writing. How would you apply that, Alex?
+Alex: I’d run models to pre-fill a short checklist or draft, then send the checklist plus the model’s evidence to the human reviewer with a one-line decision question — and save that reviewer’s answer as the single source of truth. Your turn: quick tip?
+Alex: Tip: When you expose local tools to agents, log every tool call with structured metadata (who, which tool, inputs, sizes, outcome) and keep an append-only event file. How would you apply that, Maya?
+Maya: I’d start with a tiny audit endpoint that tailors logs into a single JSONL stream for quick postmortems. In a workshop, it’d be my go-to for tracing an agent’s steps when something unexpected happens.
+
+Alex: That’s a wrap for this week. Thanks for joining us as we walked through Anand’s commits and what they mean.
+Maya: We’ll be back next week with more updates, experiments, and practical takeaways from his projects.
+Alex: Bye for now!
+Maya: Bye!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-08-02</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-02.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-02.mp3</guid>
+    <pubDate>Sun, 02 Aug 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 02 August 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week in Anand's personal scripts and tooling—this is the repo with all his dotfiles, shell helpers, and small utilities. What landed that matters most?
+Maya: He added a couple of small but very practical pieces. The transcription tooling now writes the transcription model and dollar cost into the note's YAML front matter. That means every saved transcript carries which model produced it and how much it cost.
+Alex: Why is that handy for everyday work?
+Maya: Two big reasons. First, traceability—if you later wonder which model produced an answer, the info is right in the file. Second, cost accounting: you can roll up small costs from many transcriptions to understand usage and budgeting. He also updated tests to assert the metadata is present, so it's resilient.
+Alex: Anything else in that scripts world?
+Maya: Yep—email/HTML tooling was improved so a single utility can accept either Markdown or pre-rendered HTML and still generate a premailer-friendly email for Gmail. Practically, you can now design an email in HTML, pass it straight through, and still get the inlining and sanitization the tool does. Saves a convert-then-send step.
+Alex: Nice. Any reliability or UX tweaks?
+Maya: Lots. The MCP server got a middleware that ignores unknown parameters instead of failing—handy because different agent frontends sometimes add extra fields like description. He also made the server build a dynamic docstring showing mounted paths and whether they're read-only, plus added a safer download/read behavior so tools always return embedded resources. Those are defensive changes that make automation more robust when LLMs call local tools.
+Alex: Small utilities too?
+Maya: He added a fish-usage script that scans your Fish shell history and shows which custom functions you actually invoke—great to clean up cruft. And rofi helpers now log which clipboard transforms or prompts were activated so Anand can see what he actually uses. There are also some text-normalization fixes (em-dash handling) and an archive of old fish functions. Overall, it's maintenance that pays off daily.
+
+Alex: Moving to another cluster: Anand's new LinkedIn CLI landed inside the scripts collection—it's a full tool that fetches profiles via a CDP/browser session. Tell me about that.
+Maya: It's a big one—playwright-based, cache-aware, tests included. The goal is to capture a profile snapshot from a logged-in desktop browser session without needing extra auth steps. Practical effect: if you have Chrome running with your session, the tool can pull a clean structured export for research or archiving. Anand also added tests to avoid fragile expectations like needing an open tab first.
+Alex: That’s the sort of brittle thing you want well-tested. Good move.
+
+Maya: Next big area—Liveform, his workshop/live-survey server. This one got a thoughtful, user-facing upgrade: question randomization, audience segments, nicer results UI and a pinned-QR feature.
+Alex: Explain randomization and segments in everyday terms.
+Maya: Randomization lets Anand mark a single-choice or multi-choice question as “randomize: true” so each respondent sees the choices in a stable but per-email randomized order—useful to avoid order bias while keeping results readable. Segments let you create sets of alternative questions and show exactly one variant per respondent, deterministically based on their normalized email. The result is better experimentation and fairer comparisons without leaking PII—the selection is a hash, not raw email.
+Alex: And the QR pin?
+Maya: Small UX win: clicking the QR now pins it to the top-right fixed position so phones can scan even when you scroll—handy during live workshops. He also tightened accessibility and counts (respondent vs. responses) and added server-side checks so only assigned questions are accepted back. These make running a live session much smoother and safer.
+
+Alex: Browser tooling got some love too—the tab manager extension saw a release.
+Maya: Right. The tab manager now recovers much better from browser crashes and restarts. It drops provisional snapshots that were never fully created, recovers closed-but-should-be-retained records, and adds a setting to choose whether the toolbar button opens the side panel or a full tab (defaulting to a tab). The reconciliation logic was careful—matching tabs to stored records only when there’s enough evidence, and leaving ambiguous cases unmatched for manual resolution.
+Alex: That reduces accidental mis-attachments and lost notes—super useful if you keep many tabs.
+
+Maya: On the LLM side, Anand updated his LLM pricing site. He added an “intelligence” view with an intelligence v. cost curve, a new HTML page with interactive labels, and tooling to capture screenshot sequences so he can make model-evolution videos.
+Alex: So you can see how cost and capability changed over time and make short animations?
+Maya: Exactly. He added a CLI that drives a headless browser, snapshots the chart for each model and date, and a small script to stitch those images into webm videos. He also updated the model pricing table with newer models and prices—helpful for anyone tracking cost-capability frontiers.
+Alex: That’s a neat way to communicate trends visually.
+
+Alex: Anand's research repo also had an interesting thread: simplification prompts.
+Maya: Yes—he ran an experiment asking models to “answer simply” (like ASD-STE100) and measured whether that instruction reduced the models' deeper thinking quality. The write-up and evals show that forcing too-simple style can shrink sources, shorten reasoning, and sometimes worsen correctness—an important reminder that style constraints can change the model’s internal process, not just the presentation.
+Alex: Non-obvious takeaway: instructing “make it simple” is not just formatting, it can change the model’s search strategy and evidence usage. Good cautionary note for prompt engineering.
+
+Maya: A few smaller but practical updates across projects: the AI Pipe backend had pricing updates for newer model families, so the hosted token service reflects realistic provider pricing; Anand created a tiny MCP worker repo that packages his SKILL.md files into a Cloudflare Worker so he can expose selected skills as MCP tools; and he added Claude desktop to his Linux setup notes and swapped in Monaspace font—personal but useful for reproducible dev environments.
+Alex: Both the worker and pricing changes show a mix of publishing and operational hygiene—keeping the external interfaces useful and the developer environment consistent.
+
+Maya: And the blog? He published posts—one about “Agent experience is the new user experience” and another on model cost-capability strategy—plus a bunch of prompt and prompt-system updates. Lots of content and prompt refinements went live that support the tooling updates we just discussed.
+Alex: So the ecosystem: tooling to run agents and collect data, website to visualize model economics, and research to evaluate agent behavior. It all ties together.
+
+Maya: Non-obvious takeaways across the week: small metadata wins scale. Putting model and cost into transcripts, logging which prompt you used, or recording which transform you clicked gives you data to improve workflows later. Also, deterministic selection (hash-based segments/randomization) buys you clean A/B-like splits without extra tracking.
+Alex: And from research: changing surface constraints (like “write simply”) can change the internal process. That’s an important guardrail when you optimize for readability.
+
+Maya: Listener tip time. My quick tip: if you run any note-taking or transcription system, add model and cost metadata to the file frontmatter now. It’s a 10–20 line change but immediately helps debugging, reproducibility, and billing. Alex, how would you apply that?
+Alex: I’d add model+cost to my meeting notes pipeline and then run a weekly script to summarize cost per project. It would let me see where transcription spending concentrates and whether a cheaper model yields similar accuracy for certain meetings. Good tip.
+
+Alex: My tip: when you run live polls or workshop forms, use deterministic segmentation and per-email randomized choice orders instead of one-shot randomization. It gives stable splits for analysis and keeps results interpretable. Maya, how would you use that?
+Maya: I’d use segments to test two different wording variants across the audience and randomize choice order for preference questions so order bias is eliminated. Then I’d compare the segment slices with the same analytics pipeline—cleaner signal, less noise.
+
+Maya: That’s it for this week's round-up. Anything else to add?
+Alex: Just a reminder: small instrumentation investments pay off. Anand’s week shows that—metadata, logs, and deterministic little rules make big downstream differences.
+Maya: Agreed. Thanks for listening.
+
+Alex: Goodbye for the week!
+Maya: See you next week on Anand's Weekly Codecast.
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-07-26</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-26.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-26.mp3</guid>
+    <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 26 July 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Let's dive into the biggest story: Anand shipped a polished release and a reproducible demo package for his browser tab manager with notes — the little extension that turns your open tabs into a searchable side-panel with notes, tags, and durable records.
+Maya: This was a big engineering and documentation push. He fixed a real crash/restart edge case, bumped the release, and also created a full pipeline to capture reproducible product screenshots and a short Build Week video using synthetic demo data and Playwright. Practical effect: the extension is safer after crashes, the release is verifiable, and anyone can reproduce the demo without leaking private data.
+Alex: Can you say more about the crash fix in plain terms?
+Maya: Sure — browsers sometimes restore tabs on restart in a way that races with the extension's "tab closed" handlers. Anand added logic that converges those close actions reliably: if you intentionally marked a record to be retained, it won't be lost just because the browser restored the tab a bit later. He also added a UI button — "Recover restored tabs" — that runs an explicit reconciliation step after the browser finishes restoring tabs, and the side-panel reports how many matches it recovered and how many remain ambiguous.
+Alex: Why does that matter for everyday users?
+Maya: Because the prior behavior could silently attach notes to the wrong tab or drop context. Now the extension refuses to guess when evidence is ambiguous and makes uncertainty visible. Visible uncertainty beats silent corruption — you'll know when a record needs human attention rather than having the wrong note silently glued to a page.
+Alex: The demo and video work looked massive. What did Anand do there?
+Maya: He built a reproducible asset pipeline: synthetic local pages and a validated JSON fixture, scripts to load the exact release into an isolated Chromium profile via Playwright, automated captures of product scenes, TTS narration clips, composition scripts for gallery artboards, and audits that check images for PII or unwanted metadata. He also documented the exact prepare/rehearse/record/cleanup steps so someone else can run the same flow and produce the same judge-ready MP4.
+Alex: Non-obvious takeaway?
+Maya: Two things. First, recording the real product in an isolated profile catches real bugs that unit tests and headless scripts can miss — that's exactly where the close-vs-refresh race came from. Second, make your demo reproducible and auditable: synthetic fixtures + an automated PII audit make a lot of people comfortable publishing screenshots and videos from private software.
+Alex: Practical idea: if you demo an extension or any UI that uses a browser profile, spin up an isolated profile, use synthetic data, and script the whole capture — not just a manual screen recording. That way you can re-run captures, test fixes, and avoid leaking private info.
+Maya: How would you apply that, Alex?
+Alex: I'd start with a small prepare script that verifies the release artifact checksum, creates a disposable profile, loads the extension, imports a synthetic fixture, and then records a set of deterministic interactions. One script, one command to reproduce the demo.
+
+Maya: Next up: Anand's personal scripts repo got a lot of attention this week. There are three big things: a brand new mail indexing tool, transcript summarizer improvements, and a few tidy maintenance fixes for music-tagging and productivity snippets.
+Alex: Tell me about the mail indexer first.
+Maya: Anand added a mail-indexing script that builds a compact, resumable SQLite full-text index over local mbox files. That means you can search decades of archived mail quickly without loading everything into memory — SQLite FTS is the search engine, resumability means the index can be updated incrementally, and the tool is explicitly designed to be robust for offline workflow. Practical effect: fast local search over old email archives without sending anything to a server.
+Alex: And the transcript summarizer changes?
+Maya: He introduced a conservative "what-i-missed" field in meeting transcripts — a focused prompt that looks for moments where Anand (the speaker) actually missed or under-reacted to someone else's request or signal. Importantly, the code:
+- removes old AI-generated fields before re-running the model to avoid anchoring,
+- normalizes a small taxonomy of reasons (e.g., "topic shift"),
+- adds tests that assert conservative behavior (often empty) and that later conversation turns are re-checked so we don't falsely flag resolved items.
+Practical effect: more reliable meeting notes that surface only unresolved, high-leverage misses and avoid noisy or trivial "missed" items.
+Alex: That's a neat design pattern — avoid reusing previous AI outputs as context when you want a fresh judgment.
+Maya: Exactly. The code even includes test suites for the prompt behavior, which is crucial when you iterate on prompts and model versions.
+Alex: What about the music-tagging and other small fixes?
+Maya: He cleaned up the music-tag tool to warn that fixes aren't applied unless you pass --write and to delete legacy APEv2 tags when writing new metadata. Also updates to espanso (text expansions), a small improvement in the dev dockerfile, and more guidance in his mcpserver notes. Little changes, but they improve correctness and UX.
+Alex: Non-obvious takeaway?
+Maya: When tools edit files or metadata, be explicit about "preview vs apply" and clean up legacy metadata that can otherwise confuse downstream tools. And always add tests around the actual side-effects — file writes, tag deletion — not just the in-memory logic.
+
+Alex: Moving to Anand's blog and writing/tooling changes: he migrated several internal "skills" into user-facing prompts, added a new talk-prep workflow, and published a few posts and TIL notes.
+Maya: The core themes here are making agent workflows explicit and adding a verification/guardrail layer. He added a "verification gate" skill — basically a checklist: scope the pass, reconstruct the spec, decompose into checkable units, get independent signals (re-derive, don't just re-read), hunt known failure modes, and fix only identified defects. Practical effect: agents and humans following this help avoid overconfident, unverifiable outputs.
+Alex: He also wrote that reframe-question skill, right?
+Maya: Yes — it's about treating the user's question as a draft of their real need. The technique: infer the decision, test whether reframing changes what's being solved, reframe visibly with one-line reason, then answer. And he included eval cases to detect unnecessary reframes or invented intent. It's a small but powerful habit for being useful rather than clever.
+Alex: Non-obvious takeaway?
+Maya: Codify these meta-skills. When agents or teammates can run the same verification and reframing steps, you scale reliability. Also, move operational skills (like "email-reply" or "talk-prep") into reproducible prompts with explicit inputs, sources to consult, and expected outputs — that makes them versionable and testable.
+Maya: He also posted a couple of essays and updated TILs — good reading if you care about how to use AI in teams and what skills will matter.
+
+Alex: Short hits from Anand's smaller projects: in his collection of tiny web tools, he added themes for a slide editor and a small Gmail bookmarklet pack.
+Maya: The slide editor work makes the "Edit Slide" form more compact, adds independent font controls for title and subtitle, and ships pre-designed themes you can pick from a dropdown. That means quicker, prettier slides from the browser. The Gmail bookmarklet copies expanded "From" lines and the Subject, and shows a small transient notification when it copies — handy little productivity utilities.
+Alex: Non-obvious takeaway?
+Maya: Small UX details matter: putting color pickers, font selectors, and range inputs on single lines makes a big difference to perceived polish. And for browser bookmarklets, test them against a static fixture page and add small visual feedback so users know it worked.
+
+Maya: A few other quick notes: Anand deployed his research site to GitHub Pages and tweaked an LLM-writing-style demo (added copy feedback and a small copy button), and he updated model data in his LLM pricing tool so the frontier chart reflects newer leaderboards.
+Alex: And his weekly notes were updated with new "things I learned" and a refreshed trending-repos snapshot. Small maintenance, but useful for readers and for keeping his personal knowledge base accurate.
+
+Maya: Okay, listener tip time. Quick, actionable tip from the demo and release work?
+Alex: If you ever need to demo software that touches user data, build a reproducible isolated demo pipeline: one script to verify the release, then an automated profile setup that loads only synthetic data, runs deterministic interactions, captures screenshots/video, and runs a PII audit. This prevents accidental leaks and makes your demo reproducible. Maya, how would you apply that this week?
+Maya: I'd use it next time I show a live dashboard: spin up a disposable profile, seed it with synthetic rows representing plausible cases, and script a short set of interactions so I can iterate on narration and fix bugs before a live demo.
+
+Maya: My tip from the transcript and prompt work: when you regenerate AI outputs (meeting summaries, annotations), strip the old AI-generated fields before calling the model again so prior output doesn't anchor the new result. Then keep the "what-i-missed" prompt narrow and conservative — it's better to be empty than noisy. Alex, how would you use that?
+Alex: I'll add a small wrapper around our weekly-report generator that removes prior "AI-suggested" sections before re-running the summarizer. And I'll add a short test that asserts the regenerated "what-i-missed" is either empty or contains concrete evidence and a suggested next move.
+
+Alex: That's all for this week. Maya, any final notes?
+Maya: Hats off to Anand for turning a demo into reproducible evidence and for tightening the human+agent workflows. Small UX changes, conservative verification, and reproducible demos are the things that scale trust.
+
+Alex: Thanks for listening. Have a great week, and we'll see you next time on Anand's Weekly Codecast.
+Maya: Bye!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-07-19</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-19.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-19.mp3</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 19 July 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week from Anand on his personal website and blog. He fixed a broken build by bumping the static-site tool, tightened up URL and slug handling, and made the 404 page into a usable search page. Why does that matter?
+Maya: If your static site build fails, nothing gets published — visitors see an error. Updating the site generator to a newer stable release fixed a template runtime error. Practically, that means the site builds cleanly on CI and locally again.
+Alex: Right, and the slug and URL fixes ensure links in the public site are consistent. Anand adjusted the logic that computes canonical URLs so pages like nested skills or pages keep the right path. That prevents dead links and makes search indexes accurate.
+Maya: And the 404 change is neat: instead of a dead-end page, the 404 now embeds the same search component used elsewhere, pre-filled from the wrong URL. So if you mistype a path, the site will help you search for what you likely meant. Small UX change, big reduction in user friction.
+Alex: He also added tests and a copying step so GitHub Pages will use the 404 at the site root — the subtle deployment bits that often trip people up.
+Maya: Also notable: Anand published a bunch of "skills" — structured prompts and playbooks for different tasks like email replies, workshop follow-up, ideation, generating fake data, and a writing-style skill that codifies how he wants things written.
+Alex: Those SKILL documents are basically reusable, human-readable instructions for agents — they make it much safer and more consistent when he asks AI tools to draft or act on his behalf.
+Maya: Non-obvious takeaway: invest in a small set of high-quality, documented prompts or skills. They act like test-suite scaffolding for your interactions with AI — fewer surprises, better repeatable outcomes.
+
+Alex: Quick listener tip from this segment: if you run a small static site, keep your build tool on a recent stable version and add a minimal smoke test in CI that checks the homepage and 404. Maya, how would you apply that?
+Maya: I'd add a quick script that builds the site and then runs a tiny HTML check on a couple of pages; for 404, test that it includes the search component. That would catch regressions before they reach production.
+
+Alex: Next up: Anand's machine-utility and dotfiles repo saw a flurry of practical work — a substantial rewrite of a browser-inspection tool, better Chrome/Edge tab helpers, and a new "read" tool for his local MCP server so agents can fetch binary files safely.
+Maya: Let's unpack that. He consolidated an older script into a single "edge" command with subcommands like tabs and md. The tabs command now supports multiple browser profile directories and can emit JSON with things like group and pinned state. That's huge for desktop automation.
+Alex: He also integrated that output into a tiny rofi script used for keyboard-driven tab switching. Instead of relying only on browser CDP that missed sleeping tabs, the rofi script now uses the "edge" output and still activates tabs via CDP — so you get titles for sleeping tabs and a robust activation path.
+Maya: On the MCP server side — that's Anand's lightweight tool server for agents — he added a read tool that returns file contents and metadata, including safe handling for binaries and base64 encoding. Practical effect: agents can fetch images, PDFs, or audio reliably without the ad-hoc size truncation that used to break workflows.
+Alex: He also improved browsing-history scraping to handle a new Edge profile layout, deduplicate rows, and migrated tests accordingly. Plus some real engineering: Playwright and Chromium setup in the dev container was hardened so headless browser checks are reliable in Docker.
+Maya: Non-obvious takeaway: when you automate lots of small desktop / browser integrations, consolidating responsibilities into a small well-tested CLI (one command with subcommands) prevents future friction — and makes the UI glue much easier to maintain.
+
+Alex: Listener tip from me: if you use small CLI utilities to integrate with GUIs, add a JSON output mode and a tiny test that reads that JSON. Maya, how would you apply that?
+Maya: I'd wrap the helper in a unit test that simulates a few profiles and checks the JSON fields I depend on — that way any browser or profile change breaks CI and is easy to fix.
+
+Alex: Onto the tab manager extension Anand maintains — big milestone: a durable, Manifest V3 side-panel tab manager landed, plus a user guide and automated release workflow. What changed for end users?
+Maya: Now there’s an end-user README explaining install and usage, a release GitHub Actions workflow that packages the unpacked extension and creates releases, and a set of UI improvements: status icons for Active/Closed/Unmatched records, throttled "mark as viewed" behavior so accidental focus changes don't pollute view metrics, and more robust reconciliation logic after browser restarts.
+Alex: He simplified the matching rules so the extension prefers exact URL+title matches, or partial matches that preserve the same neighbors. That reduces dangerous auto-attaches — you get "Unmatched" records to resolve manually rather than wrong automatic attachments.
+Maya: The net effect is a more trustworthy workflow when you close and restore tabs or when the browser restarts: records survive, you can add notes, mark things to keep, and restore context without guessing.
+Alex: He also added tests covering reconciliation, UI DOM, and the background logic — so these behaviors are covered and less likely to regress.
+Maya: Non-obvious takeaway: for extension tooling that tries to infer user intent (like matching closed tabs back to records), prefer conservative behavior. Automatic fixes are tempting but can introduce data errors; making the ambiguous case visible is safer.
+
+Alex: My listener tip here: if you build an extension that matches ephemeral browser state, prefer visible manual reconciliation for ambiguous cases. Maya — how would you use that?
+Maya: I’d expose an "Unmatched" queue with quick attach actions and a helpful heuristic preview (neighbors, timestamps) so reconciling takes two clicks, not a deep hunt.
+
+Alex: Anand's research work also shipped some interesting projects: a public dataset of model outputs for different writing styles and an iterative ideation-protocol optimization project.
+Maya: The writing-style project collected model outputs across tasks and styles and added a tiny web UI to browse examples. Practically, this helps pick a prompt style and compare models' voices side-by-side — very useful if you care about tone and craft.
+Alex: And the ideation-protocol work is an explicit, iterative experiment: design a prompt, evaluate it with a rubric, iterate the prompt, and measure which version produces better ideation. That’s a good pattern for anyone trying to design prompts with repeatable outcomes.
+Maya: Non-obvious takeaway: treat prompt design like any other engineering problem — define a rubric, automate comparisons, and iterate. You’ll get more reliable gains than hand-tweaking ad hoc.
+
+Alex: Quick tip from me: when you're trying new prompt styles, save a small reproducible test harness — a few tasks, a fixed rubric, and scriptable model runs — then iterate. Maya, do you have an example of how you'd apply that?
+Maya: I’d pick three representative prompts for a recurring task (e.g., meeting notes), run them across two models, collect answers, and score with five binary questions. Then pick the best and keep it in a versioned SKILL file.
+
+Alex: Anand also updated his podcast generator tool for a group chat: the script now includes the previous two weeks' podcast scripts as context when generating a new week's script, but explicitly tells the model not to repeat or recap — only to use the past for continuity.
+Maya: That's a thoughtful design detail — context helps continuity without rehashing. The tests verify the prompt includes "PREVIOUS EPISODES — CONTEXT ONLY" and that only the last two episodes get pulled in, so the model sees recent context without being overloaded.
+Alex: Practical effect: the weekly script will feel coherent across episodes while avoiding redundancy. Nice for serialized shows or newsletters.
+
+Maya: Tools fixes too — a web-scraper used for capturing ChatGPT conversations was updated to correctly capture little writing blocks the model or user could edit in-place. That means saved transcripts are richer and less likely to drop important author-supplied notes.
+Alex: And the LLM pricing project had a small but important scraper fix: model names in the leaderboard sometimes have extra lines; Anand changed the extraction to take only the first line. That kept the TSV extractor stable and avoided malformed exports.
+Maya: Small parsing fixes like that prevent downstream analytics from failing silently. Non-obvious takeaway: scrapers are brittle; include defensive parsing and document assumptions so future runs are easier to diagnose.
+
+Alex: Final listener tip from me: when you scrape a third-party leaderboard or table, extract the canonical part of a cell (first visual line or a machine name) and record both the raw and parsed versions. Maya — how would you apply that?
+Maya: I’d store the raw HTML text and a normalized field side-by-side. If parsing changes upstream, you can re-run normalization without re-scraping.
+
+Maya: Two quick extra practical ideas to leave listeners with. One: keep your agent skills organized in two places — codified, machine-friendly files for coding agents, and slightly richer, human-explanatory SKILL pages for broader use. That’s exactly what Anand did by moving or archiving some skills and clarifying where things live.
+Alex: And two: instrument your small utilities with JSON modes and tests. We saw that everywhere in these changes — from the edge CLI to the MCP read tool — and it pays off in robustness.
+
+Maya: That's a wrap for today. Thanks for listening to Anand's Weekly Codecast.
+Alex: Catch us next week for more of Anand's tool-building, writing, and experiments. Bye for now!
+Maya: Bye!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-07-12</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-12.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-12.mp3</guid>
+    <pubDate>Sun, 12 Jul 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 12 July 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Shall we start with the thing that touched almost everything — Anand's blog and site tooling?
+Maya: Yes. He did a lot there: better search, a canonical corpus export for agents, more careful tag workflows, offline related-posts, embedding fixes, and a bunch of new posts. What's the short version?
+Alex: He turned the blog into something that’s easier for both humans and automated agents to read, cite, and reuse. There’s now a deterministic JSONL corpus export — one record per post — plus a small agent-facing bundle (tags.json and llms.txt) so an agent can discover the archive without crawling the HTML.
+Maya: Why does that matter? I mean, people already scrape sites.
+Alex: Two reasons. First, the export is canonical and compact — it’s a stable API-like snapshot you can commit to Git. Second, agents love compact, predictable inputs. Instead of guessing where a piece of content lives or which metadata to trust, an agent can start from the corpus file, know the canonical URL, title, date, and tags, and not waste tokens hunting the site layout.
+Maya: He also reworked related posts, right?
+Alex: Yes. Instead of building related-posts at build time from heavyweight embeddings, he moved the ranking offline and made the output compact — slugs only. That makes the site build deterministic and the related-data easy for other scripts or agents to consume. He also added code to invalidate old embedding vectors by introducing a cache hash version, so stale vectors don’t quietly lie to you.
+Maya: That’s subtle but important. If an embedding contract changes and you don’t mark it, you get wrong neighbors and surprising search results.
+Alex: Exactly. And he added tests around all this — so the corpus export, the related-posts JSON, and the tag workflows have acceptance checks. He also changed the upkeep flow to a single, documented command you can run locally — so the whole pipeline is reproducible.
+Maya: What about tags? I noticed a lot of tag work.
+Alex: He built a reviewable tag vocabulary generator that looks at existing keywords, proposes canonical slugs, and writes a reviewable file. There’s a tiny ledger to collect proposed tags from the summarize run, and a new script to promote a proposed tag after human review. So metadata moves from free-form keywords to a maintained taxonomy.
+Maya: Practical idea: if you run a blog with a long history, don’t mass-change tags automatically — collect proposals for review. That prevents accidental vocabulary drift.
+Alex: And a few other practical wins: Pagefind-based site search was added as a single-page integration (so only the search page loads the heavy JS), media-embedding guidance for audio/video/iframes was documented in the README, and the "summarize" upkeep now requests only the missing fields from the model instead of regenerating everything.
+Maya: Non-obvious takeaway: treat agent exports as first-class citizens. Adding llms.txt and tags.json means you can hand the archive to an agent and say "start here" — much cheaper and clearer than teaching the agent how to scrape.
+Alex: Totally. One quick action you can try: run the new update flow locally (the just update / setup.sh aliases) and inspect public/blog/corpus.jsonl and public/llms.txt — you'll see how an agent could bootstrap without scraping.
+
+Maya: Next up — Anand's talks and workshop materials. He added full workshop pages, transcripts, prompts, and a reusable "talk-story" skill and templates. What's new and why it's useful?
+Alex: He published detailed artifacts for several recent events: a full workshop called "When Data is for Agents", a VizChitra dialogue, an IIMB Multivariate Data Analysis session, and a school-teachers session. For the big workshop he committed transcripts, the chat logs used in the session, benchmark prompts, a cataloging script, and a small skill that codifies "how to make a corpus agent-ready".
+Maya: That’s a lot of provenance. Why do folks care about that level of source material?
+Alex: Because it turns ephemeral workshop experiments into reproducible research. Anyone can replay the prompts, see the original model interactions, re-run the benchmarks, and audit claims. He also improved the "talk-story" skill — it now includes a chunked-generation workflow, a QA pass that checks quote attributions and visual contrast, and a prompt template for future stories.
+Maya: Non-obvious thing: transcripts often misattribute quotes — he added explicit checks for that in the skill.
+Alex: Yes — he made quote attribution checks a first-class part of the generation QA. The practical result is fewer embarrassing misquotes on published pages and more trustworthy stories. If you give talks and publish write-ups, adopting a similar chunked generation + QA pass will save you corrections later.
+Maya: Idea to try: when you publish a talk page, include the raw share links for the chat sessions and a tiny manifest so readers can inspect the raw evidence. That’s what Anand did — it makes claims verifiable.
+
+Alex: Moving on to the scripts and tooling repo — this was huge. He added new small apps and major changes: emailai for building reply prompts, musictag for MP3 tag management, meetcaptions for Google Meet and Teams caption capture, edge_tabs to snapshot browser tabs, observability for MCP server runs, and refinements to summarize.py to persist tag proposals and request only missing metadata.
+Maya: That’s the "operational" work that keeps everything smooth. What’s the observable effect?
+Alex: Better automation and safer interactions with agents. For example, summarize.py now uses the canonical tag vocabulary when suggesting tags, caches the vocabulary, and writes proposed tags to a ledger. That means less manual cleanup and a reviewable pipeline for new tags. The observability changes to the local MCP server add structured JSON logs with bounds and redaction so you get actionable telemetry without leaking secrets. The meetcaptions and Teams support create local Markdown transcripts from live captions, helpful for notes and accessible archives.
+Maya: And the new musictag tool — what's that doing here?
+Alex: It’s a pragmatic utility: manage ID3 frames from a CSV, keep certain personal frames (ratings) preserved, and clean spammy frames. It's a good example of a tested, idempotent CLI that an agent could drive safely.
+Maya: Non-obvious takeaway: when you build agent-facing scripts, favour small, idempotent commands, explicit state, and clear dry-run modes. Anand added tests for all of these scripts — that matters.
+Alex: Exactly. Also, the summarize flow now only asks the model to generate missing fields rather than regenerating everything — that saves tokens and reduces churn. He added tests that assert the prompt only requests the specific fields requested, which is an excellent pattern for cost-control.
+
+Maya: He also touched the small web tools collection —captions, LinkedIn invite scraping, and a few housekeeping things.
+Alex: Right. He unified captions for Meet and Teams into a single toolset, added robust fallbacks for obfuscated DOM selectors, added tests for Teams, and simplified the LinkedIn invite scraper to be less brittle. He also removed some linting steps from the build to speed iteration — a pragmatic choice for small static tools.
+Maya: Practical idea: use the bookmarklet pattern he used for captions — it keeps everything local and avoids dependency on external services. And add polling plus a stability heuristic for captions, which he did.
+Alex: One caveat: less linting speeds iteration but be careful if multiple contributors rely on consistent formatting.
+
+Maya: On to data storytelling — the small interactive map story about a fourteen-minute walk that took an hour. What did he add?
+Alex: He added a full scrollytelling map story: routes as KML, an index.html built for MapLibre, and design instructions to inline assets so the story runs on GitHub Pages. The story shows the detour between expected and actual routes and includes exact coordinates and calls for mobile-friendly pacing.
+Maya: Nice concrete lesson: include the actual route geometry and keep map tiles external — keep the story self-contained aside from tile fetches. That's a resilient publishing pattern.
+
+Alex: Finally, the LLM pricing project — he refreshed the data and the narrative to mid-2026. He updated the model scores and prices and rewrote the storytelling to emphasize a portfolio approach: cheap routing models, mid-tier everyday models, and expensive frontier models.
+Maya: That's an important framing: models are now a toolkit, not a single hill to win. Practically, choose the cheapest model that does the job, and reserve the most costly ones for rare problems.
+
+Maya: Okay, listener tips. I’ll go first. Tip: Inspect the blog’s public corpus export before you build any agent that scrapes the site. Use public/blog/corpus.jsonl as your primary index and llms.txt to seed agents. How would you apply this, Alex?
+Alex: I’d point an experiment agent at llms.txt, load tags.json to decide which posts to prioritize, and only fetch the listed corpus slugs — that keeps token cost low and makes results reproducible. I’d also add a small local test harness that asserts the agent only requests the public URLs listed in corpus.jsonl.
+
+Alex: My tip: when using embeddings, include a cache hash version and invalidate vectors when the embedding contract changes. Anand added CACHE_HASH_VERSION and reports when vectors created under old contracts are invalidated. How will you apply that, Maya?
+Maya: I’ll add a versioned hash to our embedding pipeline and emit a clear console message if migrated vectors are found. That way, re-runs won’t silently reuse incompatible vectors and I won’t chase mysterious retrieval errors.
+
+Maya: Any other quick tips from the week?
+Alex: One more: if you maintain a long-lived blog, capture proposed tag suggestions in a review ledger rather than auto-editing sources. Human review avoids vocabulary rot. Would you add that to your content workflow?
+Maya: Yes — I’ll adapt our tag-suggestion step to write proposals to metadata-tag-proposals.yml and require a one-line description before promoting.
+
+Alex: That’s it from us. Thanks for listening — we hope you found a useful idea or two to steal from Anand’s week.
+Maya: See you next week. Goodbye!
+Alex: Goodbye!
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-07-05</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-05.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-05.mp3</guid>
+    <pubDate>Sun, 05 Jul 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 05 July 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week. Ready to dive in?
+Maya: Very. Let's start with his blog and content tools — there's a cluster of changes there that are both experimental and practical.
+
+Maya: Anand added a set of posts and experiments about AI-generated writing and detectors — he published versions of the same essay produced by different models, and a third version he read aloud and recorded as a human. He also wrote up a how-to describing the read-aloud trick that made the text pass detectors as human-written.
+Alex: So practically, people can now see side-by-side what ChatGPT, Claude, and Anand-produced—via reading aloud—look like, and why the detector results changed. That helps researchers and writers test detector robustness.
+Maya: Right. Two quick reasons this matters: first, transparency — publishing multiple renditions with provenance is a rigorous way to study AI detection. Second, it’s actionable — Anand shows a low-friction workflow (read-ahead, narrate, record) that changes style enough to change detector signals.
+Alex: Non-obvious takeaway: detectors often latch on to stylistic regularities like paragraph length and rhythm. Changing oral delivery or sentence cadence can change those signals even without changing factual content. If you publish or teach, try small style shifts instead of wholesale rewrites.
+Maya: Also, Anand reorganized and expanded his prompt and skill library — templates for weekly updates from transcripts, meeting-ready summaries, and a compact “meeting response” style guide that says: answer first, be scannable, end with exactly what to say. That makes reuse and teaching much easier.
+Alex: Practical idea: if you run meetings, build one template like his “answer-first, one-line action” and use it as the default reply format in your notes system.
+
+Maya: Next up: Anand’s personal scripts repo — this was huge. He refactored a bunch of CLI tools and added observability for brittle scrapers, plus improved agent-friendly behavior across many utilities.
+Alex: Tell me about the scrapers first.
+Maya: He instrumented LinkedIn and WhatsApp backup scripts to produce crash-safe, privacy-conscious traces: small zipped artifacts that include a redacted DOM outline, selector counts, stats, and anomaly classifications. Those traces live in a local cache so a debugging agent or a developer can diagnose DOM changes without re-running a full scrape or storing sensitive content.
+Alex: That’s smart — rather than saving full pages or credentials, save a compact picture of what the page looked like and where the parser failed. One-line explanation of DOM: the document structure of a web page, like its table of contents.
+Maya: He also made the chat CLI expose the browser tab's CDP target ID — basically a short identifier an automation agent can use to watch the exact tab. That makes end‑to‑end automation and debugging a lot easier when multiple tabs are open.
+Alex: He changed a sizing tool — git-size — to operate on staged files by default, and added an --all flag to keep the old behavior. The practical effect: when you're about to commit, you can see how big your staged change is without sizing every tracked file.
+Maya: Non-obvious takeaway: small developer UX improvements compound. Staged-by-default matches the most common workflow, and the observability bits mean agents can triage failure modes without human back-and-forth. If you operate scrapers or agent-driven automations, add a tiny, structured trace output: timestamp, selector counts, missing-field rates, and a minimal DOM outline. It saves hours.
+Alex: Quick idea to try: add a tiny "trace.zip" when your scraper sees zero rows but found containers — include a JSON manifest and a sanitized outline. It will pay back when sites break.
+
+Maya: Moving on to Anand's private file server — he simplified access-logging and added a small SQL-based analytics store at the edge.
+Alex: In plain terms: the worker that serves files now writes meaningful, privacy-aware logs to a tiny SQL database running in Cloudflare (D1). It captures who requested what, response status, IP, user agent and a small set of Cloudflare metadata like country and colo, and it does that asynchronously so requests stay fast.
+Maya: Why that matters: you get visibility into access patterns without shipping data to an external analytics provider. That helps with debugging, auditing, and spotting abuse, while keeping everything cloud-native and minimal.
+Alex: Non-obvious point: he picked a targeted set of Cloudflare fields and keeps logs concise and indexed so you can query top paths or recent 403s easily. If you run a lightweight serverless site, consider doing small in-edge logging before adding heavyweight observability stacks.
+
+Maya: The live, editable forms app also got meaningful updates — Anand added file uploads and richer validation, plus new forms for workshops.
+Alex: So attendees can now upload audio recordings and other files directly from the browser, with server-side checks for allowed types and size limits.
+Maya: Exactly. He extended the schema to support accept tokens like audio/* or .csv, a human-readable max_size, front-end validation, and crash-resilient persistence. Tests were added to ensure concurrent uploads are handled safely and duplicates are rejected.
+Alex: Why it matters: workshops often need audio from participants or short recordings; doing uploads correctly means you avoid inbox chaos and keep data bounded and safe.
+Maya: Non-obvious tip: validate both the content-type and a sanitized filename extension server-side, and prefer size limits as a human-readable config string (e.g., 500KB) that your parser converts to bytes. That reduces surprises and makes forms portable.
+
+Maya: On the data-visualization side, Anand improved the IMDB explorer to highlight and export “outliers.”
+Alex: He added a small pipeline to compute outlier cells (an envelope of top-right movies by votes and rating), wrote them into the metadata, exposed a UI toggle to show them, styled the outlier cells, and set up a weekly persist-to-data-branch job so history is kept in a separate branch.
+Maya: Practically, users can toggle “Outliers” to see movies that are unusually high-rated for their vote counts and track which titles appear week-to-week. The action commits an appended TSV into a data branch so the main branch stays clean of running data.
+Alex: Why this is a good pattern: keep computed history in a dedicated data branch to avoid pollution, and provide a front-end toggle so the heavy logic is obvious but optional. Also, computing an “envelope” can happen in Python or in the browser; Anand did the server-side extraction and a front-end class toggle so both ends are efficient.
+Maya: If you do analytics, consider exporting minimal weekly snapshots to a data-only branch — it's easy to version and roll back.
+
+Alex: A small but important fix showed up in Anand’s free API gateway — he fixed billing calculations to use the requested model if the returned model string is unrecognized.
+Maya: In practice: sometimes APIs return a model name with date suffixes or slightly different strings; if your pricing lookup only recognizes the returned string, a mismatch could make usage appear free. Anand threads the requested model through the cost code and falls back to an expensive default if needed.
+Alex: Takeaway: when billing or metering, prefer the requested model as a fallback, and keep a conservative default price. That prevents accidental free usage because of naming quirks.
+
+Maya: He also worked on talk materials — scripts to capture SVGs and make A3-printable HTML posters for a workshop.
+Alex: The tool renders SVGs, embeds images, applies page styling and outputs print-ready HTML and PDFs. Handy for conferences: render once, print many, and preserve design fidelity.
+Maya: Non-obvious tip: using Playwright to snapshot and then wrap in an A3 HTML gives you control over printing CSS and ensures perfect poster sizes without manual layout.
+
+Alex: One smaller housekeeping change: he removed an old static-site deploy workflow for the bits that generate weekly notes and replaced it with a tiny redirect page. That cuts CI overhead and just points visitors at the canonical blog category.
+Maya: Good example of simplifying: if you don't need a pipeline, remove it and keep the user experience tidy.
+
+Alex: Okay, two quick listener tips. I'll go first: add tiny, structured observability traces to any brittle scraper you run — a redacted DOM outline, selector counts, and a single-line anomaly label stored locally. Maya: how would you apply that to a project of yours?
+Maya: I'd add it to a small internal job that scrapes a partner site for daily headlines — the trace ZIP will make triage faster when the partner changes markup. My tip: when adding uploads to a web form, validate accept tokens and max_size both in the browser and server-side, and store uploads with sanitized, collision-resistant filenames. Alex: how would you use that?
+Alex: I’d add it to workshop signups — accept voice clips, keep them small, and reject or flag mismatched types early so I don't spend time decoding bad files.
+
+Maya: One more quick tip from me: if you do any kind of API metering, bill conservatively — prefer the requested model or a high default when the response model is unknown. Alex: would you change any of your billing logic?
+Alex: Yes — in internal tooling I’d always record both requested and returned model names and alert on discrepancies that affect billing; small logs make audits simple.
+
+Maya: That’s it for this week. Thanks for walking through Anand's work with me — lots of practical, developer-friendly improvements and some thoughtful experiments.
+Alex: Thanks everyone for listening. We'll be back next week with more highlights from Anand's repos. Goodbye!
+Maya: Bye! Have a great week.
+]]></description>
+  </item>
+  <item>
+    <title>Week of 2026-06-28</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-28.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-28.mp3</guid>
+    <pubDate>Sun, 28 Jun 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 28 June 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week on Anand's personal blog — lots of new posts, tighter prompts, and some behind-the-scenes tidying. What jumped out at you, Maya?
+Maya: He published several new articles — reflections on learning from a mentor, a comic-ish Calvin/Hobbes piece, an IMF forecast audit, a deep bounty-hunting agent essay, and a rainy-seasons story. He also revised the prompt guidance in the site's prompt page and added search/SEO metadata to many posts.
+Alex: Why does that matter beyond "new content"?
+Maya: Two practical effects. First, the metadata (description, keywords, linkedin links) makes posts show up better in search and previews — small front-matter tweaks that increase readership. Second, the prompt guidance changes show a real attempt to make model outputs sound human: fewer formulaic phrases, allowance for one-word fragments, and stronger instructions to focus on a single visual point for comic prompts. That improves generation quality.
+Alex: Any non-obvious takeaway?
+Maya: Anand uses LLMs not only to draft content but to discover and verify issues — the Z3 article shows combining formal provers with LLMs to find edge-case bugs. So when you create content with AI, think about pairing generation with verification tools.
+Alex: Practical idea for listeners: when you publish, add clear description and keywords in the front matter. And if you generate things with LLMs, run quick verification steps — tests or a small formal check — before you push.
+
+Maya: Next up: Anand's data-stories site. He added three big interactive stories — an IMF GDP forecast-errors visualization, a bounty-hunting-agent story, and a "Where does it rain on schedule?" atlas — and made the rainy-seasons interface bookmarkable.
+Alex: Bookmarkable meaning the UI state reflects in the URL?
+Maya: Exactly. Filters and sort options update the hash so you can copy a link and someone else will see the same city or sorting you chose. He also annotated the rainy-seasons content with source links to the ChatGPT/Claude sessions used in the analysis.
+Alex: Why is that important for data stories?
+Maya: It makes findings shareable and reproducible. Instead of "go click these filters," you can archive and cite an exact view. Adding provenance (chat links, data sources) increases trust and helps other researchers reproduce the work.
+Alex: A practical tip: when you build interactive visuals, expose the control state in the URL and record your data/analysis provenance alongside the visualization.
+
+Alex: There's a big chunk of code work in Anand's research playground this week — the scripts that build the rainy-seasons dataset, a long NFL rules analysis toolchain, and a set of scripts that scanned Fiverr to find tasks amenable to automation.
+Maya: The rainy-seasons code assembles hourly weather data, tests windows of 1–6 hours, computes an "Umbrella Edge" score, and writes both the CSVs and the HTML story. The NFL work is a full pipeline — parsing rule documents, building event tables, case studies, and narrative outputs. The Fiverr scripts use a browser session to discover high-volume, verifiable gigs that agents could do.
+Alex: Practical effect?
+Maya: These are reproducible pipelines — raw data -> cleaned tables -> analysis -> narrative/story. That means Anand didn't just write a blog post; he built the machinery to re-run the analysis and produce shareable artifacts. The Fiverr scan is a reminder: marketplaces can be scraped via a controlled browser session to find repeatable, verifiable micro-tasks for automation.
+Alex: Non-obvious idea: when you spot an interesting data story, invest a little time to make a pipeline that produces both the numbers and the narrative — then you can update or extend it later without redoing manual steps.
+
+Maya: On the tooling side, Anand pushed robust changes to his scripts collection. The headline: new CLIs, more durable automation, and safer logging.
+Alex: Tell me specifics.
+Maya: He added a ChatGPT CLI that talks to a local browser via CDP, a timers CLI that hooks into an fzf-based picker, and major resilience fixes: transcription now caches audio chunks with a TTL and supports a fast "list changes" mode; activities reporting patches only the last-week by default; server logging trims oversized lines so logs stay usable.
+Alex: Why will anyone care?
+Maya: If you run automation long-term, small reliability improvements are huge: chunk caching avoids reprocessing heavy audio, "list-changes" gives quick dry runs, and line-trimming keeps your log files readable instead of exploding. These reduce toil.
+Alex: Practical tip: add a chunk cache for expensive media processing and provide a quick dry-run flag that shows intended changes without committing them.
+
+Alex: Another neat project: Anand initialized a minimal serverless file-sharing Worker that serves files from cloud object storage with Google OAuth and path-level .auth.json policies.
+Maya: Right — a lean Cloudflare Worker that reads files from an R2 bucket, uses signed JSON cookies for sessions, and checks nearest .auth.json files for access control. No KV, no durable objects, no backend server.
+Alex: Practical benefit?
+Maya: It's simple, auditable, and easy to update: change an .auth.json file in storage and access rules change instantly. For people who need a small private file host without complex infrastructure, this is a very portable pattern.
+Alex: Quick takeaway: store access policies as files in the same object store as content when you want instant policy updates without redeploys.
+
+Maya: Over in the wider open-source world, there was a small but useful fix in a popular array library: a RangeIndex.linspace bug for the single-element case was fixed and covered by a test.
+Alex: Why does a one-line change matter?
+Maya: Edge cases like num=1 often break code in subtle ways — either dividing by (num-1) or computing endpoints wrongly. Fixing that makes APIs more predictable and avoids surprising behavior in downstream code and visualizations.
+Alex: Non-obvious practice: include explicit tests for boundary cases like zero elements, one element, and very large elements. Those reduce customer-reported edge-case bugs.
+
+Alex: Anand also updated his LLM pricing frontier — the dataset that compares models by cost and quality — and refreshed the ELO table.
+Maya: That's mostly bookkeeping, but it's useful: practitioners often pick models by reading the frontier. Keeping the data fresh matters because both price and quality move fast.
+Alex: Quick thought: check the frontier before you pick a model — a cheaper model may now dominate an older expensive one.
+
+Maya: Small but practical updates rolled out to his demos and tools — refreshed demo catalog entries and a dark-mode bugfix in the ideation web tool.
+Alex: Those are the polish that makes demos more usable. Keep your showcase current and fix visual contrast issues for dark mode.
+
+Alex: He also published detailed workshop materials for an AI tools-and-workflows session — transcripts, prompts, verification skills, and example market outlook and verification SKILLs.
+Maya: Those assets are useful if you teach or run workshops: transcripts, reproducible prompts, and verification skills that formalize how to check claims and numbers.
+Alex: If you're teaching, package those verification steps as a small skill or checklist and make them mandatory for student deliverables.
+
+Maya: Time for Listener Tips. I'll go first: add small front-matter metadata (description, keywords, canonical links) to any blog posts you publish this week. It takes minutes but makes your posts discoverable and improves previews when shared.
+Alex: Good one. I'd apply that by adding description and a short keyword list to my next three draft posts before scheduling them. Your turn — what's your tip from Anand's pipeline work?
+Maya: Make interactive views bookmarkable by encoding filter and sort state in the URL hash. I would add a sync function to my dashboard so colleagues can reproduce the exact view I reference in an email.
+Alex: I like that. Here's another quick tip: when you process long audio, enable chunk caching and a "list changes" dry-run mode so you can inspect intended updates before you overwrite transcripts. I'll add that to my meeting-notes pipeline this week.
+
+Maya: One last quick pairing question — Alex, how would you use Anand's verification skill idea in your own work?
+Alex: I'd wire a lightweight "numerical sanity check" as a post-processing step in my report generation pipeline: check units, magnitude, and a single independent recomputation for any number that drives a recommendation. If it fails, flag and block publication.
+Maya: Perfect. I'll do the same for slide decks — add a one-line verification step that re-runs the core chart numbers and highlights any mismatch.
+
+Alex: That's all for this week. Thanks for joining us on this whirlwind tour of Anand's work — from blog polish and data stories to reproducible research, tools, and small but important fixes.
+Maya: See you next week. If you tried any of these tips, ping us and tell us how it went. Goodbye for now!
+Alex: Goodbye, and happy building!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-06-21</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-21.mp3" length="0" type="audio/mpeg"/>

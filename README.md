@@ -11,6 +11,13 @@ Personal site, activity feed, and profile links for Anand S.
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [09 Aug 2026](week/2026-08-09/): A week of polishing agent tooling, live apps, and prompt craft — make agents useful, observable, and reviewable. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-09.mp3)
+- [02 Aug 2026](week/2026-08-02/): A week of polishing tools, posts, and agent-ready benchmarks [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-02.mp3)
+- [26 Jul 2026](week/2026-07-26/): A week of durable demos, safer recovery, and clearer skills [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-26.mp3)
+- [19 Jul 2026](week/2026-07-19/): A week of polishing agents, fixing build breaks, and making search useful [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-19.mp3)
+- [12 Jul 2026](week/2026-07-12/): A week of making archives, agents, and talks friendlier to both humans and models [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-12.mp3)
+- [05 Jul 2026](week/2026-07-05/): A week of making data visible, auditable, and agent-ready [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-07-05.mp3)
+- [28 Jun 2026](week/2026-06-28/): A week of stories, skins, and safety nets [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-28.mp3)
 - [21 Jun 2026](week/2026-06-21/): A week of polishing forms, talks, prompts, and scrapers — making workshops, writing, and experiments more reliable and useful. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-21.mp3)
 - [14 Jun 2026](week/2026-06-14/): A week of making things findable, usable, and runnable—on the web and in class. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-14.mp3)
 - [07 Jun 2026](week/2026-06-07/): A week of writing, safety, and tooling: tighten defaults, test parsers, and document runtime state. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-06-07.mp3)
