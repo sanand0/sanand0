@@ -11,6 +11,7 @@ Personal site, activity feed, and profile links for Anand S.
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [06 Sep 2026](week/2026-09-06/): A week of careful publishing, safer agents, and practical demos [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-09-06.mp3)
 - [30 Aug 2026](week/2026-08-30/): A week of polishing skills, stabilizing agents, and a surprising amount of analytics [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-30.mp3)
 - [23 Aug 2026](week/2026-08-23/): A week of tightening tools, smarter summaries, and friendlier UIs [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-23.mp3)
 - [16 Aug 2026](week/2026-08-16/): A week of tidy tooling, fresher models, and sharper publications [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-08-16.mp3)
