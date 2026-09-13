@@ -4,7 +4,79 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 06 Sep 2026 02:44:49 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 13 Sep 2026 14:52:14 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-09-13</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-09-13.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-09-13.mp3</guid>
+    <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Hello and welcome to Anand's Weekly Codecast for the week of 13 September 2026!
+Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+
+Alex: Big week — lots of changes across tooling, teaching materials, research, and the living notes site. We’ll start with the biggest pile: Anand’s personal scripts and tools — the stuff he runs on his laptop to build, test, and automate everything.
+
+Maya: Right — the scripting work is very practical. Two user-facing wins stood out: a smarter music launcher and a more reliable VLC play-history recorder. Anand added a small script that, when you open a song, enqueues ten random songs afterward so your music picker now builds a short playlist automatically. That’s the play-music change.
+
+Alex: And on the “keep my listening history” side, he added a tiny user systemd service that watches VLC and appends a timestamped URL for each played track to a TSV file. The tricky bit was dealing with the playerctl process disappearing and reappearing; the script now detects VLC via DBus, restarts the watcher, and makes the history robust across how people launch VLC. In plain terms: more dependable logging for things you played.
+
+Maya: The other big cluster is audio transcription and timestamping. Anand reworked the call-transcription tool so it accepts multiple audio files in one run, added a --force flag that intentionally bypasses cached chunk transcripts, and trimmed any model-generated continuation that spills beyond the audio chunk. Practically: you can batch multiple call recordings, force fresh transcriptions when you’ve updated prompts or models, and avoid stray timestamps or model hallucinations that claim audio you don’t have.
+
+Alex: Related to that is a major new timestamp tool. Transcripts that are broken into chunks now get correct, cumulative timestamps across parts, and the script prints line numbers in warnings. So if an automatic timestamping guess is unusual, you now get “chunk 2 (line 14): non-monotonic timestamps; first example: line 14 [29:52] -> line 15 [00:13]”. That makes debugging transcript fixes far faster — one phrase: line-numbered transcript warnings.
+
+Maya: There were also many small but careful quality-of-life edits across the system-agent code base — validators, code generators, and plugin/skill creators. The theme: more robust parsing, consistent error messages, and fewer false positives in checks. For folks building agent tooling, the takeaway is that small formatting and validation fixes pay off across editors, tests, and CI.
+
+Alex: Speaking of tests, Anand improved a bunch of unit and integration tests to reflect the changed behavior: call tests renamed to the new script name, tests that exercise force and caching were added, and Playwright browser tests were extended. That helps keep the local automation reliable.
+
+Maya: Practical idea: if you run a local toolbox that depends on multiple small utilities, add focused tests for the sticky failure modes — permissions, cache locations, DBus availability — so the next time your laptop environment drifts, you get a clear failure message.
+
+Alex: Next major area: the AI Builders site — Anand’s living notes, claims, and session pages. This was a huge push: many sessions, notes, and validators were added or edited, plus the site build got stricter checks.
+
+Maya: The team turned session transcripts into a structured, living knowledge base: sessions → atomic claims → short reusable notes. They added validators to ensure screenshots are AVIF, Meet-chat URLs mentioned in chat are also added as structured evidence, and checks to prevent root-relative URLs so the site can be deployed under subpaths.
+
+Alex: They also shifted vocabulary: “articles” became “notes” — the UX is now about tiny evidence-backed notes, not long articles. They added a lot of short notes capturing practical patterns from the community: “deterministic-first routing” (do the non-LLM work first), “turn user feedback into tested fixes,” “separate generated video from editable layers,” and many more. Those notes are explicit recipes — not just high-level ideas.
+
+Maya: For teams: capture failure evidence as soon as you see it — a short, testable example — and keep that as the kernel for a regression test or a skill. The site makes that workflow explicit: demos → claims → notes → tests.
+
+Alex: The talks site got massive updates too — this is Anand’s SUTD five-day course pages. Day 1 through Day 5 are fleshed out, transcripts and Japanese translations were added, and Day 5 got a full write-up. He also added an evaluation rubric and a machine-readable evaluation prompt for grading student projects.
+
+Maya: In short: the class materials are now public, bilingual for these days, and have a structured rubric for student evaluations. Practically, that means students and evaluators can reuse the rubric and generate CSV or JSON outputs for cohort decisions — a neat, reproducible way to grade AI projects.
+
+Alex: The LLM evaluation repo got a major experiment: confidence calibration. Anand built an end-to-end benchmark that asks whether a model’s reported confidence matches its actual correctness — using the BANKING77 dataset, prompt variants that elicit calibrated probabilities, input-length stress tests, and analysis scripts that print Brier scores, ECE, bootstrap CIs, and so on.
+
+Maya: For anyone thinking of auto-approving model outputs based on confidence, that’s huge. The practical message: don’t trust raw confidence numbers. Run a short calibration study on your own task before you let the model skip human review.
+
+Alex: On the research front, Anand added a compact, browser-ready “train timing” app that compares Singapore train punctuality metrics month-by-month and includes scripts to download and validate government source files. He built resumable downloaders and validators so the dataset you use is auditable.
+
+Maya: The app even notes limitations: a GTFS descriptor had an expired signed link, so they preserved provenance but didn’t use that file. The practical bit: always validate your sources and note when an input is missing or expired — then communicate that clearly to readers.
+
+Alex: Liveform — the workshop forms server — got an important UX and storage change: support for explicit “Other” answers on choice questions. Frontend and backend now handle an “Other” option, show a small text input when Other is selected, limit length, and store custom answers in a canonical way (either a JSON object for multi-choice or a prefixed string for single-choice). Tests were added to cover browser behavior, REST submissions, and aggregate counting.
+
+Maya: Translating that into plain practice: attendees can now pick “Other” and type a custom response, and the results page will group configured choices first and tagged custom text after — with canonicalization so “New Tool” and “new tool” can be combined when appropriate. Definitely helpful for workshop feedback forms.
+
+Alex: Anand’s blog got some governance and content changes. He added a “Mistakes I made” workflow: a script that parses a Dropbox note, converts rows into a public “Mistakes I made” page and updates the weekly “things I learned” posts. It’s a small but powerful idea: publish corrections in public, with evidence.
+
+Maya: He also posted a small image experiment comparing GPT Image 2.5 colorization of family photos, and fixed a lot of post metadata (missing titles, prompt updates). The moral: make corrections visible and easy to produce — it builds trust.
+
+Alex: Quick mention: there were small changes to LLM pricing data and trending repos lists — housekeeping but useful for the digest of tools and costs Anand monitors.
+
+Maya: Okay, two short listener tips — each of us gives one actionable thing, then asks the other how they'd apply it.
+
+Alex: My tip: before you configure any “auto-approve if confidence ≥ X” rule, run a short paired calibration study on your task — maybe 200 checked examples — and compute the actual error rate at candidate thresholds. That way you know the operational risk and can set a threshold that matches your real tolerance. Maya, how would you apply that in your team?
+
+Maya: I’d pick one high-volume review task we already do, freeze 200 recent reviewed cases, and rerun our model prompts to record reported confidence. Then I’d use Anand’s Brier/ECE analysis to pick a threshold that reduces manual load but keeps error risk acceptable. I’d also run a rolling check monthly. Your tip is exactly the plan I’d follow.
+
+Alex: My follow-up quick tip: when you get user feedback or a bug report, capture the exact minimal reproduction as a test case and add it to a tiny “fix-and-test” workflow — not a huge tracker, just one test, one fix, one verification. Maya — where would you start with that?
+
+Maya: I’d start on a single feature the team ships often — maybe form parsing or PDF extraction. Every time someone files a bug, we’d require a one-line reproduction and add it to a short suite. Over a month you’ll have a small but high-value regression set. I’ll tell my team to start saving those cases in the same place we keep production logs.
+
+Alex: That’s a wrap for this week’s roundup. Thanks for listening to Anand’s Weekly Codecast.
+
+Maya: We’ll be back next week with more from Anand’s repos, talks, and experiments. Bye for now!
+
+Alex: Bye!
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-09-06</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-09-06.mp3" length="0" type="audio/mpeg"/>
