@@ -7,89 +7,109 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import summary
 
 
-def make_gemini_config() -> dict:
-    return {
-        "podcast_style": "Podcast style: Warm and lively.",
-        "gemini": {
-            "model": "gemini-3.1-flash-tts-preview",
-            "ffmpeg_command": ["ffmpeg", "-i", "{pcm}", "{output}"],
-            "speakers": [
-                {
-                    "name": "Alex",
-                    "voice_name": "Algieba",
-                    "profile": "Energetic, curious, and upbeat.",
-                },
-                {
-                    "name": "Maya",
-                    "voice_name": "Kore",
-                    "profile": "Warm, clear, and grounded.",
-                },
-            ],
-        },
-    }
+def test_format_and_parse_dialogue_preserve_style():
+    turns = [
+        {"speaker": "Alex", "text": "Hello.", "style": ""},
+        {"speaker": "Maya", "text": "Important.", "style": "speaking slowly"},
+    ]
+    script = summary.format_dialogue(turns)
+
+    assert script == "Alex: Hello.\nMaya: [style: speaking slowly] Important.\n"
+    assert summary.parse_dialogue(script, ["Alex", "Maya"]) == turns
 
 
-def test_build_gemini_request_uses_new_model_and_single_speaker_payload():
-    config = make_gemini_config()
-
-    segments, normalized_script, speakers = summary.split_script_segments(
-        "Alex: [excited] Welcome back!\nMaya: Good to be here.\nAnd we have updates.",
-        config,
-    )
-
-    assert normalized_script == (
-        "Alex: [excited] Welcome back!\nMaya: Good to be here. And we have updates."
-    )
-    assert [speaker.name for speaker in speakers] == ["Alex", "Maya"]
-
-    payload = summary.build_gemini_request(segments[0][1], segments[0][0], config)
-
-    assert payload["model"] == "gemini-3.1-flash-tts-preview"
-    assert payload["generationConfig"]["speechConfig"]["voiceConfig"] == {
-        "prebuiltVoiceConfig": {"voiceName": "Algieba"}
-    }
-    assert "TRANSCRIPT" in payload["contents"][0]["parts"][0]["text"]
+def test_format_dialogue_adds_blank_line_at_section_boundary():
+    turns = [
+        {"speaker": "Alex", "text": "First.", "style": "", "new_section": False},
+        {"speaker": "Maya", "text": "New topic.", "style": "", "new_section": True},
+    ]
+    assert summary.format_dialogue(turns) == "Alex: First.\n\nMaya: New topic.\n"
 
 
-def test_main_tts_script_dry_run_validates_script_and_derives_output(
-    tmp_path: Path, monkeypatch, capsys
-):
-    script_path = tmp_path / "sample-dialogue.md"
-    script_path.write_text(
-        "Alex: [excited] Welcome back.\nMaya: [laughs] We have two quick stories today.\n",
-        encoding="utf-8",
-    )
+def test_get_podcast_script_uses_luna_and_repository_context(monkeypatch, tmp_path):
+    captured = {}
 
-    monkeypatch.setattr(summary, "load_config", lambda _script_dir: make_gemini_config())
-
-    assert (
-        summary.main(
-            ["tts-script", "--script-file", str(script_path), "--dry-run"],
-            script_dir=tmp_path,
+    class FakeResponse:
+        output_text = json.dumps(
+            {
+                "turns": [
+                    {"speaker": "Alex", "text": "Hello.", "style": ""},
+                    {"speaker": "Maya", "text": "Hi.", "style": ""},
+                ]
+            }
         )
-        == 0
+
+    class FakeResponses:
+        def create(self, **kwargs):
+            captured.update(kwargs)
+            return FakeResponse()
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            self.responses = FakeResponses()
+
+    monkeypatch.setattr(summary, "OpenAI", FakeOpenAI)
+    monkeypatch.setattr(summary, "api_key", lambda *_: "test-key")
+    monkeypatch.setattr(summary, "podcast_cache_dir", lambda: tmp_path)
+
+    activity = [
+        {"repo.name": "sanand0/tool", "message": "Improve caching", "files": []}
+    ]
+    context = {"sanand0/tool": {"description": "A useful tool"}}
+    config = {
+        "podcast": "Week $WEEK for $NAME. Target $TARGET_WORDS words.",
+        "openai": {"model": "gpt-6-luna"},
+    }
+
+    script = summary.get_podcast_script(activity, context, config, "Anand", "2026-09-20")
+
+    assert script == "Alex: Hello.\nMaya: Hi.\n"
+    assert captured["model"] == "gpt-6-luna"
+    assert "reasoning" not in captured
+    source = captured["input"][1]["content"]
+    assert "repository_context" in source
+    assert "Improve caching" in source
+
+
+def test_build_speech_content_adds_style_only_when_present():
+    content = summary.build_speech_content(
+        [
+            {"speaker": "Alex", "text": "One", "style": ""},
+            {"speaker": "Maya", "text": "Two", "style": "warmly"},
+        ]
+    )
+    assert content[0]["annotations"][0] == {
+        "type": "speech_metadata",
+        "speaker": "Alex",
+    }
+    assert content[1]["annotations"][0]["style"] == "warmly"
+
+
+def test_audio_plan_uses_configurable_model_and_chunks():
+    config = {
+        "gemini": {
+            "model": "gemini-3.8-flash-lite-tts",
+            "chunk_size": 2,
+            "sample_rate": 24000,
+            "speakers": [
+                {"name": "Alex", "voice_name": "Algieba"},
+                {"name": "Maya", "voice_name": "Kore"},
+            ],
+        }
+    }
+    script = "\n".join(
+        [
+            "Alex: One.",
+            "Maya: Two.",
+            "Alex: Three.",
+            "Maya: Four.",
+            "Alex: Five.",
+        ]
     )
 
-    result = json.loads(capsys.readouterr().out)
-    assert result["command"] == "tts-script"
-    assert result["status"] == "dry-run"
-    assert result["speaker_names"] == ["Alex", "Maya"]
-    assert result["audio_path"].endswith("sample-dialogue.mp3")
+    plan = summary.audio_plan(script, config)
 
-
-def test_main_describe_returns_machine_readable_schema(tmp_path: Path, capsys):
-    assert summary.main(["--describe"], script_dir=tmp_path) == 0
-    result = json.loads(capsys.readouterr().out)
-    assert sorted(result["commands"]) == ["tts-script", "weekly"]
-
-
-def test_build_week_paths_matches_expected_layout(tmp_path: Path):
-    paths = summary.build_week_paths(tmp_path, "octocat", "2026-04-19")
-
-    assert paths.week == "2026-04-19"
-    assert paths.week_dir == tmp_path / "octocat-2026-04-19"
-    assert paths.summary == paths.week_dir / "README.md"
-    assert paths.context == paths.week_dir / "context.json"
-    assert paths.podcast_script == paths.week_dir / "podcast-2026-04-19.md"
-    assert paths.code_review == paths.week_dir / "code-review.md"
-    assert paths.audio == paths.week_dir / "podcast-2026-04-19.mp3"
+    assert plan["model"] == "gemini-3.8-flash-lite-tts"
+    assert plan["turn_count"] == 5
+    assert plan["chunk_count"] == 3
+    assert plan["speaker_names"] == ["Alex", "Maya"]

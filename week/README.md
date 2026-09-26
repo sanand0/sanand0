@@ -1,6 +1,6 @@
 # Generate Weekly Summaries
 
-This script generates AI summaries of your GitHub activity by analyzing commits between two dates (defaulting to the most recent Sunday-to-Saturday period). It creates both a written summary and an AI-generated podcast.
+This script generates AI summaries of your GitHub activity by analyzing commits between two dates (defaulting to the most recent Sunday-to-Saturday period). It creates both a written summary and an AI-generated podcast. The podcast conversation uses configurable GPT-6 Luna; audio uses configurable Gemini 3.8 Flash Lite TTS.
 
 [Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
@@ -25,19 +25,6 @@ Basic usage:
 uv run summary.py -u <github-username> -n <name>
 ```
 
-To synthesize audio directly from a script file without fetching GitHub activity:
-
-```bash
-uv run summary.py tts-script --script-file samples/quick-start.md
-```
-
-For agent callers, inspect the interface and prefer JSON output:
-
-```bash
-uv run summary.py --describe
-uv run summary.py tts-script --script-file samples/quick-start.md --format json
-```
-
 Options:
 
 - `-u, --user`: GitHub username (required)
@@ -45,7 +32,6 @@ Options:
 - `-e, --end`: End date in YYYY-MM-DD format (default: most recent Sunday)
 - `-s, --start`: Start date in YYYY-MM-DD format (default: end date - 7 days)
 - `-t, --token`: GitHub token (default: $GITHUB_TOKEN)
-- `--dry-run`: Validate inputs and planned outputs without making API calls
 
 Examples:
 
@@ -60,20 +46,28 @@ uv run summary.py -u sanand0 -n "Anand" -e 2024-01-07
 uv run summary.py -u sanand0 -n "Anand" -s 2024-01-01 -e 2024-01-07
 ```
 
+## Normal workflow
+
+```bash
+just build deploy push
+```
+
+The command remains unchanged: `build` creates missing weekly artifacts and refreshes the aggregate README/feed, `deploy` uploads the current MP3/feed, and `push` commits and pushes.
+
 ## Generated Files
 
 For each run, the script creates a directory named after the end date (e.g., `2025-05-04/`) containing:
 
 - `${week}/README.md`: Written summary of GitHub activity
-- `${week}/podcast.md`: Script for the podcast
-- `${week}/podcast.mp3`: Final podcast audio assembled from per-line Gemini clips. Not committed, uploaded to GitHub releases
+- `${week}/podcast-${week}.md`: Script for the podcast
+- `${week}/podcast-${week}.mp3`: Final podcast audio generated in configurable multi-turn Gemini chunks, then encoded once to MP3. Not committed; uploaded to GitHub releases
 
 The repo also supports local listening samples in `samples/`, with `.md` scripts and generated `.mp3` files ignored by Git.
 
 When re-running, only missing files are re-generated.
 This allows for incremental updates and prevents unnecessary API calls when files already exist.
 
-The podcast prompt in [`config.toml`](config.toml) now asks OpenAI for direct-TTS-ready `Alex:` / `Maya:` lines with inline audio tags, and Gemini voice settings live under `[[gemini.speakers]]`.
+Podcast settings live in [`config.toml`](config.toml): GPT-6 Luna produces strict `{speaker, text, style, new_section}` turns; Gemini 3.8 Flash Lite synthesizes 10 turns per conversational chunk by default. Style metadata is used only when Luna emits it. Raw L16 chunks are cached under `~/.cache/sanand0-week-podcast/` and encoded once to the final MP3.
 
 The files are released on GitHub releases at <https://github.com/sanand0/sanand0/releases/tag/main> created via:
 

@@ -87,79 +87,87 @@ You are a personal technical-blog assistant. Your job is to take descriptions of
 When you receive the JSON, produce the full blog post accordingly.
 '''
 
-# https://chatgpt.com/c/6816cae1-fe44-800c-8629-047267bd2f0d
 podcast = '''
-You are a podcast script assistant for the "Weekly Codecast." This episode is for the week ending $WEEK.
+Create a two-host spoken podcast about $NAME's GitHub work for the week ending $WEEK.
 
-Take a JSON array of GitHub commit objects (each with fields: `repo`, `sha`, `author`, `email`, `date`, `message`, and a `files` list) and
-turn it into an engaging, lay-friendly dialogue between two enthusiastic hosts, Alex and Maya.
+Open with "$NAME's Weekly Codecast" and the week ending $WEEK.
 
-1. SHOW OPENER. Alex and Maya greet listeners together:
-   Alex: "Hello and welcome to $NAME's Weekly Codecast for the week of $WEEK!"
-   Maya: "We're Alex and Maya, and today we'll walk you through the highlights of $NAME's commits this week."
-
-2. SEGMENTS. For each repository with non-trivial changes, most important first:
-   Think silently and holistically about the commits. What really happened? Why? What's important?
-   Write a dialogue between Alex and Maya (the way real podcasters would speak) where they:
-   introduce the repo,
-   discuss what $NAME did and its practical effect using light, leading questions,
-   explain why these matters,
-   and share non-obvious takeaways and practical ideas.
-
-3. LISTENER TIP. They end with each offering a quick, actionable tip from the discussions and ask the other how they would apply it. They may repeat this if more tips will help.
-
-4. WRAP-UP. Alex and Maya bid goodbye for the week.
-
-TONE & STYLE
-Warm, conversational, and enthusiastic.
-Active voice, simple words, short-to-medium length dialogues.
-Explain technical terms in one phrase.
-No music cues, jingles, or sponsor breaks.
-No repository names (e.g. $USER/...). Describe repos.
-No usernames (e.g. "$USER"). Write "$NAME".
-No commit IDs or dates in the discussion.
-
-FORMATTING: Plain text. No bullets or Markdown. Lines ALWAYS begin with a speaker label.
-
-Alex: …
-Maya: …
-
-Alex: …
-Maya: …
+First, silently inventory each repository with non-trivial changes and the substantive work within it. Cover every non-trivial repository, most important first. Merge related commits into one beat. Do not omit a workstream just to be brief. For each important workstream, keep at least one concrete implementation detail, behavior, result, number, or lesson that makes it distinctive.
 
 
-When given the JSON, output the full two-host script following this format.
+The hosts are Alex and Maya. They are two intelligent colleagues who know each other well enough to be candid, but are still curious about what the other thinks.
+
+Give them light, durable differences in instinct:
+- Alex is drawn to mechanisms, surprising claims, and concrete analogies. He often asks, "What is actually happening here?" He can get excited by a clever idea, but should not hype it.
+- Maya is drawn to evidence, limits, human consequences, and what changes in practice. She often notices the caveat, counterexample, or operational detail that turns an interesting claim into a useful one.
+These are tendencies, not assigned jobs. Either host can explain, question, disagree, joke, or change their mind. Do not make every exchange follow the same Alex-asks/Maya-answers pattern.
+
+Make it feel like a real conversation:
+- Every turn should respond to the previous turn: answer it, extend it, challenge it, clarify it, reframe it, or react to it. Avoid two prepared paragraphs placed next to each other.
+- Use questions when one host is genuinely curious or needs the listener's next question asked. Do not end every turn with a question.
+- Let the hosts sometimes register understanding before moving on: "Ah, so...", "Right — but...", "That is the interesting bit." Use this sparingly; do not fill the script with "yeah", "exactly", or "right".
+- Allow occasional repair: "Actually, more precisely...", "Wait — that is not quite the claim." Real conversation corrects itself.
+- Allow callbacks to an earlier idea when a later topic genuinely connects. A callback is better than repeating the explanation.
+- Let them have mild, evidence-based opinions: "I like that test", "That is the bit I'd worry about", "That sounds clever, but fragile." Never invent personal experiences, memories, relationships, or facts about the hosts.
+- Use humor only when the material naturally invites it. Do not manufacture jokes.
+- Do not force agreement. If the evidence supports two readings, let the hosts briefly disagree or qualify each other.
+- Vary the shape and length of exchanges. Some turns can be a single short sentence; others can carry a fuller explanation. Do not make every turn the same size.
+- Vary who drives the conversation. Maya should sometimes introduce the mechanism or surprising result; Alex should sometimes be the skeptic, catch the caveat, or ask for evidence. The personality notes are tendencies, not a division of labor.
+- Give different topic blocks different conversational shapes. One may start with a concrete story and unpack it; another with a puzzle; another with a disagreement; another with a surprising number; another with a failure postmortem or comparison. Do not repeat a fixed claim → caveat → detail → takeaway pattern.
+- At least once, let one host genuinely update, narrow, or soften a view because of something the other adds. Do not fake disagreement where the evidence is clear.
+- Keep the listener oriented. A host can say why they are changing topic, but avoid formal section announcements.
+
+Write for the ear, not the page. Aim for the clarity of excellent BBC explanatory radio: clear, concise, correct. Think of the qualities that make Tim Harford's More or Less or 50 Things easy to follow: calm, curious, evidence-led, concrete, and simple without being simplistic. Do not imitate anyone's voice or catchphrases.
+
+Use simple conversational language:
+- Prefer short words, short sentences, and one idea per sentence.
+- Most turns should be 15–35 spoken words. Avoid turns over about 45 words unless the idea truly needs it.
+- Use jargon when it is the right word. Explain it immediately in words a listener will remember. A small example is usually better than a dictionary definition.
+- Keep exact technical hooks that a listener may want to search or reuse later: names of models, tools, libraries, APIs, datasets, metrics, protocols, status codes, and distinctive techniques. Explain them simply; do not replace them with vague descriptions.
+- Keep useful names, numbers, and specific results. Say who contributed an idea when that adds texture, credit, or helps the listener understand the exchange.
+- Do not repeatedly say "in plain English", "simply put", "why this matters", "the takeaway", or similar teaching labels. Just make the explanation simple.
+- Prefer concrete examples over abstractions. When a number matters, give the listener an intuitive comparison or consequence.
+- Be careful with evidence. Separate what was observed, claimed, inferred, hypothesized, or still uncertain.
+- When several statistics arrive together, give the listener a plain-language foothold before adding more numbers. If an uncertainty result changes the conclusion, say what it means in ordinary words, not only the statistical term.
+- Do not create a catch-all "other things this week" section to clear leftovers. Omit low-value minor items rather than turning the end into a checklist.
+
+
+For technical work, prefer the practical consequence over trivia, but keep implementation detail when it teaches a reusable technique. Do not speak repository names, usernames, commit hashes, or dates.
+
+Organize the episode into about 5–8 logical topic blocks. Set new_section=true on the first turn of each new block so the saved script has a blank line there. Do not announce headings; transition naturally.
+
+Before returning, silently check:
+1. Is every non-trivial workstream represented?
+2. Did you retain useful search hooks such as exact API names, metrics, error codes, datasets, model names, or techniques when they matter?
+3. Did you preserve important failure cases and caveats, not just successes?
+4. Does each turn react to the previous one?
+5. Is any section turning into a checklist? If so, find the question or tension that connects the items.
+
+End from one concrete callback from the episode. Let the other host respond to it. Then give at most two practical habits and say goodbye. Do not turn the closing into a checklist.
+Aim for roughly $TARGET_WORDS spoken words. Stay within about 10% of the target; do not pad.
+
+Each output turn has speaker, text, style, and new_section.
+- text is exactly what should be spoken. Never put speaker labels, narration, or stage directions in it.
+- style should be empty for normal delivery. Set it only when a distinctive sustained delivery across the whole turn materially improves meaning. Most turns should have no style.
+- new_section is true only for the first turn of a new logical topic block; otherwise false. The first turn may be false.
+- For a genuinely useful momentary vocal event, text may sparingly contain Gemini tags such as <laugh>, <sigh>, <breath>, or <short pause>. Do not decorate ordinary dialogue.
 '''
 
-podcast_style = "Podcast style: Warm, conversational, and enthusiastic."
+[openai]
+model = "gpt-6-luna"
 
 [gemini]
-ffmpeg_command = [
-  "ffmpeg",
-  "-y",
-  "-f",
-  "s16le",
-  "-ar",
-  "24000",
-  "-ac",
-  "1",
-  "-i",
-  "{pcm}",
-  "-safe",
-  "0",
-  "-c:a",
-  "libmp3lame",
-  "-qscale:a",
-  "5",
-  "-ar",
-  "44100",
-  "-ac",
-  "1",
-  "-id3v2_version",
-  "3",
-  "{output}",
-]
-generation_config = { responseModalities = ["audio"], speech_config = { multi_speaker_voice_config = { speaker_voice_configs = [{ speaker = "Alex", voice_config = { prebuilt_voice_config = { voice_name = "Algieba" } } }, { speaker = "Maya", voice_config = { prebuilt_voice_config = { voice_name = "Kore" } } }] } } }
+model = "gemini-3.8-flash-lite-tts"
+chunk_size = 10
+sample_rate = 24000
+
+[[gemini.speakers]]
+name = "Alex"
+voice_name = "Algieba"
+
+[[gemini.speakers]]
+name = "Maya"
+voice_name = "Kore"
 
 code-review = '''
 You are a senior code reviewer analyzing the NET diff of changes for the week ending $WEEK. Review code, configuration, and documentation changes for quality, patterns, and improvements.

@@ -4,65 +4,85 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 20 Sep 2026 04:55:54 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 26 Sep 2026 05:03:16 GMT</lastBuildDate>
   <item>
     <title>Week of 2026-09-20</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-09-20.mp3" length="0" type="audio/mpeg"/>
     <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-09-20.mp3</guid>
     <pubDate>Sun, 20 Sep 2026 00:00:00 GMT</pubDate>
     <description><![CDATA[
-Alex: Hello and welcome to Anand's Weekly Codecast for the week of 20 September 2026!
-Maya: We're Alex and Maya, and today we'll walk you through the highlights of Anand's commits this week.
+Alex: Anand's Weekly Codecast, for the week ending 20 September 2026. This week has a strong theme: measure what a model does, then design the workflow around what the evidence can actually support.
+Maya: And the clearest example is confidence. A model saying “I’m 95 percent sure” sounds useful, but that number only helps if it predicts when the answer is wrong.
+Alex: Anand’s BANKING77 work compares stated confidence with token log probabilities. A log probability comes from the model’s own next-token scoring, rather than asking it to describe how sure it feels.
+Maya: The clever part is making the prediction itself a single token. Each of 77 support-routing labels is mapped to a one-character code, and the model emits that code first. Its log probability can then be compared with its stated confidence on the same answer.
+Alex: So it’s a cleaner comparison than asking two separate questions and hoping the model behaves the same way both times. On 770 cases, the raw log probabilities ranked correct answers above errors better, with an AUROC of 0.830 versus 0.783.
+Maya: But ranking risk and giving a trustworthy probability are not the same job. The log probabilities had a worse raw Brier score: 0.148 against 0.119 for top-two stated confidence. A Brier score measures how far probability estimates are from the outcomes.
+Alex: That distinction matters in practice. A score can sort cases from safer to riskier without meaning “this one has exactly a 73 percent chance of being correct.”
+Maya: Then came the useful test: freeze the routing cutoffs on those 770 cases, and try them on 2,310 untouched BANKING77 requests. No adjusting the rule after seeing the new answers.
+Alex: At the five-percent error target, the frozen log-probability rule let 65.2 percent of cases pass without review, with 4.38 percent observed error. Stated confidence passed 41.2 percent, with 2.63 percent error.
+Maya: So the log-probability rule removed more review, but accepted more mistakes. It stayed within the chosen five-percent limit, though. That’s a trade-off, not a universal win.
+Alex: And the holdout prevents a much bigger claim. The ten-percent log-probability cutoff produced 12 percent error, above its target. A rule that worked at one operating point did not transfer across the whole risk curve.
+Maya: Also, calibrated Brier scores were nearly tied on the holdout, and their paired confidence interval crossed zero. The evidence supports better review coverage at the tested five-percent cutoff, not “log probabilities are always better confidence.”
+Alex: I like that result because it ends with a usable boundary. Learn a threshold from historical cases, freeze it, then check that exact threshold on fresh data. Don’t turn one good point into a grand law.
 
-Alex: Big week. Let's start with Anand's talks and publishing workflow — he reorganized how he manages his talk pages and automated blog posts.
-Maya: Right — he moved to a single source of truth for talks, added generator scripts and tests, and made the catalog generation deterministic. In plain language: instead of hand-editing a long index or pasting files, he now manages talk metadata in one config file and runs a build that spits out the website parts.
-Alex: Why that matters practically is simple: one place to edit, fewer mistakes, and predictable output. If you add a talk or an image in the config, the site regenerates without accidentally stomping hand-edited pages.
-Maya: Non-obvious takeaway: treat generated files as ephemeral. Edit the canonical JSON or YAML, not the generated README or index.html. That makes automation safe — and Anand even added small rules like a primary link field so the system knows which link becomes the title.
-Alex: Also, he added programmatic images and resource icons, tests to render example posts, and an actionable command to rebuild. If you give your content a consistent shape, you can reliably make scripts produce polished posts.
+Maya: There was a second, smaller benchmark beside it: Jev, a decision model that returns a choice rather than generated prose, classified one example from each of the 77 BANKING77 intents.
+Alex: Jev got 58 of 77 right, or about 75 percent. DeepSeek V4.1 Flash reached 79 percent, and GPT-5.6 Luna reached 83 percent. Jev cost about seven cents per thousand classifications.
+Maya: That’s cheap, but not dramatically cheaper than those alternatives: roughly eight cents for DeepSeek and twelve for Luna. The sample is only one frozen example per intent, so I wouldn’t treat those accuracy gaps as final rankings.
+Alex: Right. Jev sits on the cost-quality frontier mainly because it’s inexpensive, not because it’s the strongest classifier. And the analysis flags a more specific limitation: its risk-at-five-percent statistic uses the same 77 cases to choose and assess the cutoff.
+Maya: Which is why the separate holdout work is so valuable. It gives us a practical lesson in evaluation design: exploratory results can suggest a promising threshold, but they don’t establish that it will behave the same way on new cases.
 
-Maya: Next up — Anand published new LLM evaluation work that’s pretty interesting. He ran a focused benchmark of a cheap decision model called Jev against several frontier language models on a 77-intent support-routing task.
-Alex: Short version: Jev is very low-cost but a bit less accurate. It hits roughly mid-70% accuracy on that task; some other models were in the high-70s to low-80s. So Jev might be attractive for cost-sensitive uses, but it’s not yet a straight upgrade in quality.
-Maya: The deeper part is his confidence experiments. He compared models’ stated confidence versus token log-probabilities — the number the model assigns to the first token it emits — and found an important pattern: raw logprobs are worse calibrated as literal probabilities, but they rank correctness better.
-Alex: In plain terms: logprobs are better at ordering “which answers are likely right,” even if the number itself needs calibration. Anand froze routing cutoffs on development data and then ran a large prospective holdout. The logprob-based rule covered far more cases at the declared 5% error budget — roughly 65% coverage versus 41% for the model’s stated confidence — and that advantage held up on the untouched holdout.
-Maya: Why this matters: if you’re automating routing or auto-accept decisions with an error budget, ranking signals that rank risk well can let you skip more work safely — but only if you validate thresholds on proper holdouts. Non-obvious: optimizing for discrimination (ranking) is different from optimizing for calibrated probability numbers; you need both, depending on the task.
+Alex: That same appetite for evidence showed up in a much more playful experiment: asking newer language models to pick a number from zero to one hundred. The answer is not anything like a uniform draw.
+Maya: GPT-4.1 Nano chose 57 two hundred times out of two hundred at temperature zero. Even at temperature one, it picked 57 in 78 cases, or 39 percent, and produced only 16 distinct numbers.
+Alex: Temperature made the sample less repetitive, but didn’t make it random. GPT-5.6 Luna chose 47 in 108 of 200 runs and 73 in another 58; only six different numbers appeared.
+Maya: That’s a useful distinction for anyone interpreting sampling settings. More variety is not the same as a fair draw. The newer experiment also preserves raw outputs, model and sampling details, provider routing, token use, and cost, not just the winning number.
+Alex: And the script saves after each successful response, then skips work already recorded. That makes a 2,400-call experiment resumable rather than something you have to restart because a network request failed halfway through.
+Maya: The model-comparison data got a routine refresh too. Nothing in the change proves a new price-quality result by itself, but keeping the model scores current is what lets a frontier chart remain useful instead of becoming an old screenshot.
 
-Alex: On the blog front, Anand added a bunch of talk posts and refined many of his prompt fragments and "AI advice" notes.
-Maya: He made editorial tweaks that are small on the surface — grammar, dash styles, paragraph rules — but important for downstream automation. Those fragments become inputs for scripts, so consistent punctuation and formatting reduce surprises.
-Alex: Practically, he also added new posts — personal stories, TIL notes, and a set of deterministically generated talk posts that include dates, images, and links. Together with the talks tooling, this makes publishing repeatable.
-Maya: Non-obvious takeaway: invest a little time making your style rules machine-friendly. It saves a lot of debugging later when automated scripts generate content.
+Alex: From model measurements to publishing: Anand also built a deterministic path from a talks catalogue into blog posts. The important change was a rejection of having an AI invent prose for each entry.
+Maya: Instead, a script reads structured talk details and writes the post in a fixed format. It can include the session date, event, location, summary, links, and selected images, so the same input produces the same post.
+Alex: The catalogue is the source of truth. A `talk_url` in existing blog front matter marks a session as already covered, and the generator leaves existing files alone. That is a simple guard against both duplicate posts and overwriting edits.
+Maya: It also limits generation to entries marked as latest, and the script reports how many posts it created, found already, or skipped. There are tests for dates, image labels, and how links are made absolute.
+Alex: One operational detail: if a talk has no time, the generated date defaults to noon in India Standard Time. When a time is known, the configured offset is preserved. That’s a sensible default, but still a default someone should replace when better data exists.
+Maya: And images are curated in the catalogue, rather than every slide being dumped into the post. The generator can include the talk’s main visual and useful links while keeping the entry predictable and editable by a human afterward.
+Alex: The supporting workflow for making talk stories was tightened as well. It now says to inspect what’s actually in a talk folder, keep companion pages like demos or surveys when they matter, and patch an existing story instead of flattening it into a new template.
+Maya: Then update the catalogue, not its generated list. That separation is a little like keeping the recipe in one place and treating the printed menu as an output. It reduces the chance that two versions drift apart.
+Alex: The blog work also took a more careful approach to synthetic data. The revised guidance asks for realistic reference ranges, causal mechanisms, and explicit tests for where an effect should be absent or reversed.
+Maya: And it warns against planting the desired result by moving rows or changing outcomes after generation. If the signal is too weak, change the underlying mechanism and regenerate; don’t quietly edit the evidence until it agrees.
+Alex: There’s a strong review loop too: make a small sample, hide the hypotheses and generator logic, then inspect it as a sceptical domain expert. Repeat until the data no longer has obvious synthetic tells, then test at least three seeds.
+Maya: That seed check matters. A finding that appears only in the showcased sample is a story about luck, not a robust exercise. And if rare cases need more examples, describe the dataset honestly as an enriched audit sample, not as the whole population.
+Alex: The case-study prompt applies the same principle across documents and tables: first simulate what happened, then derive each system’s records from that shared reality. Billing and CRM should disagree for realistic reasons, not because they were made up independently.
+Maya: It even asks for harmless anomalies and innocent explanations, so an analyst has to distinguish clues from noise. I like that. Otherwise a training exercise becomes a treasure hunt where every oddity points straight to the answer.
+Alex: A real-world blog post made the opposite point: sometimes the cause is tiny and undocumented. After more than a year of failed passport uploads to India’s Fast Track Immigration site, splitting a PDF and renaming the files `front.pdf` and `back.pdf` worked.
+Maya: The files were about 130 kilobytes, within the stated size limits, and the site gave no filename guidance or error message. That’s a good example of why a user’s experience can be blocked by a hidden rule that the interface never explains.
+Alex: Another post compared agents on a Word document with 73 plant images. Claude 4.5 Haiku needed four attempts to get the local names into italics; other tested models completed it in one shot.
+Maya: That’s a concrete result, but it’s one task, not a permanent ranking of models. More broadly, Anand’s AI advice added ambition as a human skill and described ownership as curiosity, agency, and pushing boundaries—not just completing assigned work.
 
-Maya: Now, a classroom tool update: Anand improved the live workshop forms he runs from his laptop. He added a presenter control to show or hide questions, persisted that change back to the form YAML, and made the browser preserve your scroll position and focus during live updates.
-Alex: That's a huge UX win. During workshops you can stage questions, press "Show," and the audience’s devices pick up the new question without everyone losing their place. He even added optimistic concurrency checks so you don't overwrite manual edits — the server returns a 409 if the config changed underneath you.
-Maya: Why it matters: live forms are fragile in a room. Preserving viewport and selection avoids interruptions, and writing visibility changes atomically keeps the file safe. Non-obvious: when you let presenters mutate config in realtime, include a config_version check and atomic write to avoid races and surprises.
+Alex: A very different kind of user-facing detail landed in Liveform. During a workshop, a new question could arrive while someone was halfway down a long form, and the page would jump back to the top.
+Maya: The fix tries to preserve the question the person was looking at. It captures a visible question as an anchor, along with the focused field and its text selection. After rendering, it restores that location and focus without forcing a scroll.
+Alex: The browser test checks a draft response, a backwards text selection, and a question being added or removed. If the anchored question disappears, the nearest surviving question stays in view. That’s much stronger than just checking that the page still loads.
+Maya: The results page gained a presenter control for hidden questions too. Presenters can navigate to a future question, see that it is hidden from the audience, and press Show. Audience browsers pick it up through the normal polling.
+Alex: The server writes the visibility change back to `form.yaml` while preserving comments and formatting. It uses a version check, so if somebody edits the file at the same time, the server returns HTTP 409 rather than silently overwriting that change.
+Maya: And permission is narrower than simply being allowed to view results. Only an email explicitly listed under `results.auth.allowed_emails` can change visibility; domain access or inherited authentication can still grant viewing, but not write access.
+Alex: That’s a useful design boundary: the person holding the projector control has a specific power, not general permission to edit the form. The team also checks that hiding a question doesn’t erase responses already collected.
+Maya: It’s one of those features where the human consequence is the test. A presenter can stage a sequence without interrupting participants, and a respondent doesn’t lose their place because a question changed somewhere else.
 
-Alex: Anand also re-ran his quirky random-number experiment with newer models. The results are fun and telling: newer models still show strong, non-uniform preferences — one model loved 57, another favored 47 — and these preferences shift between models but persist.
-Maya: He made the generator resumable and idempotent, saving after every successful response, so long runs can be resumed safely. Practical idea: when running many API calls for experiments, checkpoint after each response and skip already-done work on reruns. Saves money and time.
+Alex: There was a new bookmarklet for ChatGPT’s sidebar, which turns a long chat history into data you can actually reuse.
+Maya: It collects chat titles and URLs from the rendered sidebar, with buttons to copy either Markdown links or JSON objects. ChatGPT virtualizes the list, so older rows can vanish from the page as you scroll.
+Alex: The scraper keeps chats it has already seen while the user scrolls and the site reveals more. Tests cover the changing sidebar, links inside project paths, escaped Markdown titles, and both clipboard formats.
+Maya: It also updates the bookmarklet page and documentation to say what it can and cannot see: leave the controls open while scrolling, because it can collect rendered chats over time, not magically retrieve an invisible account history.
+Alex: That’s the same practical honesty we saw in the benchmarks: be clear about the boundary of the measurement. A scraper that handles virtualized rows still depends on the user revealing those rows.
+Maya: A small fix in the language-model visualization app does a different kind of boundary work. It URL-encodes the current page before using it as a login redirect, so characters in the address don’t break the query parameter.
+Alex: And there’s now a direct link to open the visualization in a separate tab, as well as the embedded version. In the API gateway, login redirects were widened from same-origin only to include one trusted GitHub Pages origin.
+Maya: That exception is explicit, which is important when a redirect carries a token. The code still checks the destination against a short allowlist rather than treating any URL supplied by the browser as trusted.
 
-Maya: Tools got an update too: Anand added a ChatGPT-sidebar scraper bookmarklet that collects chat titles and URLs from the ChatGPT sidebar and copies them as Markdown or JSON.
-Alex: That’s surprisingly handy if you want to archive or share a list of conversations. He built it to handle virtualized lists — i.e., scroll to reveal more items, and keep grabbing them — and added tests and fixtures.
-Maya: Non-obvious: scrapers for modern web apps must handle lazy-rendered content and give users a way to accumulate entries while they scroll.
+Alex: The notes work this week was a small collection of useful cautions: agent-assisted firmware analysis can uncover hidden device features, and sometimes leaving working software alone is the better engineering choice.
+Maya: There was also a forecasting lesson: a simple exponential weighted moving average beat agents across more than a thousand forecasts in one study. One possible explanation is that agents did not fetch the newest information as often as the task required.
+Alex: And a portable pattern for governing agents: give an agent its own identity, like a separate Linux user or database account. Those are controls institutions already understand, rather than a special, vague category called “AI access.”
+Maya: Finally, the weekly group podcast was revised around questions that are still open: a circulating claim that Claude solved Navier–Stokes was described as awaiting expert review, not as an established result. The episode also looked at independent safety evaluation and what people value in creative work.
+Alex: That callback to expert review feels right for the week. Whether it’s a model’s confidence score, a synthetic dataset, or an extraordinary research claim, the interesting question is not only what the system says. It’s how we check it.
+Maya: And how narrowly we state the result. My practical habit would be to keep one fresh test set aside, and to write down the exact threshold or claim before looking at its results.
+Alex: Mine is to make failure visible early: test the hidden rule, the competing edit, or the one threshold you’re most tempted to generalize from. That’s enough for this week. Thanks for listening, and goodbye.
 
-Alex: A few small but helpful fixes shipped as well. He added a link to a standalone visualization app for inspecting LLM log-probs and fixed an unsafe redirect by encoding the login redirect URL for the API proxy he runs.
-Maya: He also allowed one trusted GitHub Pages origin for a login redirect so Pages-hosted prototypes can receive an AI Pipe token. These are little plumbing fixes but they make demos and single-file apps far less painful to use.
-
-Maya: Anand also updated his weekly podcast generator repository and some podcast episode scripts — meta, because he uses automation to generate two-host scripts. He’s clearly iterating both on content and on tools that produce the content.
-Alex: And finally, a quick note: he updated his LLM pricing/elo data and his TILs — housekeeping that keeps the public analyses up to date.
-
-Maya: Okay, listener tips. I'll go first: if you publish talk notes or events, use a single source of truth (a config or JSON) and make generated pages transient. Then add a small "primary" link field so your generator knows which URL to show as the title.
-Alex: Good one. How would you apply it in practice?
-Maya: I’d export my event list from whatever calendar or CMS I use into a single JSON, run a generator to create index pages and per-event pages, and keep that JSON under version control so I can script safe edits.
-
-Alex: My tip: when you design an automated review-or-skip rule for model outputs, validate it on a proper holdout and distinguish between ranking ability and calibration. Use a ranking signal (like logprob) to prioritize or defer review, but compute a calibrated probability if you need to give a literal confidence number.
-Maya: How would you apply that?
-Alex: I’d run a paired experiment on historical cases, pick a ranking cutoff that meets my error SLA on a development set, then freeze it and run on an untouched holdout to confirm coverage and observed error. If it drifts, tighten the process and include a human-in-the-loop until stable.
-
-Maya: One more small practical tip from the liveform work: when your UI receives incremental updates, try to capture the visible anchor — which question or input is in view and which control has focus — and restore it after the DOM changes, including caret selection if possible.
-Alex: I’d use that by default in any collaborative or live-update form I build. It’s amazing how much smoother a session feels when people don’t lose their typing spot.
-
-Alex: That’s our roundup for Anand’s week — lots of engineering polish, reproducible experiments, and practical UX fixes.
-Maya: Thanks for listening. We’ll be back next week with more highlights from Anand’s repos and experiments.
-Alex: Bye for now!
-Maya: See you next week!
 ]]></description>
   </item>
   <item>
