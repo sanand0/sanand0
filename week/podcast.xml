@@ -4,7 +4,114 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 04 Oct 2026 03:26:26 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 11 Oct 2026 01:58:22 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-10-11</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-11.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-11.mp3</guid>
+    <pubDate>Sun, 11 Oct 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Anand's Weekly Codecast. The week ending 11 October 2026. This was a week of making tools less forgetful—and of asking how you know when a tool is right.
+Maya: And of turning private routines into systems with a paper trail. The strongest work is not just adding a feature; it is making the feature safer to rely on.
+
+Alex: Take calendar invitations. A small script now accepts invites moving between work and personal Google accounts, removes the invitation emails, then waits and sweeps for the acceptance notices that arrive late.
+Maya: The timing is the important part. Calendar acceptance and email delivery are not one transaction, so the script polls again instead of assuming the notification has already appeared.
+Alex: It also grew from Bash into Python, with a dry-run mode and account checks. That turns a useful personal shortcut into something inspectable before it changes calendars or mail.
+Maya: And the account setup got more explicit. Three Google Workspace CLI profiles now select the login for Gmail, Calendar, Drive, and Chat; `userId` or `calendarId` does not switch accounts.
+Alex: That is a subtle but important distinction. The same command can look right while using the wrong identity. The guidance says check `gws auth status` and the profile email before any write.
+Maya: All three accounts passed twelve live service checks after token caches were refreshed. There is also a careful recovery note: if scopes look present but an API still rejects them, set aside only that profile’s `token_cache.json`.
+Alex: Not the encrypted credentials or client secret. I like that specificity. It gives you a remedy without turning an authentication hiccup into a full account reset.
+Maya: Elsewhere in the same toolkit, the browser-control command now handles ambiguous matches by warning and choosing the first page, rather than failing outright. And `--reuse` focuses an existing URL in the selected window.
+Alex: The window selection itself now uses a tab URL clue instead of a remembered desktop title. That is more like finding a room by what is inside it than trusting the name on the door.
+Maya: There is a useful compromise there: ambiguity still appears in the warning, with the matching URLs, but it no longer blocks a routine action. Tests cover both the warning and the selected page.
+Alex: And the browser palette has its own small identity problem solved. Bookmarklet usage used to follow a bookmark ID, so replacing a bookmark reset its apparent history.
+Maya: Now its statistics follow the exact title instead. Old and new IDs combine where retained action logs show they shared a title; renaming starts a separate history. That matches what a person thinks they are using.
+Alex: The extension also acquired a durable local action archive: actions queue in browser storage, then append to monthly JSONL files, with one-shot alarms and event IDs.
+Maya: And a selected folder is the permission boundary. One caveat is documented honestly: a crash after file append but before queue acknowledgement can make a duplicate on retry. Better a possible duplicate than silently losing the action.
+Alex: The palette’s input moved into the page’s light DOM because Claude’s keyboard handlers did not recognize an input buried inside the shadow tree. The visual shell stays isolated; the actual typing surface is visible to the host page.
+Maya: That is a nice example of debugging the mechanism, not just repainting the interface. It also gained a shortcut for a new tab immediately to the right of the current one.
+Alex: And Anand’s music shortcuts moved from VLC toward the browser music player. The playback history now records timestamp, path or filename, and tool, and music selection avoids up to thirty recent tracks.
+Maya: The same tool handles the awkward metadata edge cases. The tag utility now round-trips MP3 and MP4 tags, removes comments and stale fields, clears explicitly blank CSV cells, leaves omitted columns alone, and preserves file modification times.
+Alex: It even catches site suffixes beyond familiar domains, without stripping a site name that merely appears in the middle of a song title. Tests check multiple artist values survive a no-op round trip.
+Maya: LinkedIn backup work also expanded from posts and comments to analytics. It can update saved original posts over an inclusive `--since` and exclusive `--until` range, collecting engagement measures, profile analytics, demographics, and public repost details.
+Alex: But not private shares, and not every metric is equally accessible. The change also adapted to LinkedIn’s newer component-keyed post cards, rather than relying only on the old `data-urn` structure.
+Maya: So that whole cluster is about practical automation with visible boundaries: verify the account, warn about ambiguity, preserve data, and say what a scraper did not capture.
+
+Alex: That connects to a more visible personal tool: the music player itself. It got an offline mode, but the first version of the instructions claimed more than it actually cached.
+Maya: The correction matters. The service worker caches the player shell, not the music files. Songs remain in the chosen local folder, so the user must keep those files on the device and open the same browser profile offline.
+Alex: The download path now fetches four assets at once, instead of one after another. It also avoids intercepting POST requests and `blob:` URLs, which are not part of the offline app shell.
+Maya: And update checks are serialized across service-worker versions. The interface says “Offline ready,” offers an update without interrupting playback, and avoids claiming readiness before setup finishes.
+Alex: The tests are notably user-shaped: can the player recover focus from a button so Space resumes playback? Can similar songs be inserted after the selected queue item without disrupting the current track?
+Maya: That last behavior now excludes tracks played within both limits: the last seven days and the last 200 listening entries. A history-write failure does not quietly make a recently started track eligible again.
+Alex: The other large scraper change is in ChatGPT exports. Markdown can now preserve rich answers as readable prose, while JSON adds ordered semantic `parts` with nested children.
+Maya: So a metric stays a label and a value, a table stays rows and cells, and a checkbox retains whether it was checked. Code blocks, accessible chart summaries, files, citations, and action labels also keep their meaning.
+Alex: The extractor handles details such as CodeMirror editors by reading rendered `.cm-line` nodes and their language. That is more useful than flattening every response into one giant string.
+Maya: But it is deliberately passive. It does not click an explanation button, trigger a download, or open a citation preview. If a link target is not exposed, the export marks it unresolved instead of inventing one.
+Alex: And virtualized history still means you have to scroll older turns into view. This is a better transcript of what the page exposed, not a magic export of hidden workspaces or unloaded content.
+
+Maya: Now, several research projects ask a related question: when a result looks persuasive, what is the comparison that could make it less special?
+Alex: One mortality study froze a model and varied the named food exposure across sixty NHANES III items. Twenty-one were FDR-significant; hot chili, the published hook, ranked twenty-eighth.
+Maya: That is a striking ranking, but the design has limits: it is a screening analysis, not a complete complex-survey reproduction. The result does not show that any food causes longer life, or that the original authors p-hacked.
+Alex: A separate HRS/CAMS analysis tested thirty-one everyday activities against mortality. Books reproduced the published association—hazard ratio 0.816, close to 0.80—but ranked eleventh among twenty-eight estimable activities.
+Maya: And eighteen of the thirty-one activity tests survived the stated false-discovery correction, counting non-estimable items conservatively. That does not erase a possible effect of reading; it shows that many comparable activities can support a plausible headline.
+Alex: So the point is selection, not accusation. If the reader sees one chosen result without the family it came from, the headline carries less information than its p-value suggests.
+Maya: That lesson also appears in a small Cloudflare Clef latency study. The practical recommendation was a thin Worker calling the model through a Workers AI binding, rather than chasing HTTP/3 as the main speed fix.
+Alex: The lowest measured end-to-end times were about 223 milliseconds for Clef-flash and 325 for Clef through that binding path. Warm HTTP/2 was comparable; HTTP/3 did not materially improve steady-state latency.
+Maya: The comparison is not perfectly controlled: the clients differed, and model latency varies. Still, the work narrows the engineering bet. Transport tweaks did not beat inference and scheduling as the larger cost.
+Alex: A broader decision-model benchmark then put Clef and other typed-choice systems beside chat models on seventy-seven BANKING77 support cases, one per intent.
+Maya: Clef-flash got seventy-three right, Clef seventy-two. GPT-6 Luna through the Decisions API got sixty-one, against sixty through chat. That tiny accuracy difference came with a much faster observed median for Decisions—but latency was end-to-end, not pure model time.
+Alex: And the task gives all systems the same label choices, but the benchmark itself has one frozen case per category. It is a useful pilot, not a production model-selection verdict.
+Maya: Later, four more decision models were tested. Mercury Decide scored seventy-one of seventy-seven and was free on the measured route; Perplexity Decider, Liquid d1, and Kev 4B also joined the comparison.
+Alex: The exclusions are as instructive as the additions. Span-01 Lite returned HTTP 400 for the 77-way choice, Solar Decide returned HTTP 422 because it tops out at twenty-six options, and Tev1’s limit is about twenty.
+Maya: Those are not bad scores; they are incompatible interfaces for this exact experiment. Splitting labels into a hierarchy might let them run, but then it would no longer be the same benchmark.
+Alex: The pricing explorer also got a more defensible basis. It now prefers mainstream durable input prices, preserves historical launch and end dates, and leaves cost blank when there is no comparable API price.
+Maya: Its month slider is not a receipt for what a model cost in that month. Each model has one representative price, so the chart compares lifetime economics rather than reconstructing past invoices.
+Alex: And pre-Arena models remain as context with missing Elo, rather than mixing an incompatible older quality measure into the current Pareto frontier. That is a restraint I like.
+
+Maya: Let’s move from evaluation to systems that store real operational records. The exam platform work begins with a blunt constraint: Durable Object SQL storage had grown beyond a five-gigabyte free allowance.
+Alex: A backup tool now pages through production Durable Objects and tables into a local SQLite archive, supports incremental runs, reports payload by exam, and limits pruning and restoring to the canonical results object.
+Maya: The safety sequence is backup, verify, preview, then require explicit apply and confirmation before deletion. The tool can also restore rows with original IDs. That is much more careful than a bulk delete followed by hope.
+Alex: At the same time, new exam result JSON is stored as gzip BLOBs, with the original UTF-8 byte count retained. `/filter` and archive exports still return ordinary JSON, independent of the storage format.
+Maya: Mixed old TEXT rows and new compressed BLOBs stay readable. Tests check Unicode, archive-and-restore behavior, storage type, and a corrupt compressed value that must fail visibly instead of disappearing.
+Alex: The migration was completed and the one-time migration route removed. That leaves backup and restoration as ongoing tools, rather than keeping a risky temporary migration path forever.
+Maya: There is also a score-download utility for five completed course terms. It checks headers and email uniqueness, writes atomically, and keeps student TSVs out of version control.
+Alex: The key caveat is that some older term totals are reconstructed from weighted components; those are explicitly not official posted results. The script preserves raw fields so someone can inspect what went into the estimate.
+Maya: And a Discourse refresh command fetches missing topic posts in batches, validates replacements before writing, and leaves unchanged files untouched. That is a small but sensible incremental-update pattern.
+Alex: Meanwhile, the WhatsApp webhook has changed purpose. It no longer runs an LLM: incoming requests are stored in D1, the named number gets a fixed inactive message, and other numbers are logged without a reply.
+Maya: There is a password-protected dashboard for the latest five hundred messages, with message text or media type, timestamps, reply status, and raw JSON. Dashboard requests are excluded from the webhook table so its password is not copied into the database.
+Alex: The tension is that complete webhook logging includes sensitive headers and URLs, potentially even verification material. The documentation says to treat the database as sensitive; the convenience comes with a real custody obligation.
+
+Maya: Another set of work turns evidence into a physical or operational test. The engineering-drawing experiment gave an agent FreeCAD and a drawing, but withheld the reference model and grader until its candidate was frozen.
+Alex: The generated bracket had the exact 150 by 48 by 88 millimetre envelope and a valid single solid. Yet the official geometry score was only about 4.2 percent, despite twenty-seven of thirty specification checks passing.
+Maya: That is the episode’s sharpest caution: a plausible render, a valid model, and many passing checks can still miss the shape’s defining geometry. In this case, the lower fork profile was the important omission.
+Alex: And the agent’s own tests did not catch it. The independent CAD Bench V3 verifier did. “Looks right” is not a geometry test, just as passing a self-authored checklist is not independent evidence.
+Maya: The related LEGO work used a different kind of executable constraint. One sculpture spells AI from the front and DATA from the side; an integer program minimizes brick positions while enforcing both projections and continuous support.
+Alex: A second design was constrained to the bricks actually available: eighty one-by-one bricks, fifty-two bright signal pieces and twenty-eight dark supports, arranged in thirteen columns on a seven-by-fifteen footprint.
+Maya: The visual iterations found a practical lesson: white supports competed with the letters, while dark supports made the projections clearer. But it is still a computer-checked design, not a sculpture that has been physically built.
+Alex: A new assembly-line case study asks agents or students to investigate synthetic production records across MES, PLC, quality, materials, and handovers. It includes a runnable simulator and checks across three seeds.
+Maya: The trap is treating the loudest downtime chart as the cause. Station loss can include blocked time, and one candidate story is that ST10 is waiting behind another constraint, not failing itself.
+Alex: The exercise asks for a single offline `replay.html`, with play, pause, and a seekable timeline. Its validator checks buffers, retest patterns, decoys, and reproducibility—but explicitly does not claim an LLM evaluator has been run.
+Maya: That limitation is important. The case has blind sample submissions and expected rankings, but those fixtures are regression aids, not evidence that real agents have been fairly scored yet.
+Alex: The common thread is executable evidence: a CAD solid can be checked against hidden geometry, bricks against inventory and projections, and an operational story against records from independent systems.
+
+Maya: And the last theme is how those ideas are taught and shared. A new talk story follows an engineering drawing from a convincing first model to the verifier that exposes what it missed.
+Alex: It also makes a broader point: pictures are cheap to create, but the reader may be another AI, and neither a human nor a model should have to infer exact values from pixels when a trustworthy table can travel with the chart.
+Maya: The supporting evidence is carefully qualified. ChartQAPro and ChartMuseum test particular models and datasets; they do not establish that all people always outperform all current models, or that text guarantees correct interpretation.
+Alex: A separate course-orientation story says “get the job done—and verify it.” The questions from students carry the argument: use agents and people, but know what the exam is testing and practice checking the result.
+Maya: The blog version adds concrete questions about using AI, copying, broken portals, and what remains useful as tools change. Its answer is not that process never matters; it is that initiative and verification matter alongside the finished work.
+Alex: Another blog post turns a confidence experiment into practical guidance. Across about 770 Banking77 tasks, GPT-4.1 Nano’s stated 95 percent confidence corresponded to roughly 77 percent accuracy.
+Maya: Confidence still helped rank errors, and log probabilities cut the share needing human review further in that test. But the scores are not literal accuracy promises; thresholds must be checked on the work you care about.
+Alex: The public course site also simplified deployment to one GitHub Actions job. Several static sites pinned their Markdown converters and cached the dependencies, instead of pulling an unpinned CLI on every build.
+Maya: The point is repeatability: install locked tools once, build, then remove `node_modules` before publishing. The demos catalogue also gained new entries, each marked for human review rather than implying the descriptions had been validated.
+Alex: The demo additions span confidence calibration, decision models, financial filing search, AI handoffs, and a 3D room built from a reference image. One entry describes six AI handoffs and how caveats can drift across them.
+Maya: And a separate infrastructure investigation resisted jumping straight to a new dock extension. Vitals already reads temperature, battery, network, and other sensors; the unresolved questions are the real GNOME session, overhead, and reliable logging.
+Alex: The recommendation is to measure on the actual machine before choosing a fork, a separate collector, or a different panel. In a container without the desktop session, panel behavior simply could not be verified.
+Maya: That is a good callback to the bracket. A container snapshot, a beautiful rendering, and a plausible benchmark are all partial views. The useful move is to ask what independent check would reveal what each view cannot.
+Alex: Yes. This week’s practical habits might be: make destructive operations previewable, and keep one independent check that was not written by the system being checked.
+Maya: And when the data are incomplete, mark the boundary—whether that is a private repost, an offline cache, a reconstructed score, or a model’s confidence. Thanks for listening. Goodbye.
+
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-10-04</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-04.mp3" length="0" type="audio/mpeg"/>
