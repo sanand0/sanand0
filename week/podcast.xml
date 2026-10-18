@@ -4,7 +4,107 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 11 Oct 2026 01:58:22 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 18 Oct 2026 09:11:09 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-10-18</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-18.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-18.mp3</guid>
+    <pubDate>Sun, 18 Oct 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Anand's Weekly Codecast. Week ending 18 October 2026.
+Maya: This week’s work has a clear practical thread: make systems easier to use, but harder to fool. That shows up in exams, markets, research tools, and even a laptop pushed too hard.
+Alex: Start with the exam platform. What is actually happening in a new preview mode? Students can read and draft answers before the grading window, but checking and saving stay locked.
+Maya: The important part is that the lock is not just a greyed-out button. The server rejects submissions outside the window and blocks direct checks of registered server-side questions, even if someone calls the endpoint by hand.
+Alex: So it is a door with a guard, not a sign saying “please wait.” The new `gradingStart` setting separates when a question appears from when official feedback begins.
+Maya: With a fixed grading window, the end is strict: there is no old two-minute submission grace. Existing exams without `gradingStart` keep their prior timing and grace period. Self-paced hours cannot be combined with it.
+Alex: And the warning is useful: client-side validators are still visible in the browser. If students must not see answers early, instructors need server-side grading and distinct question IDs for independently timed exams.
+Maya: There was also a privacy repair. Anonymous `/filter` calls now return public score metadata, not answers. A student can see their own answers with a matching signed owner token; a separate archive token allows privileged bulk exports.
+Alex: That brought the old downloader back safely. It uses the archive token, discovers saved TDS assessments, filters unsafe IDs, and refuses score-only responses rather than quietly replacing detailed answer files.
+Maya: That refusal is a good guardrail. The interface also returns the score actually stored, not the score the browser hoped for. If a server re-check changes a question from two marks to zero, the receipt says so.
+Alex: And solved questions now show “Correct” for a beat, then collapse over about 900 milliseconds. Editing one reopens it. A small interaction, but it stops the page feeling as if it jumped away.
+Maya: There was a real classroom application too: a September project now includes a prediction question and a short audio offer. The audio link is tied to the signed-in student and to that specific question.
+Alex: The launch token is an HS256 JWT, valid for 20 minutes, with a question ID in its claims. The audio service checks the actual server-side upload, the student identity, and the deadline; typing “recorded” is not enough.
+Maya: The recording is at most 60 seconds. The deadline is Wednesday night, with a two-minute buffer for slow uploads, and the student can make up to three submissions. The latest valid recording becomes the offer.
+Alex: That offer is not a promise that the marketplace is already running. Students record a feasible service another student might buy; delivery and marketplace value are assessed separately.
+Maya: The same assessment includes a work sample: ten practical questions make up the displayed 50 marks. The GitHub project URL gets zero automatic marks; its quality is reviewed separately, with no internship guaranteed.
+Alex: That distinction matters to students. A form that checks a URL is not pretending to judge a product. The assessment also says collaboration and AI use are allowed, and asks students to verify the result.
+Maya: Even the solved-question click bug got a regression test: clicks on a nested icon now read the question ID from the actual Check button, not from its child element.
+
+Alex: From individual questions, the week moved to a much larger assessment design: a multiplayer evidence-exchange exercise about missing millions in supplier invoices.
+Maya: The platform has one authoritative SQLite Durable Object. That lets it make credit charges and cross-scenario joins atomic. The generator, generation secret, and grading key stay offline; none is deployed with the public Worker.
+Alex: The new scenario has one block of 40 cases, with 20 invoices per case. Students have to gather scarce evidence, trade it with peers, and defend a decision rather than just match a phrase to an answer.
+Maya: The public evidence can be filtered by document type, counterparty, and reference. The browser remembers those filters in the URL, and a mobile-width test checks that the drawer stays usable.
+Alex: There is a nice separation between a practice area and the evidence task. Three practice runs keep 2,000 toy slots each, while evidence practice lives separately. So the practice budget does not masquerade as evidence collected.
+Maya: The private grading work became more disciplined too. It checks cited support, not just a plausible answer, and it caps the outcome cost of missing one large or critical payment at six marks.
+Alex: The calibration scripts also distinguish a theoretical best case from a student result. They preserve request histories, hash exports, and keep peer information out of solo-agent prompts.
+Maya: And here is the limit: the calibration failed. The author stopped further model spend. That work helps expose weaknesses in the test and the runner, but it does not show that students learned or that the assessment works in a real class.
+Alex: I like that distinction. It is like testing a bridge model before sending traffic across it. A careful laboratory setup is valuable; it is not the same as observing a class of people cooperating.
+
+Maya: The next connected thread is a prediction market on AI Pipe’s weekly cost. It begins with a public feed of daily spend, but the measurement problem is more interesting than the market screen.
+Alex: The feed keeps only a rolling week, so the adapter retains completed daily observations as they pass. Otherwise Monday’s cost could disappear before the week settles on the following Monday.
+Maya: The first market version had five broad outcomes. It was replaced with 17 finer ranges, from under one cent through $1,000 or more. Each range includes its lower bound and excludes the upper bound, so exactly one cent goes in the next band.
+Alex: That creates an exact settlement rule, not a rounded guess. The tests check values just below and exactly on each boundary. The feed also rejects duplicate days, stale data, negative spending, and missing completed days.
+Maya: The settled total is only authoritative when all seven target days are complete and the week has ended. Before that, the display is provisional. The source keeps personal-provider-key traffic and free models out of the total.
+Alex: Launch tokens are scoped to one market and one question. A code for this prediction cannot be carried over to a different market. Students are warned that sharing a bearer code lets someone trade as them or spend their turns.
+Maya: That is a practical security caveat, not a claim that tokens stop all sharing. Anyone holding a live code can act as that student, so the warning is part of the product, not fine print.
+Alex: The public usage snapshot is published every six hours, built from positive-cost metered requests. It reports per-day provider totals and broad user counts, but no email addresses.
+Maya: And it is not the same as the historic billing table: admin overrides and older costs can make those figures differ. That sort of boundary is what keeps a public statistic from promising more than its source can show.
+
+Alex: There is another small personal tool with the same operational instinct: a new music-sync command finds the currently mounted Android phone instead of assuming its mount path never changes.
+Maya: It copies only top-level MP3 files, plus the music catalogue and listening history. Extra phone MP3s are reported but kept unless `--delete` is explicit. A per-phone checkpoint makes an interrupted copy resumable.
+Alex: That is the right asymmetry for deletion: safe by default, destructive only by request. The script also prints the mount path, which makes diagnosis easier than guessing where the phone appeared.
+Maya: The Google backup moved mail, calendar, and chat files into monthly JSONL archives. Existing files are migrated, rows are preserved, and writes use a temporary file followed by a rename.
+Alex: And an IITM Google account joins the scheduled backups. Chat-space metadata lives in a cache rather than being duplicated into the month-by-month records. The search index was updated to read both old and monthly files.
+Maya: That makes a migration less dramatic for whoever searches the archive later. The test checks that records and their source locations survive the split and that repeating the migration does not create duplicates.
+Alex: A GNOME panel now shows Claude and Codex subscription usage. Successful readings persist in GNOME settings, so if a command fails or the laptop restarts, the last known figures remain visible with their age and error.
+Maya: The Claude script was also changed back to the normal Claude Code credentials. It reads them without modifying or refreshing them; if the token has expired, the instruction is to restart Claude Code, not create another login.
+Alex: One useful correction came from heat, not software design. A system journal showed a confirmed thermal-protection shutdown at 108 degrees Celsius. But the earlier abrupt crash had no clear cause.
+Maya: So ffmpeg was plausible, not proven. The personal video-compression command now uses ffmpeg’s `-readrate 3` to slow input and reduce heat, but the incident notes explicitly say there is no evidence that ffmpeg caused the crash.
+Alex: The Android work had a similar evidence-first feel. A controlled comparison measured two phone-control MCP tools against the same tasks, and also checked what happened to Android’s single accessibility slot.
+Maya: The report favored mobile-mcp for Claude’s overall task flow, while Android-MCP produced faster, smaller accessibility trees and freed the slot when its server exited. It also failed the Chrome Unicode task four times out of four.
+Alex: And copying music over USB does not need adb at all: the notes use GVFS MTP, detect the first mount, and verify five sample MP3 copies byte for byte. That is useful setup guidance, not a full sync benchmark.
+Maya: There was also a Windows setup pass: align the `~/code` layout across PowerShell and Cygwin, document Google Workspace CLI account selection, and fast-forward only clean Git checkouts. No resetting local work.
+Alex: A second tool update added a Google Meet MP4-background bookmarklet. It only extends the existing file picker’s `accept` attribute and opens it; the README calls this an unofficial workaround that may break when Meet changes.
+Maya: And Gmail joins Hacker News in the dark-mode bookmarklet. The rules target message bodies and their surrounding panel, while avoiding the inbox and unsaved compose drafts. A pseudo-element fix handles the white formatting bar.
+Alex: The project’s tests use a mix of fixtures and browser checks. That matters because Gmail’s private class names can change; a test passing against a mock does not guarantee the bookmarklet will survive a site redesign.
+Maya: There were also small playback improvements in the local music app: a custom seek slider now has an Escape path back to the playlist, and clicking the already-playing track does not restart it.
+
+Alex: Those are the sorts of changes users notice as friction removed, not as a new feature list. From there, the work took a more editorial turn: five chapters of a finance book were drafted and reviewed.
+Maya: The credit-risk chapter now draws a sharper line between an application decision and a later repayment outcome. It also updates the regulatory discussion and says plainly that the synthetic exercise has not yet been run as a real evaluation.
+Alex: The banking-research chapter has a concrete correction: in a 100-company filing scrape, 93 revenue values were populated, but 25 differed materially from the roster reference. A populated cell is not a verified fact.
+Maya: And one company had been marked unmatched even though it did file annual reports. That is the counterexample that makes the chapter useful: a good-looking coverage rate can hide entity matching errors.
+Alex: The fund-operations chapter uses a fictional three-investor call: commitments of 50, 30, and 20 million dollars imply a 5, 3, and 2 million call under the invented terms. A side letter gives investor B more notice time; a proposed 3.3 million allocation still has a 300,000 excess.
+Maya: The revision fixes the timing rule too. Under the stated exercise convention, A and C can pay on 16 November, while B’s earliest permitted date is 23 November. That is an exercise answer, not a universal fund rule or legal opinion.
+Alex: Insurance offered a more surprising source-code audit. A public demo looked like it ran a Prolog rules engine, but the displayed outcome was actually set from prewritten flags in the data.
+Maya: And two policy details were missing from the pseudo-rules: an endorsement for an inexperienced driver and a co-insured endorsement for a borrowed car. That is code inspection, not proof of a real claim being wrongly decided.
+Alex: The finance-book chapter on contracts makes a parallel caution. A 200-cell policy matrix had 183 filled cells and 179 literal text matches after normalization. Those are text checks—not legal accuracy, completeness, or evidence that an obligation applies.
+Maya: The review catches a privacy problem too: the policy-as-code application sent documents to an external model API despite its README suggesting local handling. A browser saving state in `localStorage` does not mean the document stayed on the device.
+Alex: Chapter 11 also adds DORA to its acronym checks and raises the need to cite the right financial-services authority, not just general public-sector contract guidance. The book is explicitly in draft; older chapters were not reopened.
+Maya: The through-line across all five is modest but strong: a citation that matches words is a start. A reviewer still needs the right version, the right party, the exceptions, and the evidence that supports the decision.
+
+Alex: A different kind of verification appeared in the new stories and research tools. Several archival talk pages were built around existing recordings, while carefully separating what a speaker said from what later evidence supports.
+Maya: The new actor-lookalike story uses a 2024 multimodal-embedding demo. Its caution is essential: a nearest photo in a particular image collection is not an identity check, a measure of ethnicity, or proof that one person universally resembles another.
+Alex: The page also refuses a historical anachronism: the transcript seemed to name Claude 3.5 Haiku before that model’s release. The story flags the mismatch rather than quietly putting a later model on an earlier stage.
+Maya: The 2017 talk about birthdays, names, and exam marks is framed as historical observation, not a causal study. The review distinguishes recorded birthdays from actual births and flags the need to verify school cutoffs and the underlying data.
+Alex: The 2015 election story has a strong reveal: Modakurichi’s 1996 contest had 1,033 candidates and a booklet ballot. But declared criminal cases are not convictions, and a namesake anomaly does not establish who arranged it.
+Maya: The four stories keep their proper video sources and dates. That sounds clerical until a transcript timestamp points to the wrong upload, or a 2026 model slips into a 2024 experiment. Then the archive stops being reliable.
+Alex: There’s a new mobile-browser field lab too. It tests motion, orientation, camera, microphone, location, battery, NFC, and device pickers, then gives one Stop and reset control to stop sensors and streams.
+Maya: Its most useful result may be the boundary list: Bluetooth, USB, and Serial require explicit user selection; ordinary web pages cannot just read health data or revoke every saved permission. It tests browsers, not every phone’s hardware.
+Alex: A separate multiplication benchmark gives a tidy numerical example of evidence limits. It planned 712 requests, ten shared products per main condition, and no tools. GPT-6.1 Sol got 10 out of 10 through 35-digit multiplication.
+Maya: But that is a screening sample, not a reliability guarantee. At 40 digits and above, the output cap caused empty answers, and some earlier API attempts hit 402 or 401 errors. The report separates those from wrong products.
+Alex: The model-pricing dashboard was refreshed and now tests the parser, frontier calculation, and historical metadata. Its core warning is that the chart’s representative price is not an invoice for a past month.
+Maya: The demo catalogue gained 16 entries, including finance, security, voice, CAD, and operational demos. They are marked for human review rather than presented as vetted products.
+Alex: The AI Builders notes grew from a real internal meeting: five living notes now link claims to speakers, timestamps, and source clips. One technical improvement normalized transcript clocks to the hosted video and made screenshots point back to playable evidence.
+Maya: That is a good response to a common failure: a screenshot can look like evidence but leave you unable to replay the moment. Here the validator checks that video frames have a timestamp and a real recording behind them.
+Alex: And the blog drew a principle from an open exam-design session: ask what skill a question teaches, try to break its scoring, and measure transfer. It is a hypothesis about learning, not a claim that a clever assessment already proves it.
+Maya: The weekly podcast generator also produced a digest about decision models, retrieval, and agent workflows. One useful thread in that discussion was not to confuse a benchmark win on Banking77 with evidence about a different, higher-stakes job.
+Alex: Which brings me back to the saved exam score. The browser can say “Checked”; the server’s receipt says what was actually saved. It is the same distinction as a matching quotation versus a supported contract decision.
+Maya: Yes—and a good reminder for anyone building with agents: keep one independent record of what happened, and make the limits visible. If you adopt one habit, verify the outcome at the system boundary. If you adopt a second, keep a small test for the failure you most fear.
+Alex: That’s a fitting place to stop: don’t trust the green button; read the receipt. Thanks for listening.
+Maya: And keep the source close enough to check. Goodbye.
+
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-10-11</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-11.mp3" length="0" type="audio/mpeg"/>

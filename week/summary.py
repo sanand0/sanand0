@@ -294,7 +294,7 @@ def fetch_github_activity(user, since, until, headers, config, skip_repos, skip_
 def get_activity_summary(system_prompt, activity, repo_context):
     context_json = json.dumps(repo_context, indent=2)
     payload = {
-        "model": "gpt-5-mini",
+        "model": "gpt-6-luna",
         "input": [
             {"role": "system", "content": system_prompt},
             {
@@ -689,10 +689,10 @@ def compute_net_diff(activity):
 
 
 def get_code_review(system_prompt, net_diff):
-    """Generate code review using GPT-5.1-Codex."""
+    """Generate code review using GPT-6-Luna."""
     diff_json = json.dumps(net_diff, indent=2)
     payload = {
-        "model": "gpt-5.1-codex",
+        "model": "gpt-6-luna",
         "input": [
             {"role": "system", "content": system_prompt},
             {
@@ -711,8 +711,8 @@ def get_code_review(system_prompt, net_diff):
     url = "https://api.openai.com/v1/responses"
     response = http_request("POST", url, headers=headers, json=payload)
     result = response.json()
-    # GPT-5.1-Codex pricing: $1.25/M input, $10/M output
-    cost = result["usage"]["input_tokens"] * 1.25 + result["usage"]["output_tokens"] * 10.0
+    # GPT-6-Luna pricing: $0.1/M input, $0.5/M output
+    cost = result["usage"]["input_tokens"] * 0.1 + result["usage"]["output_tokens"] * 0.5
     # Use last .output entry - first few have reasoning
     return cost, result["output"][-1]["content"][0]["text"]
 
