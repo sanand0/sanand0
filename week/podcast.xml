@@ -4,7 +4,106 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 18 Oct 2026 09:11:09 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 25 Oct 2026 09:08:47 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-10-25</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-25.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-25.mp3</guid>
+    <pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Anand's Weekly Codecast. The week ending 25 October 2026. One thread ran through a lot of this work: how do you know a system really did the thing you asked it to do?
+Maya: That question shows up first in the exam tooling. The new checking limits are shared between Check and Save, and the server—not the browser—decides how many attempts remain.
+Alex: So it isn’t just a counter on the page. A Durable Object reserves each check atomically, which matters if several requests arrive together or a student has two tabs open.
+Maya: And a failed answer still uses an attempt. Blank answers and quota-status lookups do not. For one question, the allowance is three checks in 24 hours; the new agent questions allow ten.
+Alex: The awkward case is Save. If a student has already earned marks but has used the last check, saving can reduce that score. The interface warns them, and the server returns the authoritative result.
+Maya: That’s a useful distinction: the page can explain the risk, but it cannot overrule the quota. The new tests also check that one question’s exhausted allowance doesn’t block saving other answers.
+Alex: The other big assessment thread is hardening three agent tasks after published solvers started solving them. What’s actually changing is the audit data, not the outward question instructions.
+Maya: In the incident task, a familiar symptom no longer points to one fixed action. Across the audits, causes and permitted responses vary; sometimes a bounded scale-up is allowed, sometimes the safe move is to page the owner.
+Alex: That’s better than hiding one magic keyword in a long transcript. The generator also varies where decisive evidence lands among the noise. A test over 60 seeds checks for at least 50 distinct placements.
+Maya: And the mailroom task tries to make the evidence footprint itself unhelpful as a shortcut. Audit cases share the same source shape and provenance, while the actual case, recipient, and current status determine whether approval applies.
+Alex: There are paired cases that differ in one relevant fact. An authentic signed approval can still be out of scope. That is a nice way to test whether an agent reads what the permission covers.
+Maya: The invoice task gets a similar treatment: cases vary independently, and the audit narrative avoids handing out answers through fixed wording or paragraph position. Tests check evidence references across separate documents.
+Alex: Does that prove a strong solver can’t adapt?
+Maya: No. It makes pattern copying less reliable, and the code tests variation and evidence structure. That is not the same as a broad, independent trial against every capable model or solver.
+Alex: I’d rather hear that limit than a claim of being solver-proof. The useful mechanism is that a solver has to track the case facts, not just recognize a familiar story.
+Maya: And there’s a practical constraint too: these audits are generated for the student, so the task can vary without changing the instructions or making every learner solve an unrelated assignment.
+
+Alex: A different exam thread asks students to make something, rather than deploy an agent. The face-morph tasks assign each student their own directed pair of portraits, reproducibly from their email and the question ID.
+Maya: The ranking task gives ten pairs to order from easiest to hardest. A student can drag them or use move buttons; the checker accepts only a complete permutation, with every number from one to ten exactly once.
+Alex: The video task checks a public HTTPS link, but it doesn’t trust the Content-Length header alone. It counts streamed bytes and rejects files at 100,000 bytes, then asks the browser to verify actual playback.
+Maya: That catches a real gap: a URL can look like a video and still point to a broken file. But a valid, playable clip earns only the automatic mark; classmates judge how convincing the morph is later.
+Alex: There’s also a 3D-face assignment for a famous portrait, with an authenticated, stable assignment and a two-megabyte limit. The GLB check verifies the file structure and a mesh, not whether the face is good.
+Maya: That caveat matters. A structurally valid model gets to offline review; it hasn’t passed a quality test. Separately, students can collect ten facial expressions in a browser, with the images processed locally before they choose whether to share them.
+Alex: So the interface is explicit that typing “completed” is only an acknowledgement. It does not verify the separate form submission. I like that honesty about what the system can and can’t see.
+Maya: The exam also added two trading-game questions. For Human Exchange and Picture Stories, students paste a final signed receipt after the round closes; the verifier binds it to that student, game instance, question, and configuration hash.
+Alex: The receipt has to be final, issued after closing, and have marks consistent with its score. That is a useful end-to-end check: a student’s text answer is not treated as proof that the game happened.
+Maya: And the deadlines changed in the course material too: the GA deadline was extended, and the main project got more time. Those updates matter because an otherwise correct workflow is still bad if the published schedule is stale.
+
+Alex: That brings us to the machinery behind those games. The most ambitious addition is Picture Stories: students submit a wordless image and a private story, then tell classmates’ pictures aloud.
+Maya: Each reading is up to 45 seconds. The student places each new picture into a running ranking of better stories. There are ten readings, one retake, and a final order that needs a fresh sign-in.
+Alex: The scoring combines different signals: how well readers understand a story, how their account fits a small lineup, and how their rankings agree with the cohort. The ranking model is Plackett–Luce, which can use lists of different lengths.
+Maya: But the AI doesn’t get a vote in that preference ranking. It can flag words in an image, transcribe or assess a reading, and help with a lineup. Human rankings remain the basis for the human preference score.
+Alex: There’s a neat privacy design underneath. Pictures are resized to 768 pixels, kept under 250 kilobytes, and re-encoded to strip EXIF data such as GPS. The bytes sit in private object storage behind entitlement-checked links.
+Maya: The ledger stores hashes and metadata, while access to the actual image is checked. That still leaves a human consequence to think about: the private story and voice recording are sensitive material, so the consent and retention terms must stay clear.
+Alex: The close-out is also a real workflow, not a button that invents a score. A script uses gpt-4o-transcribe, then model-assisted reading and image checks; it caches results so rerunning doesn’t pay for the same work again.
+Maya: And the game was exercised with a cohort simulation and browser checks, including different reader types and images with words. Those tests probe whether the scoring behaves sensibly; they don’t predict exactly how a real class will behave.
+Alex: A second game, Human Exchange, makes the economics concrete: students offer services, buy from classmates, and agree on a price. Credits are held in escrow, and only seller-confirmed orders count.
+Maya: The infrastructure had to learn how to release that escrow safely, including when an order expires or the game closes. New tests check that credits return to buyers instead of being stranded in an open order.
+Alex: That is one of those invisible fixes that matters more than a shiny screen. Notifications are also being made content-free, and the round uses a signed receipt so the exam can verify the result later.
+Maya: Plus there’s a consistent read-only sync tool for private game data. It checks event hashes and the append-only history before adding anything, so a replaced old event is treated as an error, not a normal update.
+
+Alex: The mobile games take the same idea of turning a crowd into an instrument, but without accounts or a server. A new home page brings four phone-based activities together and publishes them as static files.
+Maya: The two new activities are quite different. Human Pixels gives each phone one letter to trace by tilt or touch; together, the presenter sees a paragraph form. Voice Choir asks each person to hum a target pitch.
+Alex: In Voice Choir, pitch detection happens on the phone. The YIN algorithm estimates the note; a tracker filters noise and octave jumps. The room sends pitch summaries over MQTT, not raw microphone audio.
+Maya: The display can then show voices converging into chords, and synthesize a choir from the pitch numbers. It does not replay participants’ voices. The documentation is clear that real-phone checks—especially iPhone audio routing—remain to be done.
+Alex: Both games use signed presenter messages. The room code comes from the presenter’s public key, so the audience link carries no secret. That’s a clever fit for a public relay where anyone could otherwise publish messages.
+Maya: And the scale tests use up to 300 virtual participants. Those simulations check assignment, reconnects, and rendering; they are not a substitute for testing a real room’s Wi-Fi or a mix of actual phones.
+Alex: The home page also makes the four games easier to find with sensor filters and a responsive grid. GitHub Pages deploys the files directly, so there’s no build step to wait for.
+Maya: The two older experiments—Tidal Garden and Gravity Lab—are now presented alongside them. One uses motion to shape shared art; the other lets younger students estimate gravity with a pendulum or stopwatch.
+
+Alex: Now for the personal tools: one of the clearest practical changes is a new transcription command. Give it several audio files, and it writes a neighbouring Markdown transcript while skipping outputs that already exist.
+Maya: It uses Gemini 3.8 Flash, chosen as 14 percent cheaper than the prior default. The longer call-transcription workflow also moves to that model and low thinking by default, with an environment setting to choose another level.
+Alex: And WebM recordings are losslessly remuxed to Ogg Opus before upload. That’s a container change, not a lossy re-encode. If remuxing fails, the tests require that the audio is not uploaded and no transcript is written.
+Maya: The batch behavior is kinder too: one bad recording no longer stops the rest. It reports the failures at the end and exits with an error, so successful files are still useful and the failed ones are visible.
+Alex: A separate backup tool captures rendered ChatGPT history through an authenticated Edge session using the existing JavaScript scrapers. It opens an automation-owned background tab; it does not call a private conversation API.
+Maya: The canonical backup is JSONL, with Markdown derived from the scraper. It writes revisions before replacing changed content and uses a matching saved message as an anchor for incremental updates.
+Alex: But the coverage is deliberately limited. A sidebar can hide archived or older chats, and a matched anchor assumes earlier messages are unchanged. There’s a full rescan option, and an active generation is deferred rather than stopped or saved as complete.
+Maya: That’s the kind of limit a backup tool should say plainly. It preserves what it can see, but it is not an official account export or a complete archive of every branch and attachment.
+Alex: Other desktop work addresses friction in the physical workflow. The recorder now handles audio, camera, and screen. For screen capture, it targets up to 1280 by 720 at five frames per second, with AV1 first and VP9 or VP8 as fallbacks.
+Maya: Camera capture is deliberately smaller—320 by 240, up to 15 frames a second. Recordings are organized in a local folder, with a library, rename and delete controls, and a warning if the microphone stays silent.
+Alex: That’s not a studio recorder, and it isn’t trying to be. It’s built for small, usable files and the practical task of finding yesterday’s recording again.
+Maya: The workstation automation also changes how a laptop protects itself. Video compression now runs in the background, pausing GPU work at 79 degrees and resuming below 65.
+Alex: There’s a hysteresis gap between those temperatures, so it won’t flap between stop and start every second. If the temperature reading disappears, it pauses rather than assuming the GPU is cool.
+Maya: And a whole Documents tree now syncs one way over Tailscale and SSH to a Windows machine. Changed source files are copied, but destination-only files are not deleted. That is backup behavior, not two-way conflict resolution.
+Alex: The important change is that existing destination files can now be updated from the source; earlier, the transfer was more cautiously additive. Windows-invalid names are checked, and internal file symlinks are copied as files.
+Maya: That is a meaningful expansion, but also a bigger trust boundary. The script still has no delete flag, uses a lock against overlapping runs, and logs transfers and failures. I’d want a dry run before making that first broad copy.
+Alex: There are smaller maintenance fixes tied to the same cross-machine reality: filenames are sanitized for Windows, and JSON output escapes characters when a Windows console can’t display them.
+Maya: And embedded Google Meet subtitles can now be extracted as SRT or VTT without overwriting an existing file. That keeps speaker names, which can be the difference between a useful transcript and a wall of unattributed speech.
+
+Alex: One research note asks whether Anand can inspect and steer model neurons on his laptop. The answer is yes for an experiment, but not through Ollama’s usual API; it needs a framework with access to internal activations.
+Maya: The report separates a measured fact from a plan. Three short Ollama generations gave Qwen about 45 tokens per second and Gemma about 57.5, but those figures say nothing about activation hooks or SAE inference speed.
+Alex: And the cold-start cost mattered: Gemma took about 13 seconds to load in that sample. The machine had an NVIDIA laptop GPU, but the driver check failed; Ollama still reported some Qwen memory in VRAM.
+Maya: The recommended first move is to reproduce a feature intervention with a small model and a matching published sparse autoencoder, not train one from scratch. Then test whether anything transfers to the installed, quantized models.
+Alex: Crucially, no neuron was mapped or changed in this research. The report is a feasibility map, with measured throughput, memory arithmetic, and a suggested weekend experiment—not a discovery dressed up as a result.
+Maya: The companion model-pricing chart got a similar data-quality fix. Model names that differ only by known leaderboard formatting are matched through explicit aliases, rather than broad cleanup that might merge genuinely different variants.
+Alex: And if a model has no verifiable launch month, it appears only in the latest chart month. That avoids drawing a made-up history. Pre-Arena models can remain for context, but with no Elo value mixed into the newer quality comparison.
+Maya: That’s a modest but important correction: a chart can be technically tidy and still imply a past that nobody verified. Here the uncertainty is visible instead of being filled with a convenient guess.
+
+Alex: A lot of this work also became public explanation. A new talk page pairs a meeting video, captions, transcript, and comic, while keeping the video and audio timelines distinct because they start at different points.
+Maya: The transcript and page explore an unusually useful contrast: an exam score is not the same as evidence of learning. The source notes also correct a claim that a supposedly old cipher solution was verified against the original printing; the reproduced result came from a later reprint.
+Alex: That is a good example of checking the artifact, not the headline. The page keeps the uncertainty and provenance close to the story, rather than quietly turning a reproduction into proof of solving the original.
+Maya: Another new talk page adds a video to an earlier audio-first session. It warns that the video includes a breakout and starts at a slightly different time, so the audio transcript’s timestamp links are not exact video cues.
+Alex: The weekly writing adds a survey of demos: 3D worlds from photographs, small models backed by rules, and tests of whether language models can detect generated music. One especially striking test had GPT-6 Sol reconstruct 35 tiny images from base64 text.
+Maya: But the article frames that as a curious capability, not a sensible replacement for image-decoding code. It also notes that some music-detection results vanished when easy clues—like metadata—were removed.
+Alex: The learning notes collect other observations, from mobile automation to browser fingerprinting. A new Q-and-A page keeps practical questions about agent use, responsibility, and grading, while a corrections page fixes specific factual slips.
+Maya: That includes corrections where a confident explanation had the wrong arithmetic or overstated a system’s ability. Publishing the correction matters because otherwise the neat version outlives the more accurate one.
+Alex: And the course material was brought into line with the exam changes: links to the new assessment, and updated deadlines. Even the demo catalogue redirected PersonaGen to its maintained fork and live page.
+Maya: So the callback I’d keep is the backup’s anchor: a saved message can help you extend a record, but only if you remember the assumption—that the earlier prefix has not changed.
+Alex: I started with “did it really happen?” That anchor is a small version of the same problem: useful evidence, plus a clear account of what it cannot establish. Check the boundary before you trust the result.
+Maya: Two practical habits, then: keep a dry run before broad syncs, and keep provenance beside the charts and claims you publish. Thanks for listening to Anand's Weekly Codecast. Goodbye.
+
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-10-18</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-18.mp3" length="0" type="audio/mpeg"/>
