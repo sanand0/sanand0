@@ -11,6 +11,7 @@ Personal site, activity feed, and profile links for Anand S.
 [🎙️ Podcast RSS feed](https://github.com/sanand0/sanand0/releases/download/main/podcast.xml)
 
 <!-- ACTIVITY START -->
+- [08 Nov 2026](week/2026-11-08/): Safer Tools, Better Tests, and More Useful Learning [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-11-08.mp3)
 - [01 Nov 2026](week/2026-11-01/): This week, small tools became more reliable, easier to use, and better at showing their evidence. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-11-01.mp3)
 - [25 Oct 2026](week/2026-10-25/): A Week of Safer Tools, Richer Games, and Better Checks [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-25.mp3)
 - [18 Oct 2026](week/2026-10-18/): This week, safer automation came from clearer boundaries, better evidence, and useful small tools. [🎙️ Podcast](https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-10-18.mp3)
