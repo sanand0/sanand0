@@ -4,7 +4,122 @@
   <title>Anand's Weekly Code Cast</title>
   <link>https://github.com/sanand0/sanand0</link>
   <description>Weekly audio summaries of Anand's commits to GitHub.</description>
-  <lastBuildDate>Sun, 15 Nov 2026 07:53:30 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 22 Nov 2026 04:25:52 GMT</lastBuildDate>
+  <item>
+    <title>Week of 2026-11-22</title>
+    <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-11-22.mp3" length="0" type="audio/mpeg"/>
+    <guid>https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-11-22.mp3</guid>
+    <pubDate>Sun, 22 Nov 2026 00:00:00 GMT</pubDate>
+    <description><![CDATA[
+Alex: Anand's Weekly Codecast. The week ending 22 November 2026. The big question this week: how do you save what a conversation actually became, not just what one snapshot happened to show?
+Maya: That question drove a substantial backup overhaul. A browser extension now passively records ChatGPT’s conversation traffic, and a command-line backup can turn those records into Markdown.
+Alex: The clever part is that the browser records more than complete conversation downloads. It also observes generation streams, including whether the stream ended with `[DONE]` and which message was final.
+Maya: That distinction matters. A reader can abort after the server has finished, so the capture records server completion and reader outcome separately. An interrupted answer shouldn’t be mistaken for a finished one.
+Alex: And the extension now keeps a small conversation catalog with update times and titles. It filters list responses down to those fields, rather than copying all the private material they contain.
+Maya: But browsing still does not guarantee a complete archive. Long chats may load page by page, and the extension can miss older messages or branches until they are actually exposed.
+Alex: So the backup command has become cautious about what it reconstructs. It can replay a finished stream only when the parent, message chain, timing and conversation identity make a sound case.
+Maya: For long histories, it can also recover from captured cursor pages. The implementation checks hashes, tab identity, visit boundaries and branch continuity; ambiguous or conflicting evidence is deferred rather than stitched together.
+Alex: I like that the recovery tests include deliberate traps: a gap in pages, duplicate pages, a changed branch, hidden messages, and a capture from another tab.
+Maya: Those tests make the limit visible. A missing page is not just a formatting nuisance; it can change what a conversation appears to have concluded.
+Alex: There is a neat bridge here: the Markdown converter now exposes `renderSnapshot(snapshot)`. It renders a complete native branch, including citations and attachment labels, without needing an official export archive.
+Maya: And it refuses incomplete branches. It omits internal tool payloads, but preserves visible generated-image entries. The extension’s automatic backup also keeps previous versions, while removing the old “review this candidate” workflow.
+Alex: That removal is a product choice as much as a code change. If official exports will later replace the working copies, holding up daily backups for someone to approve every altered snapshot is the wrong bottleneck.
+Maya: Still, the extension is opt-in, makes no extra requests, and warns that it can miss traffic if the service changes its routes or cache. The useful claim is “better coverage,” not “complete history.”
+Alex: Another browser-data tool got more readable exports. The ChatGPT and Claude scrapers now add prompt timestamps in Singapore time when available, and turn plugin links into reusable `@Plugin Name` mentions.
+Maya: That is a small change with a practical payoff. A copied prompt that says `@LocalMCP2` is easier to understand and paste again than a long internal plugin URL.
+Alex: The repair lesson seems to be: save raw evidence, but be fussy before turning it into a polished record.
+Maya: Yes—and keep the uncertainty in the output. The capture can help recover what happened; it cannot promise that every branch, attachment or older page was seen.
+
+Alex: That same bias toward evidence showed up in a wider set of personal tools. One new service-status command tries to make background jobs less mysterious.
+Maya: It reads systemd logs and gives one line per service and job, with green, yellow or red status and the most useful error message. For wrapped jobs, it can discover commands from the wrapper’s log lines.
+Alex: And `--all` shows each run instead of hiding detail. By default, identical problems that persist across three or more days are suppressed, so the morning prompt does not keep shouting about the same old failure.
+Maya: That filter could hide something important, of course. The command keeps a way to inspect everything, and the shell prompt only checks for new warnings at most hourly.
+Alex: The first lesson came from journald itself. It can drop unit metadata from some log lines, so the status tool reattaches orphaned messages using the service’s syslog identifier and time window.
+Maya: It also avoids calling an ordinary recovered failure “all clear”: the summary can show that the latest run is okay while reporting that an earlier run in the window failed.
+Alex: A different operational snag was a resumed laptop timer firing before Wi-Fi came back. Sync now checks whether the network is unknown and waits up to thirty seconds before deciding to skip.
+Maya: And on a metered connection, it still skips unless explicitly allowed. For Windows copies that need to be browsable, a separate sync pass adds group read and traversal permission only to those chosen files.
+Alex: That is a good example of splitting a broad sync from a narrow exception. A private directory should not inherit relaxed permissions just because one page needs to load in a browser.
+Maya: Other reliability fixes were smaller but concrete. A Google export parser now splits paginated JSON only on newline, so a Unicode line separator inside a string cannot break the record.
+Alex: And its JSONL reader uses UTF-8 directly. The tests include U+2028, U+2029 and U+0085—the sort of characters that look like line breaks but are still content.
+Maya: The call-transcription command now checks every audio argument before processing anything. If a stray phrase looks like a missing filename, it can suggest that `--prompt` was forgotten.
+Alex: That’s a useful bit of defensive design: validate the whole batch before starting expensive work, rather than discovering halfway through that one argument was actually a prompt.
+Maya: For meeting transcription, a new `--transcript` option accepts a local captions file and sends it, with meeting context, to the model. It can work even when there is no recording to download.
+Alex: And inaccessible Google documents now produce a warning with the attachment title, a direct URL and the HTTP status. A `403` or `404` is something to inspect, not a reason to pretend the transcript was included.
+Maya: WhatsApp backup logging was made more useful too. It now prints one aligned row with chat ID, messages seen, archive rows changed and title, instead of a second redundant line.
+Alex: Image recovery has a budget per run—up to one hundred attempts or two minutes—with retries delayed by one, two, four and then more days. But two named images get another attempt each run, so acting on the phone can be followed by an immediate rerun.
+Maya: The instruction at the end matters as much as the retry schedule: tell the person what to find on the phone, using a sender and searchable message context, not a cryptic message ID.
+Alex: There was also a careful audio-cache change in the podcast script. It stores each Gemini segment as lossless FLAC, independent of the final codec, then encodes the finished episode once.
+Maya: That avoids repeated lossy encoding when cached speech is reused for MP3 or Opus. Tests check that there is no accumulated padding and that a failed encode does not overwrite a working cache or final file.
+
+Alex: Speaking of work that reaches students, a live exam platform now has a compact dropdown presentation for single-choice questions. It keeps the same choices and response values, but avoids a tall stack of radio buttons on a phone.
+Maya: The more important change is safe editing: before any response exists, a question can change field type. Once responses exist, the system protects them from conversions that could discard information.
+Alex: There is a race to guard against too. A form can change while a student is submitting an answer, so the server rechecks the current field type under a shared registry lock and returns `409` if it changed.
+Maya: That means an answer submitted against an old form definition is rejected rather than saved under a new meaning. The test even changes the form during the first submission and checks that no stale response file appears.
+Alex: In the exam platform, Anand added a short-response question asking students to design a 45-minute, AI-resilient exercise. They must explain what students do, how it is graded, what is learned, and why an agent alone should score poorly.
+Maya: The grading design is candid about incentives: participation earns no immediate marks, a strong idea may receive a small bonus, and a weak submission may receive a penalty—with an explicit way to opt out.
+Alex: The food-court game was also reused for a separate leadership workshop. The exam accepts signed receipts only for its own scheduled session, and checks the exam, question, session time and student identity.
+Maya: A new test makes sure a valid receipt for that workshop cannot be submitted as a course exam result. That boundary protects both the score and the meaning of the activity.
+Alex: The public course schedule was updated too: the next assignment window is linked directly to its exam and given new opening and closing dates. That is mundane, but it changes what students can actually do.
+Maya: And the live workshop survey offers a useful caution for the talk stories that followed. Twenty-three respondents predicted agents would do better in the game, but only seven of twenty said they had used an agent.
+Alex: That is a striking gap, though not proof that trying an agent would improve anyone’s score. It is a small, voluntary survey, and the answers do not tell us exactly what each person did.
+Maya: A new story about that workshop keeps the tension rather than smoothing it out: teams made more aggressive discounts than students in a comparison, and six of seven teams saw scores fall between checkpoints.
+Alex: The comparison is not a controlled experiment. Room sizes, incentives and prior experience differ; four participants had played an earlier round. But the results do make a useful question: can individually sensible moves create a worse outcome for the group?
+
+Maya: The other new teaching stories came from a course-design meeting. One follows a student who turned a difficult motion-stroke question into a standalone HTML solver—built with an AI model, but able to run without one.
+Alex: That is a nice mechanism: a model helps build a tool that removes the need for a model at test time. But the solver’s accuracy was not independently established, so “made a plausible prediction” is safer than “cracked the exam.”
+Maya: The story also checks several places where a score can miss its target: the food-court game, peer reviews of pictures and a forecasting exercise. The overall claim is about what a measure captures, not that scores are worthless.
+Alex: For the peer review, the new material explains why two entries with the same number of wins can still receive different ratings: the strength of the opponents matters. Bradley–Terry estimates relative quality from pairwise comparisons.
+Maya: But the story avoids turning that model into an oracle. Who saw which images, how people voted, and what “originality” means all limit the conclusion. A popular entry is not automatically the most original one.
+Alex: A third new talk story follows a workshop about AI verification. It connects cross-checking, confidence calibration and the practical habit of testing an AI’s work rather than trusting its tone.
+Maya: And an earlier talk got a video version with a persistent player, clickable timestamps and an audio fallback. The transcript and video were not perfectly aligned, so the page uses small offsets instead of pretending they match exactly.
+Alex: That sounds like the same instinct as the backup pipeline: preserve what the evidence can support, and make the rough edges visible. In both cases, the cleanest interface is not always the most honest one.
+
+Maya: A much larger private study takes that point into six terms of course records. It includes reproducible analyses, an adversarial review and a ledger that records which initial claims were withdrawn.
+Alex: The headline finding is modest: solving a question with an agent was followed by about an eight-point gain on a later timed retest, against a base rate of nineteen percent.
+Maya: But it is question-specific and observational. Students were not randomly assigned to solve each question earlier, so topic strength or other differences could explain part of the gain.
+Alex: The study tests that claim against alternate controls, repeated students, item difficulty and whether the effect survives adversarial analysis. The key is not just the estimate; it is the willingness to downgrade claims that fail checks.
+Maya: That research also asks whether AI-permitted coursework predicts a proctored exam, whether repeated questions help, and whether game marks belong to a student or to the room they were assigned.
+Alex: One analysis models the food-court result as a team outcome, then asks whether a student’s earlier record predicts their own contribution. It treats random room assignment as potentially useful evidence, but only for the effect of teammates’ prior records.
+Maya: And the proposed follow-up is prospective: compare ways of learning or preparing, then retest with shared questions. The power simulations show why a small class may be unable to distinguish a useful modest effect from noise.
+Alex: That is a more durable result than a bold claim about education: here is what the data say, here is what they do not say, and here is a design that could change our minds.
+Maya: The other research project is almost the opposite scale: a practical catalog of around seventy HTML-in-Canvas techniques from one explainer and fifteen demos.
+Alex: The basic trick is to draw ordinary HTML onto a canvas, bend that texture into cloth or glass, then map clicks back to the original page. With the current Chromium API, the exact hooks include `content="drawable"`, `texElementSubImage2D` and `updateElementGeometry`.
+Maya: The catalog also flags older APIs, and a compatibility wrinkle: Chrome versions 154 through 156 had geometry updates but did not use them for hit testing. The reusable part is often the click-mapping and fallback, not the visual effect.
+Alex: And the push-up study makes visual proof literal. It compares four pose models, a median ensemble and Gemini’s video coaching on four side-view sessions, scoring each repetition with angles drawn over the footage.
+Maya: The four pose models agreed on all 230 adjudicated repetitions, and RTMPose-x was the best single model in that comparison. Gemini could coach in words, but scored the movement poorly.
+Alex: The body-form sequence is memorable: hip sag, then the best session at 87 out of 100, then an overcorrected pike. But model agreement on rep counts does not prove the scoring rubric measures good form perfectly.
+Maya: Exactly. The project keeps audit images and tests how rankings change under different scoring thresholds. Agreement is evidence about consistency, not a substitute for a validated definition of form.
+
+Alex: A new browser camera studio puts some of those visual ideas to work. It layers camera, text, drawings, images, video and live HTML into a scene, then uses that composition as the camera feed for a browser call.
+Maya: It is still experimental. The local test call works; Google Meet, Teams and browser Zoom still need testing. The installer targets Chrome or Edge 157 and later, and local camera processing is separate from the call site’s microphone.
+Alex: The implementation has a useful fallback story: it probes the new drawable-canvas API, checks a legacy mode, and can fall back to ordinary rendering. It also manages camera tracks and stops them when a tab closes.
+Maya: So the claim is not “video calls now have a virtual camera everywhere.” It is a working local studio with a test path, clear browser limits, and a lot still to verify against real meeting sites.
+Alex: A smaller desktop tool adds speaker and microphone sliders to the GNOME top bar, each from zero to two hundred percent. Four-finger swipes change the speaker; holding Ctrl switches the same gesture to the microphone.
+Maya: The extension listens to GNOME’s mixer, so slider changes follow other controls live. The stock quick-settings display still tops out at its own limit, and the swipe integration requires an Xorg session.
+Alex: That is a handy distinction: the audio gain can exceed one hundred percent even when the stock control’s display cannot show the full level.
+Maya: And the installation guide says how to test it with `wpctl set-volume`, rather than implying every desktop session has been tested.
+
+Alex: There was a similarly practical effort in model pricing. The leaderboard downloader now finds the table by the `Model`, `Score` and `Price $/M` headers, not by fixed column positions.
+Maya: That survives reordered or extra columns and does not wait for the whole page to finish loading. It reports the last missing data at timeout, including the final page title and URL when a security check blocks the table.
+Alex: The price data were updated too, with the stated principle that each model gets one defensible representative price. A chart’s month slider should not be read as a historical invoice price for that month.
+Maya: And pre-Arena models keep blank Elo scores rather than mixing incompatible benchmarks into the frontier. That is a quiet but important choice: historical context without false comparability.
+Alex: The small web-tools collection also fixed its trending-repository page to read the current main branch of the learning-notes data, after the source moved off a live branch.
+Maya: And the weekly notes gained new material, including a correction about an archaeological discovery that was not actually new. It is a useful reminder that “near discovery” and “first discovery” are different claims.
+
+Alex: There is also a lot of work turning rough research into things people can use. The finance-book project now has figure plans and production prompts for chapters one through twelve.
+Maya: Fifteen figures are cataloged with placements, lead-ins and captions, plus PNG and SVG source files and WebP images for the manuscript. The DOCX build converts those WebPs to PNG for Word versions that cannot display them.
+Alex: Some figures make a financial control concrete: three prices in a folder, but only one signed amendment applies. The point is not decoration; it gives the reader a small case to reason through.
+Maya: The blog work follows the same preference for clearer evidence. A post on guardian agents argues for specialist models alongside deterministic controls, and for separation of duties so a guardian cannot edit its own logs or permissions.
+Alex: It uses a bank’s maker-checker rule as the mechanism: the person who writes a cheque should not approve it. The article also keeps the caveat that an AI guardian is not a replacement for fixed controls.
+Maya: The week’s learning notes also include changes to a reusable simple-English prompt and a new meeting-preparation skill. Its first three lines are designed to tell someone the reason for the meeting and the thing they would most regret missing.
+Alex: And a crash investigation found repeated confirmed NVMe read errors, while leaving the exact cause of the latest crash unknown. The practical advice was to back up current work and arrange drive service—not to claim the logs proved more than they did.
+Maya: A separate music-download note explains that a Spotify link is matched against YouTube Music or YouTube; it is not downloading audio from Spotify. If the automatic match is wrong, choose a video directly, with the trade-off of losing automatic Spotify metadata.
+Alex: That is a good place to end: back to the episode’s first puzzle. A conversation backup is useful only if it can say which parts were observed and which parts were reconstructed.
+Maya: Yes. Like the crash report, it should keep the evidence and the uncertainty together. Two habits for this week: check the source behind a polished result, and keep a recovery copy before changing the thing you rely on. Thanks for listening.
+Alex: And when a system says it has the whole story, ask what it actually saw. Goodbye.
+
+]]></description>
+  </item>
   <item>
     <title>Week of 2026-11-15</title>
     <enclosure url="https://github.com/sanand0/sanand0/releases/download/main/podcast-2026-11-15.mp3" length="0" type="audio/mpeg"/>
